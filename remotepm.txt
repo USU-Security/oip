@@ -1,0 +1,76 @@
+remotepm is an instance of the packetmanager class, with a few differenences.
+the class is split into two halves, a server instance, and a client instance. 
+	server instance can use addpacket() function
+	client instance can use dumppackets() function
+	internally, we essentially use sockets to connect the client's addpacket
+	function to the servers dumppackets() function. 
+
+We also need to create ways for the client to send control messages to the
+server when it is created
+	client may want to specify options, such as pcap filter, subnet mask
+	aggregation, etc.
+
+so...
+	the program itself is unaware of what type of serverpm it will be
+	connecting to, so the server needs to have a valid set of default options.
+	the client should be able to specify the options.
+		the options can be sent generically as an encoded map<string,string>
+		object
+	
+	the udp stream should be encrypted. 
+
+	unfortunately, this means that we have a stateful connection. It will be
+	designed similarly to the ipvisualization project, where a client can opt
+	out of a stream, or can simply stop requesting it for 15 seconds or so. 
+
+	the first blocksize bits of every packet should be a sequence number, so
+	that we know when packets are dropped, and can resynchronize automatically
+	using CFB mode encryption. 
+
+message types:
+	stream setup
+		This includes any options to the server.
+			these are an encoded map<string,string> object. 
+		This includes a client-generated stream ID, which the server can use
+		to distinguish streams
+	senddata
+		the client requesting the data from the server. it must be sent at a
+		minimum frequency specified by the timeout interval
+	dumppackets
+		contains the encoded map<packettype, int> object that represents the
+		current state of the packets. sent from server to client
+	enddata
+		a teardown message that ends the stream immediately instead of waiting
+		for a timeout
+	
+the server:
+	constructor starts a separate thread. it begins to listen on a specified
+	port. A callback function is registered that expects the map<string,
+	string> object to initialize the server functions, along with an instance
+	of a packetmanager that can have packets dumped into it. 
+
+the packet format
+	The first 128 bits need to be something we don't mind losing (so that
+	encryption can resynchronize when we lose a packet)
+	I believe a sequence number should be used, since if we lose it, it means
+	we are out of sync anyways :D. a 128 bit synchronization number is
+	overkill.
+
+	header:
+		32 bit: sequence
+		32 bit: reserved
+		64 bit: reserved
+		8 bit: version 
+		8 bit: packet type
+		16 bit: stream id
+	setuppacket:
+		20 bytes: header
+		variable: options
+	dumppackets:
+		20 byte header
+		4 byte count, then list of
+			s,d,c,size, each 4 bytes, 16 bytes per entry
+	
+
+
+

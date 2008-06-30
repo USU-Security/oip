@@ -1,0 +1,36 @@
+I came accross a concept called organic visualization from a link on slashdot.
+the example they gave was the visualization of project development, where
+files are associated with developers. the files are free-floating particles
+that are allowed to float toward the developers that are working on them. 
+
+I would like to create a similar real-time visualization where packets flow
+toward and away from ips. This needs to be associated with both a source and a
+destination, so that you can plainly see the different flows. This project
+cannot visualize as many ips as the full visualizer can, because it would be
+chaotic, but it would be interesting to visualize it for a small subnet, or
+even an individual computer. 
+
+so... things that are necessary:
+	a simple particle manager:
+		particles move toward a destination, but avoid each other, thus they
+		need to be aware of each other. there needs to be a strucure that
+		keeps track of particles in such a way that particles only need scan
+		their nearest neighbors to see if they are too close. 
+			quadtree? 
+			kd tree?
+		the particles will be rapidly moving, so whatever tree I choose needs
+		to be generated quickly. 
+
+	entities:
+		These are sources and sinks of particles. They are free moving, and
+		try to maintain the distance between themselves, while also avoiding
+		the edge of the screen. 
+			use a force based algorithm. pretend there is an edge between
+			every pair of entities, and that it is a spring. you can then use
+			hookes law to apply forces to the entities. 
+		
+		These also have an age/brightness. 
+
+This gives me two simple classes to try to implement. packets are particles
+that are generated that move from one entity to another. 
+
