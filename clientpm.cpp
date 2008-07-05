@@ -2,20 +2,26 @@
 #include <iostream>
 using std::cerr;
 
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
 int clientpm::clientthread(void* s)
 {
 	clientpm* self = (clientpm*)s;
 	Uint32 lastsent = SDL_GetTicks();
 	Uint32 lastrecieved= SDL_GetTicks();
+	int len;
+	fd_set lset;
+	FD_ZERO(&lset);
+	struct timeval timeout;
 	while(self->running)
 	{
 		//server gives us ~10 seconds to keep stream alive. respond every five
 		if (lastsent + 5000 < SDL_GetTicks() || lastsent > SDL_GetTicks())
 		{
-			senddata sd(self->p->data);
-			self->p->len = sd.getsize();
-			self->p->address = self->ip;
-			SDLNet_UDP_Send(self->sock, -1, self->p);
+			senddata sd(self->data);
+			sendto(self->sock, self->data, sd.getsize(), 0, self->res->ai_addr, self->res->ai_addrlen);
 			lastsent = SDL_GetTicks();
 		}
 		if (lastrecieved + 30000 < SDL_GetTicks()) //TODO: not sure how to handle overflow case
@@ -24,14 +30,21 @@ int clientpm::clientthread(void* s)
 			cerr << "Server hasn't responded in at least 30 seconds\n";
 			break;
 		} 
-		if (SDLNet_UDP_Recv(self->sock, self->p) == 1)
+		FD_SET(self->sock, &lset);
+		timeout.tv_sec = 0;
+		timeout.tv_usec = MINRATE * 1000;
+		if (select(self->sock+1, &lset, NULL, NULL, &timeout))
 		{
-			packet p(self->p->data, self->p->len);
-			if (self->p->address.host == self->ip.host && self->p->address.port == self->ip.port && p.getid() == self->sid) 
+			struct sockaddr_in inaddr;
+			socklen_t inlen = sizeof(inaddr);
+
+			len = recvfrom(self->sock, self->data, MAXPACKET, 0, (struct sockaddr*)&inaddr, &inlen);
+			packet p(self->data, len);
+			if (p.getid() == self->sid) 
 			{
 				if (p.gettype() == DUMPPACKETS)
 				{
-					datapacket dp(self->p->data, self->p->len);
+					datapacket dp(self->data, len);
 					dp.dumpdata(*self);
 				}
 				lastrecieved = SDL_GetTicks();
@@ -41,12 +54,6 @@ int clientpm::clientthread(void* s)
 				cerr << "Invalid address or bad streamid\n";
 			}
 		}
-		else
-		{
-			//i would rather this instance of SDLNet_UDP_Recv were a blocking call. 
-			//if there isnt data, yield the processor
-			SDL_Delay(1);
-		}
 	}
 	return 0;
 }
@@ -54,51 +61,55 @@ int clientpm::clientthread(void* s)
 clientpm::clientpm(const string& server, const map<string, string> & opts, Uint16 port)
 {
 	running = true;
-	if (SDLNet_ResolveHost(&ip, server.c_str(), port))
+	struct addrinfo hints;
+	res = NULL;
+	hints.ai_family=PF_INET;
+	hints.ai_socktype=SOCK_DGRAM;
+	hints.ai_protocol=0;
+	hints.ai_flags = AI_NUMERICSERV;
+	char ap[8];
+	snprintf(ap, 8, "%hd", port);
+	int result;
+	if (result = getaddrinfo(server.c_str(), ap, &hints, &res)) 
 	{
 		running = false;
-		cerr << "Unable to resolve " << server << ": " << SDLNet_GetError() <<  "\n";
+		cerr << "Unable to resolve " << server << ": " << gai_strerror(result) <<  "\n";
 		return;
 	}
-	//allocate the packet
-	if (!(p = SDLNet_AllocPacket(MAXPACKET)))
-	{
-		running = false;
-		cerr << "Unable to allocate a packet: " << SDLNet_GetError() << "\n";
-		return;
-	}
+	
+	
+	
 	sid = rand();
 
 	//open the socket
-	sock = SDLNet_UDP_Open(-1);
+	sock = socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol);
 
 	//send the initial request.
-	setuppacket sp(p->data);
+	setuppacket sp(data);
 	sp.setid(sid);
 	sp.setopts(opts);
-	p->len = sp.getsize();
-	p->address = ip;
-	if (!SDLNet_UDP_Send(sock, -1, p))
+	if (!sendto(sock, data, sp.getsize(), 0, res->ai_addr, res->ai_addrlen))
 	{
 		running = false;
-		cerr << "Unable to send the stream setup message: " << SDLNet_GetError() << "\n";
+		cerr << "Unable to send the stream setup message\n";
 	}
-	
-	thread = SDL_CreateThread(clientthread, this);
+	if (running)	
+		thread = SDL_CreateThread(clientthread, this);
 }
 
 clientpm::~clientpm()
 {
+	//signal the thread to quit
 	running = false;
-	SDL_WaitThread(thread, NULL);
 	//send an enddata message
-	enddata ed(p->data);
+	enddata ed(data);
 	ed.setid(sid);
-	p->len = ed.getsize();
-	p->address = ip;
-	SDLNet_UDP_Send(sock, -1, p);
-	SDLNet_UDP_Close(sock);
-	SDLNet_FreePacket(p);
+	sendto(sock, data, ed.getsize(), 0, res->ai_addr, res->ai_addrlen);
+	//wait for the thread to quit
+	SDL_WaitThread(thread, NULL);	
+	close(sock);
+	if (res)
+		freeaddrinfo(res);
 }
 
 

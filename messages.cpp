@@ -1,6 +1,9 @@
 #include "messages.h"
 #include <iostream>
+#include "ips.h"
+
 using std::cerr;
+using std::cout;
 
 packet::packet(Uint8* buffer, int s)
 :data(buffer),size(s) 
@@ -74,6 +77,8 @@ bool datapacket::adddata(Uint32 src, Uint32 dst, Uint32 color, Uint32 count)
 	put32inc(pos, dst);
 	put32inc(pos, color);
 	put32inc(pos, count);
+	char b1[16], b2[16];
+	//cout << longtoip(b1, 16, src) << " --> " << longtoip(b2, 16, dst) << "\n";
 	size = pos;
 	inccount();
 	return true;
@@ -81,7 +86,8 @@ bool datapacket::adddata(Uint32 src, Uint32 dst, Uint32 color, Uint32 count)
 
 void datapacket::dumpdata(packetmanager&pm)
 {
-	int pos = packet::getsize();
+	char b1[16], b2[16];
+	int pos = packet::getsize()+2;
 	int i;
 	int c = count();
 	for (i = 0; i < c; i++)
@@ -90,6 +96,7 @@ void datapacket::dumpdata(packetmanager&pm)
 		s = get32inc(pos);
 		d = get32inc(pos);
 		c = get32inc(pos);
+		//cout << longtoip(b1, 16, s) << " --> " << longtoip(b2, 16, d) << "\n";
 		count = get32inc(pos);
 		pm.addpacket(s,d,c,count);
 	}

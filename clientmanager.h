@@ -8,7 +8,6 @@
 #include <map>
 #include <string>
 #include <SDL/SDL_thread.h>
-#include <SDL/SDL_net.h>
 
 using namespace std;
 
@@ -18,11 +17,12 @@ typedef void (*connectioncallback)(networkpm & pm, const map<string, string>&);
 class client
 {
 public:
-	IPaddress ip;
+	Uint32 ip;
+	Uint32 port;
 	Uint32 lastsent;
 	networkpm dataset;
 	Uint16 sid;
-	client(IPaddress &s, int l, Uint16 id):ip(s),lastsent(l),sid(id) {}
+	client(Uint32 s, Uint16 p, int l, Uint16 id):ip(s),port(p),lastsent(l),sid(id) {}
 };
 
 class clientmanager

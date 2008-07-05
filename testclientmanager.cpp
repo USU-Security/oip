@@ -51,7 +51,7 @@ void newconnection(networkpm& pm, const map<string, string>& opts)
 	{
 		for (j = 0; j < 100; j++)
 		{
-			ASSERTEQUAL(pm.addpacket(i, i, 10, 10), true);
+			ASSERTEQUAL(pm.addpacket(i, i+10, i+100, 10), true);
 		}
 	}
 	pm.producerdead();
@@ -86,8 +86,17 @@ int testnetwork()
 		SDL_Delay(1); //go to sleep
 	}
 	while(!cpm->size());
+	
 	//test the data transfer
 	ASSERTEQUAL(cpm->size(), 10);
+	pmdict::const_iterator i;
+	for (i = cpm->begin(); i != cpm->end(); ++i)
+	{
+		int s = (*i).first.src;
+		ASSERTEQUAL((*i).first.dst, s+10);
+		ASSERTEQUAL((*i).first.color, s+100);
+		ASSERTEQUAL((*i).second, 1000);
+	}
 
 	//see if it can die gracefully
 	//(should send the killstream message, and then the cp wants to die)
@@ -143,10 +152,8 @@ int testpackets()
 int main()
 {
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER);
-	SDLNet_Init();
 	testpackets();
 	testnetwork();
-	SDLNet_Quit();
 	SDL_Quit();
 
 	SUMMARY;

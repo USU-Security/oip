@@ -2,7 +2,6 @@
 #define MESSAGES_H
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_net.h>
 #include "packetmanager.h"
 #include <map>
 #include <string>

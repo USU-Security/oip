@@ -2,14 +2,15 @@
 #include "clientmanager.h"
 #include <iostream>
 using std::cerr;
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
 
 //saves the args, and starts up the listening thread. 
 clientmanager::clientmanager(connectioncallback cc, unsigned short port)
 :ccallback(cc), listenport(port), running(true)
 {
 	thread = SDL_CreateThread(serverthread, this);
-	if(-1 == SDLNet_Init())
-		cerr << "Unable to initialize the net sublayer of SDL: " << SDLNet_GetError() << "\n";
 }
 
 //shuts everything down
@@ -17,37 +18,59 @@ clientmanager::~clientmanager()
 {
 	running = false;
 	SDL_WaitThread(thread, NULL);
-	SDLNet_Quit();
 }
 
 int clientmanager::serverthread(void* d)
 {
 	clientmanager* self = (clientmanager*)d;
-	UDPsocket listen = SDLNet_UDP_Open(self->listenport);
-	UDPpacket* p = SDLNet_AllocPacket(MAXPACKET);
+	int listen = socket(PF_INET, SOCK_DGRAM, 0); 
+	unsigned char data[MAXPACKET];
+	struct sockaddr_in addr;
+	addr.sin_family = PF_INET;
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	addr.sin_port = htons(self->listenport);
+	bind(listen, (struct sockaddr*)&addr, sizeof(addr));
+	//set up the descriptor set and timeout for a ready check
+	fd_set lset;
+	FD_ZERO(&lset);
+	struct timeval timeout;;
+
 	while (self->running)
 	{
 		Uint32 now = SDL_GetTicks();
 		vector<client*>::iterator i;
-		if (SDLNet_UDP_Recv(listen, p) == 1)
-		{
+		FD_SET(listen, &lset);
+		timeout.tv_sec = 0;
+		timeout.tv_usec = MINRATE * 1000;
+		if (select(listen+1, &lset, NULL, NULL, &timeout)) //is there a packet ready?
+		{	
+			int len;
+			socklen_t addrlen = sizeof(addr);
+			addr.sin_addr.s_addr = htonl(INADDR_ANY);
+			addr.sin_port = htons(self->listenport);
+			len = recvfrom(listen, data, MAXPACKET, 0, (struct sockaddr*)&addr, &addrlen);
+
+		
 			map<string, string> m;
-			packet incoming(p->data, p->len);
+			packet incoming(data, len);
 			switch (incoming.gettype())
 			{
 			case SETUP:
 				{
-					setuppacket sp(p->data, p->len);
+					cout << "Setting up a client\n";
+					setuppacket sp(data, len);
 					sp.getopts(m);
-					self->datasets.push_back(new client(p->address, SDL_GetTicks(), sp.getid()));
+					self->datasets.push_back(new client(addr.sin_addr.s_addr,addr.sin_port, SDL_GetTicks(), sp.getid()));
 					self->ccallback(self->datasets.back()->dataset, m);
 				}
 				break;
 			case SENDDATA:
+				//cout << "Client refresh message\n";
 				for (i = self->datasets.begin(); i != self->datasets.end(); ++i)
 				{
-					if (p->address.host == (*i)->ip.host && p->address.port == (*i)->ip.port && (*i)->sid == incoming.getid())
+					if (addr.sin_addr.s_addr == (*i)->ip && addr.sin_port == (*i)->port && (*i)->sid == incoming.getid())
 					{
+						//cout << "Client Refreshed\n";
 						(*i)->lastsent = now;
 						break;
 					}
@@ -58,7 +81,7 @@ int clientmanager::serverthread(void* d)
 			case ENDDATA:
 				for (i = self->datasets.begin(); i != self->datasets.end(); ++i)
 				{
-					if (p->address.host == (*i)->ip.host && p->address.port == (*i)->ip.port && (*i)->sid == incoming.getid())
+					if (addr.sin_addr.s_addr == (*i)->ip && addr.sin_port == (*i)->port && (*i)->sid == incoming.getid())
 					{
 						(*i)->lastsent = 0;
 						(*i)->dataset.consumerdead();
@@ -87,30 +110,35 @@ int clientmanager::serverthread(void* d)
 				delete(*i);
 				*i = self->datasets.back();
 				self->datasets.pop_back();
+				cout << "Removed client\n";
 				continue;
 			}
 			//should the stream time out? TODO: make this 10 second value a config option
 			else if ((*i)->lastsent + 10000  < now)
+			{
+				cout << "Stream timed out\n";
 				(*i)->dataset.consumerdead();
+			}
 			else if ((*i)->lastsent + MINRATE < now) //has the minimum time passed?
 			{
 				//is there any data?
-				if ((*i)->dataset.size())
+				if (!(*i)->dataset.empty())
 					drain = true;
 			}
+			//this is giving me issues. 
 			else if ((*i)->dataset.size() >= datapacket::MAXDATA) //is there too much data in the buffer?
 				drain = true;
 			if (drain) //do we need to drain the buffer?
 			{
-				p->address = (*i)->ip;
-				datapacket dp(p->data);
+				addr.sin_addr.s_addr = (*i)->ip;
+				addr.sin_port =(*i)->port;
+				datapacket dp(data);
 				dp.setid((*i)->sid);
 				bool moredata;
 				do
 				{
 					moredata = (*i)->dataset.dumpdata(dp);
-					p->len = dp.getsize();
-					SDLNet_UDP_Send(listen, -1, p);
+					sendto(listen, data, dp.getsize(), 0, (struct sockaddr*)&addr, sizeof(addr));
 				}
 				while (moredata);
 			}
@@ -119,8 +147,8 @@ int clientmanager::serverthread(void* d)
 			++i;				
 		}
 	}
-	SDLNet_FreePacket(p);
-	SDLNet_UDP_Close(listen);
+	cout << "Exiting server listening thread\n";
+	close(listen);
 }
 
 

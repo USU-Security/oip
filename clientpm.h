@@ -3,7 +3,6 @@
 #ifndef CLIENTPM_H
 #define CLIENTPM_H
 
-#include <SDL/SDL_net.h>
 #include "packetmanager.h"
 #include "messages.h"
 
@@ -12,10 +11,12 @@ class clientpm: public packetmanager
 private:
 	SDL_Thread* thread;
 	bool running;
-	IPaddress ip;
-	UDPpacket * p;
+	Uint32 ip;
+	Uint16 port;
+	unsigned char data[MAXPACKET];	
 	Uint16 sid;
-	UDPsocket sock;
+	Uint32 sock;
+	struct addrinfo* res;
 
 	static int clientthread(void*self);
 public:
@@ -23,6 +24,10 @@ public:
 	~clientpm();
 
 	bool alive() {return running;}
+
+	//not really necessary for functioning, but necessary to be able to do test
+	pmdict::const_iterator begin() {return packets.begin();}
+	pmdict::const_iterator end() {return packets.end();}
 };
 
 #endif //CLIENTPM_H
