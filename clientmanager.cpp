@@ -61,11 +61,12 @@ int clientmanager::serverthread(void* d)
 					setuppacket sp(data, len);
 					sp.getopts(m);
 					self->datasets.push_back(new client(addr.sin_addr.s_addr,addr.sin_port, SDL_GetTicks(), sp.getid()));
+					self->datasets.back()->lastsent = now;
 					self->ccallback(self->datasets.back()->dataset, m);
 				}
 				break;
 			case SENDDATA:
-				//cout << "Client refresh message\n";
+				cout << "Client refresh message\n";
 				for (i = self->datasets.begin(); i != self->datasets.end(); ++i)
 				{
 					if (addr.sin_addr.s_addr == (*i)->ip && addr.sin_port == (*i)->port && (*i)->sid == incoming.getid())

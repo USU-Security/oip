@@ -25,13 +25,9 @@ void packetmanager::dumppackets(particlemanager& pm)
 	pmdict::iterator i = packets.begin();
 	for (;i != packets.end(); ++i)
 	{
-		char srcip[16];
-		char dstip[16];
-        unsigned int sip = ntohl((*i).first.src);
-        unsigned int dip = ntohl((*i).first.dst);
-		longtoip(srcip, 16, sip);
-		longtoip(dstip, 16, dip);
-        pm.packet(string(srcip), string(dstip), (*i).second/2800.0, (*i).first.color);
+        pm.packet(
+			names[(*i).first.src], 
+			names[(*i).first.dst], (*i).second/2800.0, (*i).first.color);
 	}
 	packets.clear();
 	count = 0;

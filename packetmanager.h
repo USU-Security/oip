@@ -9,7 +9,7 @@
 #include<ext/hash_map>
 
 #include "particlemanager.h"
-
+#include "namecache.h"
 
 class packettype
 {
@@ -42,6 +42,7 @@ protected:
 	pmdict packets;
 	SDL_mutex* packetlock;
 	int count;
+	namecache names;
 public:
 	packetmanager():count(0) {packetlock = SDL_CreateMutex();}
 	~packetmanager() {SDL_DestroyMutex(packetlock);}

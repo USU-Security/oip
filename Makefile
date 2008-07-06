@@ -18,9 +18,9 @@ capreader: capreader.o particle.o text.o image.o kdtree.o particlemanager.o enti
 
 testclientmanager: testclientmanager.o clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o 
 
-oipd: clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o oipd.o
+oipd: clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o oipd.o namecache.o
 
-oip: packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o oip.o
+oip: packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o oip.o namecache.o
 
 test: clean testclientmanager 
 	./testclientmanager
