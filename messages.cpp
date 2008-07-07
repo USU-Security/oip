@@ -14,9 +14,24 @@ packet::packet(Uint8* buffer, int s)
 		setversion();
 	} 
 	else if (getversion() != VERSION)
-		cerr << "Version mismatch. Recieved packet of version " << getversion() << " but expected version " << VERSION << "\n";
-	
+		cerr << "Version mismatch. Recieved packet of version " << (int)getversion() << " but expected version " << VERSION << "\n";
+	psize=0;	
 }
+
+int packet::paddedsize(int kl)
+{ 
+	int i;
+	if (!psize)
+	{
+		int s = getsize();
+		psize = ((s - 1)/kl + 1) * 16; 
+		for (i = s; i < psize; i++) 
+			data[i]=rand()%256; 
+	}
+	return psize;
+}
+
+
 
 setuppacket::setuppacket(Uint8*buffer, int s)
 :packet(buffer, s),setupsize(0)
@@ -101,3 +116,4 @@ void datapacket::dumpdata(packetmanager&pm)
 		pm.addpacket(s,d,c,count);
 	}
 }
+

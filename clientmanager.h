@@ -11,7 +11,6 @@
 
 using namespace std;
 
-
 typedef void (*connectioncallback)(networkpm & pm, const map<string, string>&);
 
 class client

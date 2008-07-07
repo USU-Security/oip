@@ -1,4 +1,4 @@
-LDFLAGS=-lGL -lGLU -lSDL -lSDL_image -lpcap
+LDFLAGS= -lcryptopp -lSDL -lSDL_image -lpcap
 CPPFLAGS = -g 
 all: capreader
 
@@ -18,9 +18,13 @@ capreader: capreader.o particle.o text.o image.o kdtree.o particlemanager.o enti
 
 testclientmanager: testclientmanager.o clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o 
 
-oipd: clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o oipd.o namecache.o
+objlist = config.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o namecache.o encrypt.o hexprint.o
 
-oip: packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o oip.o namecache.o
+oipd: ${objlist} oipd.o
+	g++ ${objlist} oipd.o ${LDFLAGS} -o oipd
+
+oip: ${objlist} oip.o 
+	g++ ${objlist} oip.o ${LDFLAGS} -o oip
 
 test: clean testclientmanager 
 	./testclientmanager

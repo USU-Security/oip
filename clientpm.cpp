@@ -5,6 +5,7 @@ using std::cerr;
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include "encrypt.h"
 
 int clientpm::clientthread(void* s)
 {
@@ -17,11 +18,12 @@ int clientpm::clientthread(void* s)
 	struct timeval timeout;
 	while(self->running)
 	{
-		//server gives us ~10 seconds to keep stream alive. respond every five
-		if (lastsent + 5000 < SDL_GetTicks() || lastsent > SDL_GetTicks())
+		//server gives us ~20 seconds to keep stream alive. respond every 2
+		if (lastsent + 2000 < SDL_GetTicks() || lastsent > SDL_GetTicks())
 		{
 			senddata sd(self->data);
-			sendto(self->sock, self->data, sd.getsize(), 0, self->res->ai_addr, self->res->ai_addrlen);
+			aes.encrypt(self->data, sd.paddedsize());
+			sendto(self->sock, self->data, sd.paddedsize(), 0, self->res->ai_addr, self->res->ai_addrlen);
 			lastsent = SDL_GetTicks();
 		}
 		if (lastrecieved + 30000 < SDL_GetTicks()) //TODO: not sure how to handle overflow case
@@ -39,6 +41,7 @@ int clientpm::clientthread(void* s)
 			socklen_t inlen = sizeof(inaddr);
 
 			len = recvfrom(self->sock, self->data, MAXPACKET, 0, (struct sockaddr*)&inaddr, &inlen);
+			aes.decrypt(self->data, len);
 			packet p(self->data, len);
 			if (p.getid() == self->sid) 
 			{
@@ -88,7 +91,8 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 	setuppacket sp(data);
 	sp.setid(sid);
 	sp.setopts(opts);
-	if (!sendto(sock, data, sp.getsize(), 0, res->ai_addr, res->ai_addrlen))
+	aes.encrypt(data, sp.paddedsize());
+	if (!sendto(sock, data, sp.paddedsize(), 0, res->ai_addr, res->ai_addrlen))
 	{
 		running = false;
 		cerr << "Unable to send the stream setup message\n";
@@ -104,7 +108,8 @@ clientpm::~clientpm()
 	//send an enddata message
 	enddata ed(data);
 	ed.setid(sid);
-	sendto(sock, data, ed.getsize(), 0, res->ai_addr, res->ai_addrlen);
+	aes.encrypt(data, ed.paddedsize());
+	sendto(sock, data, ed.paddedsize(), 0, res->ai_addr, res->ai_addrlen);
 	//wait for the thread to quit
 	SDL_WaitThread(thread, NULL);	
 	close(sock);

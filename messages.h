@@ -8,7 +8,8 @@
 using namespace std;
 
 //the maximum length of a packet
-#define MAXPACKET 1400
+//has to be a multiple of 16 (128 bit keylength for aes)
+#define MAXPACKET 1440
 #define MINRATE 41
 #define VERSION 0
 
@@ -21,6 +22,7 @@ class packet
 protected:
 	Uint8* data;
 	int size;
+	int psize;
 	void put8(int pos, Uint8 d) {data[pos] = d;}
 	void put8inc(int &pos, Uint8 d) {put8(pos, d); pos++;}
 	Uint8 get8(int pos) {return pos < size ? data[pos] : 0; }
@@ -50,7 +52,9 @@ public:
 	void setid(Uint16 id) {put16(18, id);}
 
 	virtual int getsize() { return 20;}
+	int paddedsize(int kl=16); 
 	Uint8* getdata() { return data;}
+
 };
 
 class setuppacket : public packet

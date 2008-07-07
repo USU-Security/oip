@@ -5,6 +5,8 @@ using std::cerr;
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
+#include "encrypt.h"
+
 
 //saves the args, and starts up the listening thread. 
 clientmanager::clientmanager(connectioncallback cc, unsigned short port)
@@ -49,7 +51,7 @@ int clientmanager::serverthread(void* d)
 			addr.sin_addr.s_addr = htonl(INADDR_ANY);
 			addr.sin_port = htons(self->listenport);
 			len = recvfrom(listen, data, MAXPACKET, 0, (struct sockaddr*)&addr, &addrlen);
-
+			aes.decrypt(data, len);
 		
 			map<string, string> m;
 			packet incoming(data, len);
@@ -91,7 +93,7 @@ int clientmanager::serverthread(void* d)
 				}
 				break;
 			default:
-				cerr << "Unknown message type: " << incoming.gettype() << "\n";
+				cerr << "Unknown message type: " << (int)incoming.gettype() << "\n";
 			}
 			
 
@@ -115,7 +117,7 @@ int clientmanager::serverthread(void* d)
 				continue;
 			}
 			//should the stream time out? TODO: make this 10 second value a config option
-			else if ((*i)->lastsent + 10000  < now)
+			else if ((*i)->lastsent + 20000  < now)
 			{
 				cout << "Stream timed out\n";
 				(*i)->dataset.consumerdead();
@@ -139,7 +141,9 @@ int clientmanager::serverthread(void* d)
 				do
 				{
 					moredata = (*i)->dataset.dumpdata(dp);
-					sendto(listen, data, dp.getsize(), 0, (struct sockaddr*)&addr, sizeof(addr));
+					//encrypt the data 
+					aes.encrypt(data, dp.paddedsize());
+					sendto(listen, data, dp.paddedsize(), 0, (struct sockaddr*)&addr, sizeof(addr));
 				}
 				while (moredata);
 			}
