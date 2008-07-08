@@ -208,7 +208,7 @@ int main(int argc, char** argv)
 		}
 		double dt = now() - ti;
 		ti = now();
-		packetlist.dumppackets(pm);
+		packetlist.dumpdata(pm);
 		pm.process(dt);
 		SDL_FillRect(screen, NULL, 0);
 		pm.draw(screen);

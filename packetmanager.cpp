@@ -19,19 +19,23 @@ bool packetmanager::addpacket(unsigned int s, unsigned int d, unsigned int c, un
 	return true;
 }
 
-void packetmanager::dumppackets(particlemanager& pm)
+/*
+ * dumps all the accumulated packets into a packetsink object
+ */
+bool packetmanager::dumpdata(packetsink& ps)
 {
-	SDL_mutexP(packetlock);
-	pmdict::iterator i = packets.begin();
-	for (;i != packets.end(); ++i)
-	{
-        pm.packet(
-			names[(*i).first.src], 
-			names[(*i).first.dst], (*i).second/2800.0, (*i).first.color);
-	}
-	packets.clear();
-	count = 0;
-	SDL_mutexV(packetlock);
+    bool hasroom=true;
+    SDL_mutexP(packetlock);
+    pmdict::iterator i = packets.begin();
+    while(i != packets.end())
+    {
+        if (!(hasroom = ps.addpacket((*i).first.src, (*i).first.dst, (*i).first.color, (*i).second)))
+            break;
+        packets.erase(i++);
+        count--;
+    }
+    SDL_mutexV(packetlock);
+    return !hasroom;
 }
 
 

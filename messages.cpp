@@ -83,7 +83,7 @@ datapacket::datapacket(Uint8*buffer, int s)
 	}
 }
 
-bool datapacket::adddata(Uint32 src, Uint32 dst, Uint32 color, Uint32 count)
+bool datapacket::addpacket(Uint32 src, Uint32 dst, Uint32 color, Uint32 count)
 {
 	int pos = getsize();
 	if (MAXPACKET < pos + 16)
@@ -92,14 +92,14 @@ bool datapacket::adddata(Uint32 src, Uint32 dst, Uint32 color, Uint32 count)
 	put32inc(pos, dst);
 	put32inc(pos, color);
 	put32inc(pos, count);
-	char b1[16], b2[16];
+	//char b1[16], b2[16];
 	//cout << longtoip(b1, 16, src) << " --> " << longtoip(b2, 16, dst) << "\n";
 	size = pos;
 	inccount();
 	return true;
 }
 
-void datapacket::dumpdata(packetmanager&pm)
+void datapacket::dumpdata(packetmanager &ps)
 {
 	char b1[16], b2[16];
 	int pos = packet::getsize()+2;
@@ -113,7 +113,7 @@ void datapacket::dumpdata(packetmanager&pm)
 		c = get32inc(pos);
 		//cout << longtoip(b1, 16, s) << " --> " << longtoip(b2, 16, d) << "\n";
 		count = get32inc(pos);
-		pm.addpacket(s,d,c,count);
+		ps.addpacket(s,d,c,count);
 	}
 }
 

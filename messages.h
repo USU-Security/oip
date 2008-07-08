@@ -3,6 +3,7 @@
 
 #include <SDL/SDL.h>
 #include "packetmanager.h"
+#include "packetsink.h"
 #include <map>
 #include <string>
 using namespace std;
@@ -69,13 +70,13 @@ public:
 	int getsize() { return packet::getsize() + setupsize; }
 };
 
-class datapacket : public packet
+class datapacket : public packet, public packetsink
 {
 protected:
 	void inccount() {put16(packet::getsize(), count()+1);}
 public:
 	datapacket(Uint8*buffer, int s=0);
-	bool adddata(Uint32 src, Uint32 dst, Uint32 color, Uint32 count);
+	bool addpacket(Uint32 src, Uint32 dst, Uint32 color, Uint32 count);
 	void dumpdata(packetmanager& pm);
 	int count() { return get16(packet::getsize());}
 	int getsize() { return packet::getsize() + count() * 16 + 2; }

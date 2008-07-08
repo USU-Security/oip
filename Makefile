@@ -16,15 +16,18 @@ particlemanagertest: particlemanagertest.o particle.o text.o image.o kdtree.o pa
 
 capreader: capreader.o particle.o text.o image.o kdtree.o particlemanager.o entityset.o entity.o packetmanager.o
 
-testclientmanager: testclientmanager.o clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o 
 
-objlist = config.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o networkpm.o clientmanager.o messages.o namecache.o encrypt.o hexprint.o
 
-oipd: ${objlist} oipd.o
-	g++ ${objlist} oipd.o ${LDFLAGS} -o oipd
+testclientmanager: testclientmanager.o clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o clientmanager.o messages.o 
 
-oip: ${objlist} oip.o 
-	g++ ${objlist} oip.o ${LDFLAGS} -o oip
+coreobj = config.o packetmanager.o clientpm.o clientmanager.o messages.o namecache.o encrypt.o hexprint.o
+guiobj = particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o 
+
+oipd: ${coreobj} oipd.o
+	g++ ${coreobj} oipd.o ${LDFLAGS} -o oipd
+
+oip: ${coreobj} ${guiobj} oip.o 
+	g++ ${coreobj} ${guiobj} oip.o ${LDFLAGS} -o oip
 
 test: clean testclientmanager 
 	./testclientmanager

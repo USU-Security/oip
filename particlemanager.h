@@ -6,8 +6,10 @@
 
 #include "particle.h"
 #include "entityset.h"
+#include "packetsink.h"
+#include "namecache.h"
 
-class particlemanager
+class particlemanager: public packetsink
 {
 private:
 	entityset entities;
@@ -15,9 +17,10 @@ private:
 	float xscale, yscale;
 	int mx, my;
 	entity* mouseisdown;
+	namecache names;
 public:
 	particlemanager():mouseisdown(NULL) {  }
-	void packet(const string& src, const string& dst, float size, unsigned int color);
+	bool addpacket(unsigned int src, unsigned int  dst, unsigned int size, unsigned int color);
 	~particlemanager();
 
 	void process(double dt);

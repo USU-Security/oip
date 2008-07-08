@@ -7,10 +7,12 @@ using std::cout;
 /*
  * creates a packet starting at src, heading toward dst, with a specific size
  */
-void particlemanager::packet(const string& src, const string& dst, float size, unsigned int color)
+bool particlemanager::addpacket(unsigned int src, unsigned int dst, unsigned int color, unsigned int size)
 {
-	entity& e1 = entities[src];
-	particles.push_back(new particle(e1.getX(), e1.getY(), size, color, dst));
+	entity& e1 = entities[names[src]];
+	particles.push_back(new particle(e1.getX(), e1.getY(), size/2800.0, color, names[dst]));
+
+	return true;
 }
 
 particlemanager::~particlemanager()
