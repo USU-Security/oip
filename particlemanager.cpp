@@ -11,7 +11,6 @@ bool particlemanager::addpacket(unsigned int src, unsigned int dst, unsigned int
 {
 	entity& e1 = entities[names[src]];
 	particles.push_back(new particle(e1.getX(), e1.getY(), size/42000.0, color, names[dst]));
-
 	return true;
 }
 
@@ -32,13 +31,16 @@ void particlemanager::process(double dt)
 	{
 		entity& e1 = entities[(*i)->dst];
 		//check if it is at its destination
-		if ((e1.getX() - (*i)->getX())*(e1.getX() - (*i)->getX()) +
+		//since its text, they will be wider than they are tall
+		if ((e1.getX() - (*i)->getX())*(e1.getX() - (*i)->getX())/(e1.getW()/e1.getH()/2) +
 			(e1.getY() - (*i)->getY())*(e1.getY() - (*i)->getY()) < .0005)
 			(*i)->erase();
 		vector<particle*> pnear;
 		pfind.collect(.2, (*i)->getX(), (*i)->getY(), pnear);
 
 		(*i)->move(e1.getX(), e1.getY(), pnear, dt);
+		//make a small attractive force for the destination toward the packet
+		e1.move(((*i)->getX()-e1.getX())*.01,((*i)->getY()-e1.getY())*.01,.9, dt);
 	}
 	// */
 	entities.process(dt);

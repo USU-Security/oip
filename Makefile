@@ -12,7 +12,10 @@ entitytest: entitytest.o entity.o text.o entityset.o
 
 particletest: particletest.o particle.o text.o image.o kdtree.o
 
-particlemanagertest: particlemanagertest.o particle.o text.o image.o kdtree.o particlemanager.o entityset.o entity.o
+pmtobj = particlemanagertest.o particle.o text.o image.o kdtree.o particlemanager.o entityset.o entity.o namecache.o
+particlemanagertest: ${pmtobj}
+	g++ ${CPPFLAGS} ${pmtobj} ${LDFLAGS} -o particlemanagertest
+	
 
 capreader: capreader.o particle.o text.o image.o kdtree.o particlemanager.o entityset.o entity.o packetmanager.o
 

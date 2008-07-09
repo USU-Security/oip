@@ -18,6 +18,15 @@ _text& _text::render(SDL_Surface*surf, const char*s, int x, int y, int fade)
 	src.y = fade*height;
 	src.w = width;
 	src.h = height;
+	if (x < 0)
+		x = 0;
+	if (x + width >= surf->w)
+		x = surf->w - width-1;
+	if (y < 0)
+		y = 0;
+	if (y + height >= surf->h)
+		y = surf->h - height-1;
+	
 	dst.y = y;
 	dst.x = x;
 	while(*s && *s >= 32 && *s <= 126)

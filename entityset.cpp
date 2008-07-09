@@ -33,7 +33,7 @@ void entityset::process(double dt)
 					((*i).second.getY() - (*j).second.getY()) *
 					((*i).second.getY() - (*j).second.getY());
 				//some magic numbers. The "charge" of the particle goes away as it fades
-				rsq /= k/(3 * (1+(*j).second.getfadeval()));
+				rsq /= k/(4); // * (1+(*j).second.getfadeval()));
 				fx += ((*i).second.getX() - (*j).second.getX())/rsq;
 				fy += ((*i).second.getY() - (*j).second.getY())/rsq;
 			}
@@ -105,9 +105,9 @@ entity* entityset::find(int x, int y)
 		//TODO getX and getY are in world coordinates, yet getW and getH are not
 		if (
 			(*j).second.getX() * xscale - (*j).second.getW()/2 < x &&
-			(*j).second.getY() * xscale - (*j).second.getH()/2 < y &&
+			(*j).second.getY() * yscale - (*j).second.getH()/2 < y &&
 			(*j).second.getX() * xscale + (*j).second.getW()/2 > x &&
-			(*j).second.getY() * xscale + (*j).second.getH()/2 > y
+			(*j).second.getY() * yscale + (*j).second.getH()/2 > y
 			)
 			return &((*j).second);
 	}

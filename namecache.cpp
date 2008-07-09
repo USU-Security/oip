@@ -13,7 +13,7 @@ const string & namecache::operator[](unsigned int a)
 		return (*i).second;
 	char host[256];
 	//set a temporary hostname of the ip address as a string
-	names[a] = longtoip(host, 256, a);
+	names[a] = longtoip(host, 256, ntohl(a));
 	//trigger the lookup
 	dolookup(a);
 	//give up the cpu for a moment in the hope that it will succeed quickly
@@ -48,7 +48,7 @@ int namecache::cthread(void* s)
 			char host[256];
 			char serv[256];
 			if (getnameinfo((struct sockaddr*)&addr, sizeof(addr), host, 256, serv, 256, NI_NOFQDN))
-				cerr << "Unable to look up " << longtoip(host, 256, ntohl(ip));
+				cerr << "Unable to look up " << longtoip(host, 256, ntohl(ip)) << "\n";
 			else
 				self->names[ip] = host;
 			SDL_mutexP(self->queuemutex);

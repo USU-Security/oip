@@ -43,9 +43,9 @@ int main()
 	int i;
 	bool run=true;
 	double ti = now();
-	const char* nodes[] = {
-		"10.0.0.1","10.0.0.2","10.0.0.3","10.0.0.4","10.0.0.5",
-		"10.0.0.6","10.0.0.7","10.0.0.8","10.0.0.9","10.0.0.10"
+	unsigned int nodes[] = {
+		0x0100000a,0x0200000a,0x0300000a,0x0400000a,0x0500000a,
+		0x0600000a,0x0700000a,0x0800000a,0x0900000a,0x0a00000a
 	};
 	const int pairs[][2] = {
 		{1, 2},
@@ -75,14 +75,12 @@ int main()
 			case SDL_KEYDOWN:
 				if (event.key.keysym.sym == SDLK_ESCAPE)
 					run = false;
-				if (event.key.keysym.sym == SDLK_SPACE)
-					pm.packet(string(nodes[rand()%10]), string(nodes[rand()%10]), 1);	
 
 				break;
 			}
 		}
 		int which = rand()%13;
-		pm.packet(string(nodes[pairs[which][0]]), string(nodes[pairs[which][1]]), .01);	
+		pm.addpacket(nodes[pairs[which][0]], nodes[pairs[which][1]], 0xff00ff00, 100);	
 		double dt = now() - ti;
 		ti = now();
 		pm.process(dt);

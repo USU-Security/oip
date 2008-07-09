@@ -30,7 +30,7 @@ public:
 	
 	float getX() {return x;}
 	float getY() {return y;}
-
+	int getsize() { return size;}
 	void draw(SDL_Surface* s);
 
 	void erase() {softdelete = true;}
