@@ -10,7 +10,7 @@ using std::cout;
 bool particlemanager::addpacket(unsigned int src, unsigned int dst, unsigned int color, unsigned int size)
 {
 	entity& e1 = entities[names[src]];
-	particles.push_back(new particle(e1.getX(), e1.getY(), size/2800.0, color, names[dst]));
+	particles.push_back(new particle(e1.getX(), e1.getY(), size/42000.0, color, names[dst]));
 
 	return true;
 }

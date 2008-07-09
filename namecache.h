@@ -5,17 +5,32 @@
 #ifndef NAMECACHE_H
 #define NAMECACHE_H
 
-#include <map>
+#include <ext/hash_map>
 #include <string>
-using std::map;
+#include <deque>
 using std::string;
+using std::deque;
+#include <SDL/SDL.h>
+#include <SDL/SDL_thread.h>
+
+typedef __gnu_cxx::hash_map<unsigned int, string> namehash;
 
 class namecache
 {
 private:
-	map<unsigned int , string> names;
-
+	namehash names;
+	static int cthread(void*);
+	void dolookup(unsigned int a);
+	bool lookupwait;
+	SDL_mutex* queuemutex;
+	SDL_cond* queuedata;
+	deque<unsigned int > queue;
+	SDL_Thread* tid;
+	bool running;
+	bool dead;
 public:
+	namecache();
+	~namecache();
 	const string & operator[](unsigned int a);
 	void remove(unsigned int a) {names.erase(a);}
 };
