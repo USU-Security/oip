@@ -19,8 +19,8 @@ namespace gui
 		bool centerx, centery;
 		int rx, ry; //the offset where the text was actually rendered
 	public:
-		label(int width, int height):widget(w,h),cached(NULL),cachevalid(false),offset(0),centerx(false) {}
-		label(const char* bgfile):widget(bgfile),cached(NULL),cachevalid(false),offset(0),centery(false) {}
+		label(int width, int height):widget(width,height),cached(NULL),cachevalid(false),offset(0),centerx(false),centery(false) {}
+		label(const char* bgfile):widget(bgfile),cached(NULL),cachevalid(false),offset(0),centerx(false),centery(false) {}
 		~label() {if (cached) SDL_FreeSurface(cached);}
 
 		void setString(const string& s) { txt = s; cachevalid = false; }

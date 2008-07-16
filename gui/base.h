@@ -9,7 +9,9 @@ namespace gui
 	{
 	protected:
 		int w, h;
+		bool visible;
 	public:
+		base():w(0),h(0),visible(true) {}
 		/* called when the object needs to be drawn */
 		virtual void draw(int x, int y, SDL_Surface* s) = 0;
 		/* called when a keystroke happens. returns whether or not the
@@ -24,6 +26,7 @@ namespace gui
 		/* notification that the object will no longer recieve keyboard events*/
 		virtual void unfocus() {}
 
+		/* change the size of the widget */
 		virtual void setSize(int width, int height) {w = width; h = height;}
 
 		int getWidth() { return w;}

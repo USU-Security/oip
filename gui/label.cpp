@@ -27,7 +27,7 @@ namespace gui
 			else
 				rx = -offset;
 			if (centery)
-				ry = (h + nh)/2;
+				ry = (h + f.getSize())/2;
 			else
 				ry = f.getSize();
 			f.render(txt, rx,ry, cached);

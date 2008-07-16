@@ -39,9 +39,9 @@ namespace gui
 			SDL_UnlockSurface(s);
 			*/
 			if (!offset)
-				vertLine(x+rx+nw, y, y + h, 0xff00ff00, s);
+				vertLine(x+rx+nw, y + ry - f.getSize(), y + ry+2 , f.getColor(), s);
 			else
-				vertLine(x + nw, y, y + h, 0xff00ff00, s);
+				vertLine(x + nw, y + ry - f.getSize(), y + ry+2 , f.getColor(), s);
 		}
 		else if (lastblink + BLINKRATE*2 < now)
 			lastblink = SDL_GetTicks();

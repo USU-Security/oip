@@ -22,6 +22,7 @@ inline double now()
 
 int main()
 {
+	bool visible = true;
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		cout << "Unable to initialize sdl: " << SDL_GetError() << "\n";
@@ -44,17 +45,16 @@ int main()
 	gui::font f2;
 	f2.setColor(0);
 	gui::label label1("lblbg.png");
-	gui::textbox text1("lblbg.png");
-	gui::textbox text2("lblbg.png");
+	gui::textbox text1(300, 60);
+	gui::textbox text2("text2.png");
 	label1.setString("This is a string");
 	label1.setFont(f2);
 	text1.setString("This is a string");
-	text1.setFont(f2);
 	text2.setFont(f2);
 	gui::layout wset;
-	wset.addchild(label1, 100,200);
-	wset.addchild(text1, 100, 300);
-	wset.addchild(text2, 100, 400);
+	wset.addchild(label1, 0,0);
+	wset.addchild(text1, 0, 100);
+	wset.addchild(text2, 0, 200);
 	wset.focus();//allows it to choose a child for focus
 	bool run = true;
 	double ti=now();
@@ -79,6 +79,38 @@ int main()
 					text1.centerV(true);
 				else if (event.key.keysym.sym == SDLK_F4)
 					text1.centerV(false);
+				else if (event.key.keysym.sym == SDLK_F9)
+				{
+					if (visible)
+						wset.hide(gui::LEFT);	
+					else
+						wset.show(gui::LEFT);
+					visible = !visible;
+				}
+				else if (event.key.keysym.sym == SDLK_F10)
+				{
+					if (visible)
+						wset.hide(gui::TOP);	
+					else
+						wset.show(gui::TOP);
+					visible = !visible;
+				}
+				else if (event.key.keysym.sym == SDLK_F11)
+				{
+					if (visible)
+						wset.hide(gui::RIGHT);	
+					else
+						wset.show(gui::RIGHT);
+					visible = !visible;
+				}
+				else if (event.key.keysym.sym == SDLK_F12)
+				{
+					if (visible)
+						wset.hide(gui::BOTTOM);	
+					else
+						wset.show(gui::BOTTOM);
+					visible = !visible;
+				}
 				else
 					wset.keydown(event.key);
 				break;
@@ -102,7 +134,7 @@ int main()
 		r.h = h;
 		SDL_FillRect(screen, &r, 0xff0000ff);
 		f.render(s, 0, 24, screen);
-		wset.draw(0,0,screen);
+		wset.draw(100,200,screen);
 		f.render("Hello World", -10, 256, screen);
 		f.render("Hello World", 500, 256, screen);
 		f.render("Hello World", 256, 10, screen);

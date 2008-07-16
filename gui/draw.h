@@ -13,23 +13,29 @@ namespace gui
 {
 	inline void vertLine(int x, int y1, int y2, Uint32 c, SDL_Surface* s)
 	{
-		SDL_LockSurface(s);
-		int ymin = y1 < 0 ? 0 : y1;
-		int ymax = y2 > s->h ? s->h : y2;
-		Uint8* p = (Uint8*)s->pixels + ymin * s->pitch + ((x) << 2);
-		for(;ymin < ymax;ymin++, p+=s->pitch)
-			*(Uint32*)p = c;
-		SDL_UnlockSurface(s);
+		if (x > 0 && x < s->w)
+		{
+			SDL_LockSurface(s);
+			int ymin = y1 < 0 ? 0 : y1;
+			int ymax = y2 > s->h ? s->h : y2;
+			Uint8* p = (Uint8*)s->pixels + ymin * s->pitch + ((x) << 2);
+			for(;ymin < ymax;ymin++, p+=s->pitch)
+				*(Uint32*)p = c;
+			SDL_UnlockSurface(s);
+		}
 	}
 	inline void horizLine(int x1, int x2, int y, Uint32 c, SDL_Surface* s)
 	{
-		SDL_LockSurface(s);
-		int xmin = x1 < 0 ? 0 : x1;
-		int xmax = x2 > s->w ? s->w : x2;
-		Uint8* p = (Uint8*)s->pixels + y * s->pitch + (xmin << 2);
-		for(;xmin < xmax;xmin++, p+=4)
-			*(Uint32*)p = c;
-		SDL_UnlockSurface(s);
+		if (y > 0 && y < s->h)
+		{
+			SDL_LockSurface(s);
+			int xmin = x1 < 0 ? 0 : x1;
+			int xmax = x2 > s->w ? s->w : x2;
+			Uint8* p = (Uint8*)s->pixels + y * s->pitch + (xmin << 2);
+			for(;xmin < xmax;xmin++, p+=4)
+				*(Uint32*)p = c;
+			SDL_UnlockSurface(s);
+		}
 	}
 	inline void box(SDL_Rect* r, Uint32 c, SDL_Surface*s)
 	{

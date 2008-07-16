@@ -7,6 +7,7 @@
 using std::vector;
 
 
+
 namespace gui
 {
 	struct layoutchild
@@ -18,20 +19,25 @@ namespace gui
 
 	};
 
-	enum fadetype {PLAIN, FADE, LEFT, RIGHT, BOTTOM, TOP};
+	enum fadetype {NONE, PLAIN, FADE, LEFT, RIGHT, BOTTOM, TOP};
 	class layout: public base
 	{
 	protected:
 		vector<layoutchild> children;
 		int w, h;
+		float dx, dy;
 		int which;
+		fadetype fading;
+		bool showing;
+		Uint32 ti;
 		//which way to move the focus. 
 		virtual void moveright();
 		virtual void moveleft();
 		virtual void moveup();
 		virtual void movedown();
+		void dofade(int x, int y, const SDL_Surface* s);
 	public:
-		layout():w(0),h(0),which(0) {}
+		layout():w(0),h(0),which(0),dx(0),dy(0),fading(NONE) {}
 
 		virtual void draw(int x, int y, SDL_Surface* s);
 		virtual bool keyup(SDL_KeyboardEvent & k);
@@ -41,8 +47,10 @@ namespace gui
 
 		virtual void setSize(int width, int height) {w = width; h = height;}
 		
-		void addchild(base& c, int x, int y) {SDL_Rect p = {x, y, c.getWidth(), c.getHeight()}; 
-children.push_back(layoutchild(&c, p));}
+		void addchild(base& c, int x, int y); 
+
+		void hide(fadetype f=PLAIN);
+		void show(fadetype f=PLAIN);
 	};
 };
 
