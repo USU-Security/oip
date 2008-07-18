@@ -31,6 +31,7 @@ void kdtree::maketree(kdnode* r, vector<particle*> & plist, bool xplane)
 	particle* mid;
 	vector<particle*> leftl;
 	vector<particle*> rightl;
+	typedef vector<particle*> myv;	//working around _yet_ another mvc++ bug
 	if (xplane) //do we sort between the x coordinates?
 	{
 		if (r1->getX() < r2->getX() && r2->getX() < r3->getX())
@@ -40,7 +41,9 @@ void kdtree::maketree(kdnode* r, vector<particle*> & plist, bool xplane)
 		else
 			mid = r3;
 		//set the particle to the node, and divide the remainder
-		vector<particle*>::iterator i = plist.begin();
+		
+		myv::iterator i = plist.begin();
+		//vector<particle*>::iterator i = plist.begin();
 		for(;i!= plist.end(); i++)
 		{
 			if ((*i)->getX() < mid->getX())
@@ -58,7 +61,7 @@ void kdtree::maketree(kdnode* r, vector<particle*> & plist, bool xplane)
 		else
 			mid = r3;
 		//set the particle to the node, and divide the remainder
-		vector<particle*>::iterator i = plist.begin();
+		myv::iterator i = plist.begin();
 		for(;i!= plist.end(); i++)
 		{
 			if ((*i)->getY() < mid->getY())
@@ -87,30 +90,30 @@ void kdtree::maketree(kdnode* r, vector<particle*> & plist, bool xplane)
  * recursive function that gathers particles near a particular point. 
  * it walks through the tree, eliminating branches it doesnt need to search
  */
-void kdtree::collect(kdnode* r, float distance, float x, float y, vector<particle*>& near, float x0, float y0, float x1, float y1, bool xplane)
+void kdtree::collect(kdnode* r, float distance, float x, float y, vector<particle*>& pnear, float x0, float y0, float x1, float y1, bool xplane)
 {
 	//is this nodes point within the distance?
 	if (r->closeto(x, y, distance))
-		near.push_back(r->point);
+		pnear.push_back(r->point);
 	if (xplane)
 	{
 		//what children should we consider?
 		if (r->left && x > x0-distance && x < r->point->getX()+distance && 
 			y > y0-distance && y < y1+distance)
-			collect(r->left, distance, x, y, near, x0, y0, r->point->getX(), y1, false); 
+			collect(r->left, distance, x, y, pnear, x0, y0, r->point->getX(), y1, false); 
 		if (r->right && x > r->point->getX() -distance && x < x1 + distance && 
 			y > y0-distance && y < y1+distance)
-			collect(r->right, distance, x, y, near, r->point->getX(), y0, x1, y1, false);
+			collect(r->right, distance, x, y, pnear, r->point->getX(), y0, x1, y1, false);
 	}
 	else
 	{
 		//what children should we consider?
 		if (r->left && x > x0-distance && x < y1+distance && 
 			y > y0-distance && y < r->point->getY()+distance)
-			collect(r->left, distance, x, y, near, x0, y0, x1, r->point->getY(), true); 
+			collect(r->left, distance, x, y, pnear, x0, y0, x1, r->point->getY(), true); 
 		if (r->right && x > x0-distance && x < x1 + distance && 
 			y > r->point->getY()-distance && y < y1+distance)
-			collect(r->right, distance, x, y, near, x0, r->point->getY(), x1, y1, true);
+			collect(r->right, distance, x, y, pnear, x0, r->point->getY(), x1, y1, true);
 	}	
 }
 
@@ -143,8 +146,8 @@ kdtree::~kdtree()
 	root = NULL;
 }
 
-void kdtree::collect(float distance, float x, float y, vector<particle*>&near)
+void kdtree::collect(float distance, float x, float y, vector<particle*>&pnear)
 {
 	if (root)
-		collect(root, distance, x, y, near, 0, 0, 1, 1, true);
+		collect(root, distance, x, y, pnear, 0, 0, 1, 1, true);
 }

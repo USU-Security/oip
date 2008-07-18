@@ -3,6 +3,9 @@
 #ifndef CLIENTPM_H
 #define CLIENTPM_H
 
+#ifdef WIN32
+#include <winsock2.h>
+#endif
 #include "packetmanager.h"
 #include "messages.h"
 
@@ -13,11 +16,22 @@ private:
 	bool running;
 	Uint32 ip;
 	Uint16 port;
-	unsigned char data[MAXPACKET];	
+	Uint8  data[MAXPACKET];	
 	Uint16 sid;
 	Uint32 sock;
-	struct addrinfo* res;
-
+#ifndef WIN32
+	struct addrinfo *res;
+#else
+	struct addrinfo {
+		sockaddr_in * ai_addr;
+		int ai_addrlen;
+		int ai_family;
+		int ai_flags;
+		int ai_protocol;
+		int ai_socktype;
+	} * res, realres;
+	struct sockaddr_in sin;
+#endif
 	static int clientthread(void*self);
 public:
 	clientpm(const string& server, const map<string, string> & opts, Uint16 port=12751);

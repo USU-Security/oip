@@ -54,7 +54,8 @@ void particle::move(float dstx, float dsty, vector<particle*>& pnear, double dt)
 
 	//*
 	//coulomb repel from nearby particles
-	vector<particle*>::iterator i;
+	typedef vector<particle*> vp; //another vc++ bug
+	vp::iterator i;
 	for(i = pnear.begin(); i != pnear.end(); i++)
 	{
 		if ((*i)->dst == dst) //don't avoid packets heading the same way

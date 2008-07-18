@@ -16,7 +16,8 @@ private:
 	map<string, string> opts;
 public:
 	configfile(const char* file="oip.conf");
-	const string& operator[](const char* key);
+	const string& value(const char* key);
+
 };
 
 extern configfile config;

@@ -1,6 +1,5 @@
 
 #include "packetmanager.h"
-#include <arpa/inet.h>
 #include "ips.h"
 
 bool packetmanager::addpacket(unsigned int s, unsigned int d, unsigned int c, unsigned int size)

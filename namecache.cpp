@@ -1,6 +1,11 @@
 #include "namecache.h"
+#ifndef WIN32
 #include <sys/socket.h>
 #include <netdb.h>
+#else
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
 #include "ips.h"
 #include <iostream>
 using std::cerr;
@@ -47,15 +52,27 @@ int namecache::cthread(void* s)
 			addr.sin_addr.s_addr = ip;
 			char host[256];
 			char serv[256];
+#ifndef WIN32
 			if (getnameinfo((struct sockaddr*)&addr, sizeof(addr), host, 256, serv, 256, NI_NOFQDN))
 				cerr << "Unable to look up " << longtoip(host, 256, ntohl(ip)) << "\n";
 			else
+			{
+#else
+			struct hostent* he;
+			if (!(he = gethostbyaddr((char*)&addr, sizeof(addr), AF_INET)))
+				cerr << "Unable to look up " << longtoip(host, 256, ntohl(ip)) << "\n";
+			else
+			{
+				strncpy(host, he->h_name, 256);
+#endif	
 				self->names[ip] = host;
+			}
 			SDL_mutexP(self->queuemutex);
 		}
 	}
 	SDL_mutexV(self->queuemutex);//unlock mutex
 	self->dead = true;
+	return 0;
 }
 void namecache::dolookup(unsigned int a)
 {

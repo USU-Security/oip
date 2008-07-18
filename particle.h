@@ -26,7 +26,7 @@ public:
 	particle(float nx, float ny, float nsize, unsigned int ncolor, const string& s);
 
 	//figures out how to move given particles and a destination
-	void move(float dstx, float dsty, vector<particle*> & near, double dt);
+	void move(float dstx, float dsty, vector<particle*> & pnear, double dt);
 	
 	float getX() {return x;}
 	float getY() {return y;}

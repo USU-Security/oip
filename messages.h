@@ -2,6 +2,7 @@
 #define MESSAGES_H
 
 #include <SDL/SDL.h>
+
 #include "packetmanager.h"
 #include "packetsink.h"
 #include <map>
@@ -76,11 +77,15 @@ protected:
 	void inccount() {put16(packet::getsize(), count()+1);}
 public:
 	datapacket(Uint8*buffer, int s=0);
-	bool addpacket(Uint32 src, Uint32 dst, Uint32 color, Uint32 count);
+	virtual bool addpacket(Uint32 src, Uint32 dst, Uint32 color, Uint32 count);
 	void dumpdata(packetmanager& pm);
 	int count() { return get16(packet::getsize());}
 	int getsize() { return packet::getsize() + count() * 16 + 2; }
+#ifndef WIN32 //yet another workaround because of a msvc++ bug
 	static const int MAXDATA = (MAXPACKET - 20)/16;
+#else
+	enum {MAXDATA = (MAXPACKET - 20)/16};
+#endif
 };
 
 //no extra data, just the message type 

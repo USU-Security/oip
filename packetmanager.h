@@ -5,11 +5,25 @@
 
 #ifndef PACKETMANAGER_H
 #define PACKETMANAGER_H
-
-#include<ext/hash_map>
-
 #include "particlemanager.h"
 #include "packetsink.h"
+class packettype;
+#ifndef WIN32
+#include<ext/hash_map>
+class pthash
+{
+public:
+	size_t operator()(const packettype& pt) const
+	{
+		return pt.src ^ ((pt.dst << 17) | (pt.dst >> 15)) ^ (pt.color);
+	}
+};
+typedef __gnu_cxx::hash_map<packettype, unsigned int, pthash> pmdict;
+#else
+#include<map>
+typedef std::map<packettype, int> pmdict;
+#endif
+
 
 class packettype
 {
@@ -24,16 +38,7 @@ public:
 	packettype(unsigned int s, unsigned int d, unsigned int c):src(s),dst(d),color(c) {}
 };
 
-class pthash
-{
-public:
-	size_t operator()(const packettype& pt) const
-	{
-		return pt.src ^ ((pt.dst << 17) | (pt.dst >> 15)) ^ (pt.color);
-	}
-};
 
-typedef __gnu_cxx::hash_map<packettype, unsigned int, pthash> pmdict;
 
 
 class packetmanager

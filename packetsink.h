@@ -11,8 +11,9 @@ class packetsink
 public:
 	/*
 	 * recieves a packet, returns whether it wants to accept more
+	 * Should be pure virtual, but vc++6 hates that. 
 	 */
-	virtual bool addpacket(unsigned int src, unsigned int dst, unsigned int color, unsigned int size) = 0;
+	virtual bool addpacket(unsigned int src, unsigned int dst, unsigned int color, unsigned int size) {return false;}
 };
 
 #endif //PACKETSINK_H

@@ -1,9 +1,7 @@
 #include "messages.h"
 #include <iostream>
-#include "ips.h"
 
 using std::cerr;
-using std::cout;
 
 packet::packet(Uint8* buffer, int s)
 :data(buffer),size(s) 

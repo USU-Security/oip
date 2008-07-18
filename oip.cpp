@@ -2,15 +2,17 @@
  * Connects to a given oip server. displays the resulting stream. 
  */
 
+
 #include <iostream>
 #include <iomanip>
-#include "clientpm.h"
 #include <SDL/SDL.h>
 #include <stdlib.h>
+#include <signal.h>
+#include <sstream>
+#include "clientpm.h"
 #include "text.h"
 #include "particlemanager.h"
-#include <pcap.h>
-#include <signal.h>
+
 
 using namespace std;
 
@@ -146,8 +148,59 @@ void sigintcatch(int s)
 	exit(0);
 }
 
+#ifdef WIN32
+#define MAXARGS 512
+int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR cmdline, int nShowCmd)
+{
+	int argc=1;
+	char* argv[MAXARGS];
+	char exename[_MAX_PATH];
+	GetModuleFileName(NULL, exename, _MAX_PATH);
+	argv[0] = exename;
+	char* args = new char[strlen(cmdline)];
+	argv[argc] = args;
+	while (*cmdline)
+	{
+		if (*cmdline == '\\' && *(cmdline + 1))
+		{
+			cmdline++;
+			switch(*cmdline)
+			{
+			case 'n':
+				*args = '\n';
+				break;
+			case 't':
+				*args = '\t';
+				break;
+			case 'r':
+				*args = '\r';
+				break;
+			default:
+				*args = *cmdline;
+				break;
+			}
+		}
+		else if (*cmdline == ' ')
+		{
+			*args = 0;
+			while (*cmdline && *cmdline == ' ')
+				cmdline++;
+			args++;
+			argv[argc++] = args;
+		}
+		else
+		{
+			*args = *cmdline;
+			args++; cmdline++;
+		}
+	}
+	int ret = main(argc, argv);
+	delete [] args;
+	return ret;
+}
+#endif
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
 	bool run=true;
 	map<string, string> opts;
@@ -212,9 +265,9 @@ int main(int argc, char** argv)
 		pm.process(dt);
 		SDL_FillRect(screen, NULL, 0);
 		pm.draw(screen);
-		char s[128];
-		snprintf(s, 128, "%g fps", 1.0/dt);
-		text.render(screen, s, 0, 0, 8);
+		stringstream ss;
+		ss << 1.0/dt << " fps";
+		text.render(screen, ss.str().c_str(), 0, 0, 8);
 		SDL_Flip(screen);
 		//don't bother going faster than twice the minimum framerate
 		if (dt * 1000 < MINRATE)

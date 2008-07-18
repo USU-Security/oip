@@ -25,14 +25,14 @@ private:
 	kdnode * root;
 
 	void maketree(kdnode* r, vector<particle*> & plist, bool xplane);
-	void collect(kdnode* r,float distance, float x, float y, vector<particle*>& near, float x0, float y0, float x1, float y1, bool plane);
+	void collect(kdnode* r,float distance, float x, float y, vector<particle*>& pnear, float x0, float y0, float x1, float y1, bool plane);
 
 	void erase(kdnode* r);
 public:
 	kdtree(vector<particle*> & plist);
 	~kdtree();
 
-	void collect(float distance, float x, float y, vector<particle*>& near);
+	void collect(float distance, float x, float y, vector<particle*>& pnear);
 };
 	
 

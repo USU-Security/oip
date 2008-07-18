@@ -1,4 +1,4 @@
-#include <sys/time.h>
+
 #include "entity.h"
 #include <stdlib.h>
 
@@ -9,13 +9,20 @@
 
 const float MINMOVE = .0000001;
 
+#ifndef WIN32
+#include <sys/time.h>
 inline double now()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     return tv.tv_sec + tv.tv_usec/1000000.0;
 }
-
+#else
+inline double now()
+{
+	return SDL_GetTicks()/1000.0;
+}
+#endif
 
 
 void entity::init(const string& l)
@@ -84,6 +91,7 @@ bool entity::draw(SDL_Surface* s)
 		y = 1-getH()/s->h/2;
 	
 	text.render(s, 	label.c_str(), (int)(s->w * x) - text.getW()*label.length()/2, (int)(s->h*y) - text.getH()/2 , fadeval);
+	return true;
 }
 		
 //move the current position and stop the momentum

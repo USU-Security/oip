@@ -45,7 +45,7 @@ configfile::configfile(const char* file)
 }
 
 
-const string & configfile::operator[](const char* k)
+const string & configfile::value(const char* k)
 {
 	map<string,string>::iterator i;
 	i = opts.find(k);

@@ -2,9 +2,13 @@
 #include <iostream>
 using std::cerr;
 
-#include <arpa/inet.h>
+#ifndef WIN32
 #include <sys/socket.h>
 #include <netdb.h>
+#else
+#include <winsock2.h>
+#endif
+
 #include "encrypt.h"
 
 int clientpm::clientthread(void* s)
@@ -23,7 +27,7 @@ int clientpm::clientthread(void* s)
 		{
 			senddata sd(self->data);
 			aes.encrypt(self->data, sd.paddedsize());
-			sendto(self->sock, self->data, sd.paddedsize(), 0, self->res->ai_addr, self->res->ai_addrlen);
+			sendto(self->sock, (char*)self->data, sd.paddedsize(), 0, (struct sockaddr*)self->res->ai_addr, self->res->ai_addrlen);
 			lastsent = SDL_GetTicks();
 		}
 		if (lastrecieved + 30000 < SDL_GetTicks()) //TODO: not sure how to handle overflow case
@@ -38,9 +42,9 @@ int clientpm::clientthread(void* s)
 		if (select(self->sock+1, &lset, NULL, NULL, &timeout))
 		{
 			struct sockaddr_in inaddr;
-			socklen_t inlen = sizeof(inaddr);
+			int inlen = sizeof(inaddr);
 
-			len = recvfrom(self->sock, self->data, MAXPACKET, 0, (struct sockaddr*)&inaddr, &inlen);
+			len = recvfrom(self->sock, (char*)self->data, MAXPACKET, 0, (struct sockaddr*)&inaddr, &inlen);
 			aes.decrypt(self->data, len);
 			packet p(self->data, len);
 			if (p.getid() == self->sid) 
@@ -69,16 +73,32 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 	hints.ai_family=PF_INET;
 	hints.ai_socktype=SOCK_DGRAM;
 	hints.ai_protocol=0;
+#ifndef WIN32 //vc++6 doesnt have getaddrinfo
 	hints.ai_flags = AI_NUMERICSERV;
 	char ap[8];
 	snprintf(ap, 8, "%hd", port);
 	int result;
 	if (result = getaddrinfo(server.c_str(), ap, &hints, &res)) 
 	{
-		running = false;
 		cerr << "Unable to resolve " << server << ": " << gai_strerror(result) <<  "\n";
+#else
+	hostent* he;
+	if (he=gethostbyname(server.c_str()))
+	{
+		res = &realres;
+		res->ai_addr = &sin;
+		res->ai_addr->sin_family = hints.ai_family;
+		res->ai_addr->sin_port = htons(port);
+		res->ai_addrlen = sizeof(realres);
+		memcpy(&res->ai_addr->sin_addr, he->h_addr_list[0], he->h_length);
+	}
+	else
+	{
+#endif
+		running = false;
 		return;
 	}
+
 	
 	
 	
@@ -92,7 +112,7 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 	sp.setid(sid);
 	sp.setopts(opts);
 	aes.encrypt(data, sp.paddedsize());
-	if (!sendto(sock, data, sp.paddedsize(), 0, res->ai_addr, res->ai_addrlen))
+	if (!sendto(sock, (char*)data, sp.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen))
 	{
 		running = false;
 		cerr << "Unable to send the stream setup message\n";
@@ -109,12 +129,14 @@ clientpm::~clientpm()
 	enddata ed(data);
 	ed.setid(sid);
 	aes.encrypt(data, ed.paddedsize());
-	sendto(sock, data, ed.paddedsize(), 0, res->ai_addr, res->ai_addrlen);
+	sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen);
 	//wait for the thread to quit
 	SDL_WaitThread(thread, NULL);	
+#ifndef WIN32
 	close(sock);
 	if (res)
 		freeaddrinfo(res);
+#endif
 }
 
 

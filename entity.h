@@ -45,7 +45,7 @@ public:
 
 	bool deleteme() {return fade && fadeval>=15;}
 	int getfadeval() {return fadeval;}
-	int touch() {fade=false;}
+	void touch() {fade=false;}
 	bool moving;
 };
 
