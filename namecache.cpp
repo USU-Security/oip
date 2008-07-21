@@ -59,8 +59,8 @@ int namecache::cthread(void* s)
 			{
 #else
 			struct hostent* he;
-			if (!(he = gethostbyaddr((char*)&addr, sizeof(addr), AF_INET)))
-				cerr << "Unable to look up " << longtoip(host, 256, ntohl(ip)) << "\n";
+			if (!(he = gethostbyaddr((char*)&addr.sin_addr, sizeof(addr.sin_addr), AF_INET)))
+				cerr << "Unable to look up " << longtoip(host, 256, ntohl(ip)) << ": " << WSAGetLastError() <<"\n";
 			else
 			{
 				strncpy(host, he->h_name, 256);

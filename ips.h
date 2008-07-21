@@ -21,6 +21,7 @@ inline char* longtoip(char* b, int s, unsigned int sip)
 	ss << ((sip >> 8)&255);
 	ss << ".";
 	ss << (sip & 255);
+	ss << '\0';
 	return b;
 }
 #endif
