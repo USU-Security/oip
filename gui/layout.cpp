@@ -5,7 +5,7 @@ using std::cout;
 
 //the rate of movement for disappearing layouts
 //defined in pixels per millisecond
-#define FADERATE 2
+#define FADERATE 4
 
 namespace gui
 {
@@ -225,6 +225,8 @@ namespace gui
 
 	bool layout::keydown(SDL_KeyboardEvent&k)
 	{
+		if (!visible)
+			return false;
 		if (children.size())
 		{
 			//see if the whiched child wants it. 
@@ -259,6 +261,8 @@ namespace gui
 	}
 	bool layout::keyup(SDL_KeyboardEvent&k)
 	{
+		if (!visible)
+			return false;
 		if (children.size())
 		{
 			//see if the whiched child wants it. 
@@ -269,7 +273,7 @@ namespace gui
 	}
 	bool layout::focus()
 	{
-		if (children.size())
+		if (visible && children.size())
 		{
 			//find a child willing to accept which
 			int old = which;

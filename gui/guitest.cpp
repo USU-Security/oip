@@ -12,7 +12,7 @@ using namespace std;
 #include "font.h"
 #include "layout.h"
 #include "button.h"
-
+#include "option.h"
 #define frand ((float)rand()/RAND_MAX)
 inline double now()
 {
@@ -25,7 +25,13 @@ void btnPressed(bool state)
 {
 	cout << "Button was pressed\n";
 }
-
+void slnPressed(bool state)
+{
+	if (state)
+		cout << "selection is now up\n";
+	else
+		cout << "selection is now down\n";
+}
 int main()
 {
 	bool visible = true;
@@ -59,11 +65,13 @@ int main()
 	label1.setFont(f2);
 	text1.setString("This is a string");
 	text2.setFont(f2);
+	gui::option opn1("mnuup.png", "mnudn.png", slnPressed);
 	gui::layout wset;
 	wset.addchild(label1, 0,0);
-	wset.addchild(text1, 0, 100);
-	wset.addchild(text2, 0, 200);
-	wset.addchild(btn1, 0, 300);
+	wset.addchild(text1, 0, 50);
+	wset.addchild(text2, 0, 100);
+	wset.addchild(btn1, 0, 150);
+	wset.addchild(opn1, 0, 200);
 	wset.focus();//allows it to choose a child for focus
 	bool run = true;
 	double ti=now();
