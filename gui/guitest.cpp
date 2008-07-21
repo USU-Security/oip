@@ -11,6 +11,7 @@ using namespace std;
 #include "textbox.h"
 #include "font.h"
 #include "layout.h"
+#include "button.h"
 
 #define frand ((float)rand()/RAND_MAX)
 inline double now()
@@ -18,6 +19,11 @@ inline double now()
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	return tv.tv_sec + tv.tv_usec/1000000.0;
+}
+
+void btnPressed(bool state)
+{
+	cout << "Button was pressed\n";
 }
 
 int main()
@@ -47,6 +53,8 @@ int main()
 	gui::label label1("lblbg.png");
 	gui::textbox text1(300, 60);
 	gui::textbox text2("text2.png");
+	gui::button btn1("btnup.png", "btndown.png", btnPressed);
+	btn1.setString("This is a button");
 	label1.setString("This is a string");
 	label1.setFont(f2);
 	text1.setString("This is a string");
@@ -55,6 +63,7 @@ int main()
 	wset.addchild(label1, 0,0);
 	wset.addchild(text1, 0, 100);
 	wset.addchild(text2, 0, 200);
+	wset.addchild(btn1, 0, 300);
 	wset.focus();//allows it to choose a child for focus
 	bool run = true;
 	double ti=now();
@@ -134,7 +143,7 @@ int main()
 		r.h = h;
 		SDL_FillRect(screen, &r, 0xff0000ff);
 		f.render(s, 0, 24, screen);
-		wset.draw(100,200,screen);
+		wset.draw(100,50,screen);
 		f.render("Hello World", -10, 256, screen);
 		f.render("Hello World", 500, 256, screen);
 		f.render("Hello World", 256, 10, screen);

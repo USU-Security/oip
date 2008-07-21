@@ -7,12 +7,11 @@
 #include <iomanip>
 #include <SDL/SDL.h>
 #include <stdlib.h>
+#include "text.h"
+#include "particlemanager.h"
 #include <signal.h>
 #include <sstream>
 #include "clientpm.h"
-#include "text.h"
-#include "particlemanager.h"
-
 
 using namespace std;
 

@@ -1,5 +1,5 @@
-LDFLAGS= -lcryptopp -lSDL -lSDL_image -lpcap
-CPPFLAGS = -g 
+LDFLAGS= -lcryptopp -lSDL -lSDL_image -lpcap `freetype-config --libs`
+CPPFLAGS = -g `freetype-config --cflags` 
 all: capreader
 
 text.o: text.h
@@ -31,6 +31,8 @@ oipd: ${coreobj} oipd.o
 
 oip: ${coreobj} ${guiobj} oip.o 
 	g++ ${coreobj} ${guiobj} oip.o ${LDFLAGS} -o oip
+
+guitest: guitest.o font.o
 
 test: clean testclientmanager 
 	./testclientmanager

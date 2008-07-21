@@ -36,8 +36,8 @@ namespace gui
 
 		widget::draw(x, y, s);
 		SDL_Rect dst;
-		dst.x = x;
-		dst.y = y;
+		dst.x = x+px;
+		dst.y = y+py;
 		//f.render(txt, x, y+f.getSize(), s);
 		SDL_BlitSurface(cached, NULL, s, &dst);
 	}

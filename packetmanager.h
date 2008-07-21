@@ -7,7 +7,20 @@
 #define PACKETMANAGER_H
 #include "particlemanager.h"
 #include "packetsink.h"
-class packettype;
+
+
+class packettype
+{
+public:
+	unsigned int src;
+	unsigned int dst;
+	unsigned int color;
+
+	bool operator<(const packettype& o) const {return src < o.src || dst < o.dst || color < o.color;}
+	bool operator==(const packettype& o) const {return src == o.src && dst == o.dst && color == o.color;}
+	packettype():src(0),dst(0),color(0) {}
+	packettype(unsigned int s, unsigned int d, unsigned int c):src(s),dst(d),color(c) {}
+};
 #ifndef WIN32
 #include<ext/hash_map>
 class pthash
@@ -23,20 +36,6 @@ typedef __gnu_cxx::hash_map<packettype, unsigned int, pthash> pmdict;
 #include<map>
 typedef std::map<packettype, int> pmdict;
 #endif
-
-
-class packettype
-{
-public:
-	unsigned int src;
-	unsigned int dst;
-	unsigned int color;
-
-	bool operator<(const packettype& o) const {return src < o.src || dst < o.dst || color < o.color;}
-	bool operator==(const packettype& o) const {return src == o.src && dst == o.dst && color == o.color;}
-	packettype():src(0),dst(0),color(0) {}
-	packettype(unsigned int s, unsigned int d, unsigned int c):src(s),dst(d),color(c) {}
-};
 
 
 

@@ -42,7 +42,12 @@ int clientpm::clientthread(void* s)
 		if (select(self->sock+1, &lset, NULL, NULL, &timeout))
 		{
 			struct sockaddr_in inaddr;
-			int inlen = sizeof(inaddr);
+#ifndef WIN32
+			socklen_t inlen;
+#else
+			int inlen;
+#endif
+			inlen = sizeof(inaddr);
 
 			len = recvfrom(self->sock, (char*)self->data, MAXPACKET, 0, (struct sockaddr*)&inaddr, &inlen);
 			aes.decrypt(self->data, len);
