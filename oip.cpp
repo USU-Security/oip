@@ -78,6 +78,11 @@ bool parseopts(int argc, char** argv, map<string, string>& opts)
 			curopt = shortopt;
 			val = argv[i++] + 2;
 		}
+		else 
+		{
+			cout << "Invalid option syntax. \n";
+			return false;
+		}
 		const char *valid;
 		if (valid = optlookup(curopt))
 			opts[valid] = val;
@@ -158,7 +163,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR cmdline, int nShowCmd
 	GetModuleFileName(NULL, exename, _MAX_PATH);
 	argv[0] = exename;
 	char* args = new char[strlen(cmdline)];
-	argv[argc] = args;
+	argv[argc++] = args;
 	while (*cmdline)
 	{
 		if (*cmdline == '\\' && *(cmdline + 1))
@@ -179,6 +184,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR cmdline, int nShowCmd
 				*args = *cmdline;
 				break;
 			}
+			args++; cmdline++;
 		}
 		else if (*cmdline == ' ')
 		{
@@ -194,8 +200,13 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR cmdline, int nShowCmd
 			args++; cmdline++;
 		}
 	}
+	*args=0; //just in case;
+	//winsock startup code
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(2,2), &wsaData);
 	int ret = main(argc, argv);
-	delete [] args;
+	WSACleanup();
+	delete [] argv[1];
 	return ret;
 }
 #endif

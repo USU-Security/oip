@@ -94,6 +94,7 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 	}
 	else
 	{
+		cout << "Unable to look up " << server << ": " << WSAGetLastError() << "\n";
 #endif
 		running = false;
 		return;
@@ -129,7 +130,8 @@ clientpm::~clientpm()
 	enddata ed(data);
 	ed.setid(sid);
 	aes.encrypt(data, ed.paddedsize());
-	sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen);
+	if (res)
+		sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen);
 	//wait for the thread to quit
 	SDL_WaitThread(thread, NULL);	
 #ifndef WIN32

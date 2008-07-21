@@ -7,7 +7,8 @@ _text::_text(const char* font, int w, int h)
 {
 	height = h;
 	width = w;
-	txt = IMG_Load(font);
+	if (!(txt = IMG_Load(font)))
+		throw SDL_GetError();
 	SDL_SetAlpha(txt, SDL_SRCALPHA, 255);
 }
 
