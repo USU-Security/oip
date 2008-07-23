@@ -7,7 +7,7 @@
 #define PACKETMANAGER_H
 #include "particlemanager.h"
 #include "packetsink.h"
-
+#include "packetpeek.h"
 
 class packettype
 {
@@ -52,6 +52,7 @@ public:
 
 	bool addpacket(unsigned int s, unsigned int d, unsigned int c, unsigned int size);
 	bool dumpdata(packetsink& ); 
+	void copydata(packetpeek& );
 	int size() {return count;}
 	bool empty() {return packets.begin() == packets.end();}
 };

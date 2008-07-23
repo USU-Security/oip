@@ -17,10 +17,14 @@ namespace gui
 		if (state && k.keysym.sym == downkey)
 		{
 			state = false;
-			clicked = !clicked;
-			clickit(clicked);
+			activate();
 			return true;
 		}
 		return false;
+	}
+	void option::activate() 
+	{
+		clicked = !clicked;
+		clickit(clicked, arg);
 	}
 };

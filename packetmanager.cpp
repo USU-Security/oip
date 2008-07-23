@@ -37,4 +37,15 @@ bool packetmanager::dumpdata(packetsink& ps)
     return !hasroom;
 }
 
+void packetmanager::copydata(packetpeek& ps)
+{
+    SDL_mutexP(packetlock);
+    pmdict::iterator i = packets.begin();
+    while(i != packets.end())
+    {
+        ps.copypacket((*i).first.src, (*i).first.dst, (*i).first.color, (*i).second);
+        i++;
+    }
+    SDL_mutexV(packetlock);
+}
 

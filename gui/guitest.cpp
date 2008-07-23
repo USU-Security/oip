@@ -21,11 +21,11 @@ inline double now()
 	return tv.tv_sec + tv.tv_usec/1000000.0;
 }
 
-void btnPressed(bool state)
+void btnPressed(bool state, void* args)
 {
 	cout << "Button was pressed\n";
 }
-void slnPressed(bool state)
+void slnPressed(bool state, void* args)
 {
 	if (state)
 		cout << "selection is now up\n";

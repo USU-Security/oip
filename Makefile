@@ -1,4 +1,5 @@
 LDFLAGS= -lcryptopp -lSDL -lSDL_image -lpcap `freetype-config --libs`
+GUILDFLAGS = ${LDFLAGS} `freetype-config --libs`
 CPPFLAGS = -g `freetype-config --cflags` 
 all: capreader
 
@@ -24,7 +25,8 @@ capreader: capreader.o particle.o text.o image.o kdtree.o particlemanager.o enti
 testclientmanager: testclientmanager.o clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o clientmanager.o messages.o 
 
 coreobj = config.o packetmanager.o clientpm.o clientmanager.o messages.o namecache.o encrypt.o hexprint.o
-guiobj = particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o 
+guiobj = particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o chart.o 
+widgets = gui/font.o gui/widget.o gui/label.o gui/textbox.o gui/layout.o gui/button.o gui/option.o
 
 oipd: ${coreobj} oipd.o
 	g++ ${coreobj} oipd.o ${LDFLAGS} -o oipd
@@ -32,13 +34,16 @@ oipd: ${coreobj} oipd.o
 oip: ${coreobj} ${guiobj} oip.o 
 	g++ ${coreobj} ${guiobj} oip.o ${LDFLAGS} -o oip
 
+oipgui: ${coreobj} ${guiobj} ${widgets} oipgui.o 
+	g++ ${coreobj} ${guiobj} ${widgets} oipgui.o ${GUILDFLAGS} -o oipgui
+
 guitest: guitest.o font.o
 
 test: clean testclientmanager 
 	./testclientmanager
 
 clean:
-	rm -f *.o
+	rm -f *.o gui/*.o
 
 distclean: clean
 	rm -f display

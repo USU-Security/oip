@@ -9,73 +9,68 @@ using std::cout;
 
 namespace gui
 {
-	void layout::moveright()
+	bool layout::moveright()
 	{
-		if (children.size())
+		int old = which;
+		while (which < children.size()-1)
 		{
-			children[which].c->unfocus();
-			which = (which + 1) % children.size();
-			//find a child willing to accept which
-			int old = which;
-			do
+			which++;
+			if (children[which].c->focus())
 			{
-				if (children[which].c->focus())
-					break;
-				which = (which + 1) % children.size();
+				children[old].c->unfocus();
+				return true;
 			}
-			while (which != old); //it will eventually wrap to where we started
 		}
+		which = old;
+		return false;
 	}
-	void layout::movedown()
+	bool layout::movedown()
 	{
-		if (children.size()) 
+		//find a child willing to accept which
+		int old = which;
+		while (which < children.size()-1)
 		{
-			children[which].c->unfocus();
-			which = (which + 1) % children.size();
-			//find a child willing to accept which
-			int old = which;
-			do
+			which ++;
+			if (children[which].c->focus())
 			{
-				if (children[which].c->focus())
-					break;
-				which = (which + 1) % children.size();
+				children[old].c->unfocus();
+				return true;
 			}
-			while (which != old); //it will eventually wrap to where we started
 		}
+		which = old;
+		return false;
 	}
-	void layout::moveleft()
+	bool layout::moveleft()
 	{
-		if (children.size()) 
+		//find a child willing to accept which
+		int old = which;
+		while (which > 0)
 		{
-			children[which].c->unfocus();
-			which = (which + children.size() - 1) % children.size();
-			//find a child willing to accept which
-			int old = which;
-			do
+			which --;
+			if (children[which].c->focus())
 			{
-				if (children[which].c->focus())
-					break;
-				which = (which + children.size() - 1) % children.size();
+				children[old].c->unfocus();
+				return true;
 			}
-			while (which != old); //it will eventually wrap to where we started
 		}
+		which = old; 
+		return false;
 	}
-	void layout::moveup()
+	bool layout::moveup()
 	{
-		if (children.size()) 
+		//find a child willing to accept which
+		int old = which;
+		while (which > 0)	
 		{
-			children[which].c->unfocus();
-			which = (which + children.size() - 1) % children.size();
-			//find a child willing to accept which
-			int old = which;
-			do
+			which --;
+			if (children[which].c->focus())
 			{
-				if (children[which].c->focus())
-					break;
-				which = (which + children.size() - 1) % children.size();
+				children[old].c->unfocus();
+				return true;
 			}
-			while (which != old); //it will eventually wrap to where we started
 		}
+		which = old;
+		return false;
 	}
 
 	void layout::dofade(int x, int y, const SDL_Surface* s)
@@ -193,30 +188,22 @@ namespace gui
 		
 		x += dx;
 		y += dy;
+		if (hasborder)
+		{
+			SDL_Rect r = {x, y, w, h};
+			border(r, s);
+		}
 		vector<layoutchild>::iterator i;
 		int c=0;
 		for (i = children.begin(); i != children.end(); ++i, c++)
 		{
-			if (c == which)
+			//draw a border around the object, if it wants us to. 
+			if (c == which && focused && (*i).c->highlightEnabled())
 			{
 				SDL_Rect r = (*i).pos;
 				r.x += x;
 				r.y += y;
-				r.x-=5;r.y-=5;r.w+=10;r.h+=10;
-				//SDL_FillRect(s, &r, SDL_MapRGB(s->format, 0,0,32));
-				box(&r, SDL_MapRGB(s->format, 0, 0, 64), s);
-				r.x++;r.y++;r.w-=2;r.h-=2;
-				//SDL_FillRect(s, &r, SDL_MapRGB(s->format, 0,0,64));
-				box(&r, SDL_MapRGB(s->format, 0, 0, 128), s);
-				r.x++;r.y++;r.w-=2;r.h-=2;
-				//SDL_FillRect(s, &r, SDL_MapRGB(s->format, 0,0,96));
-				box(&r, SDL_MapRGB(s->format, 0, 0, 192), s);
-				r.x++;r.y++;r.w-=2;r.h-=2;
-				//SDL_FillRect(s, &r, SDL_MapRGB(s->format, 0,0,128));
-				box(&r, SDL_MapRGB(s->format, 0, 0, 128), s);
-				r.x++;r.y++;r.w-=2;r.h-=2;
-				//SDL_FillRect(s, &r, SDL_MapRGB(s->format, 0,0,128));
-				box(&r, SDL_MapRGB(s->format, 0, 0, 64), s);
+				border(r, s);
 			}
 			(*i).c->draw((*i).pos.x + x, (*i).pos.y+y, s);
 			
@@ -236,20 +223,24 @@ namespace gui
 			switch(k.keysym.sym)
 			{
 			case SDLK_LEFT:
-				moveleft();
+				if (!moveleft())
+					return false;
 				cout << "which is now " << which << "\n";
 				break;
 			case SDLK_RIGHT:
 			case SDLK_TAB:
-				moveright();
+				if (!moveright())
+					return false;
 				cout << "which is now " << which << "\n";
 				break;
 			case SDLK_DOWN:
-				movedown();
+				if (!movedown())
+					return false;
 				cout << "which is now " << which << "\n";
 				break;
 			case SDLK_UP:
-				moveup();
+				if (!moveup())
+					return false;
 				cout << "which is now " << which << "\n";
 				break;
 			default:
@@ -280,11 +271,15 @@ namespace gui
 			do
 			{
 				if (children[which].c->focus())
+				{
+					focused = true;
 					return true;
+				}
 				which = (which + 1) % children.size();
 			}
 			while (which != old); //it will eventually wrap to where we started
 		}
+		focused = false;
 		return false;
 	}
 	void layout::hide(fadetype f)

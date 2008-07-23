@@ -10,11 +10,14 @@ namespace gui
 	protected:
 		bool state;
 	public:
-		option(const char* upimg, const char* downimg, clickevent c, int o=5):button(upimg, downimg, c, o),state(false) {}
+		option(const char* upimg, const char* downimg, clickevent c, void* a=NULL, int o=5):button(upimg, downimg, c,a,o),state(false) {}
 
 
 		virtual bool keyup(SDL_KeyboardEvent& k);
 		virtual bool keydown(SDL_KeyboardEvent&k);
+		virtual void unfocus(){}
+
+		virtual void activate();
 	};
 };
 

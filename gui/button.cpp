@@ -33,7 +33,7 @@ namespace gui
 		if (clicked && k.keysym.sym == downkey)
 		{
 			clicked = false;
-			clickit(clicked);
+			activate();
 			return true;
 		}
 		return false;
