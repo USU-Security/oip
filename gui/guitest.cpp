@@ -134,6 +134,16 @@ int main()
 			case SDL_KEYUP:
 				wset.keyup(event.key);
 				break;
+			case SDL_MOUSEBUTTONUP:
+				event.button.x -= 100;
+				event.button.y -= 50;
+				wset.mouseup(event.button);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				event.button.x -= 100;
+				event.button.y -= 50;
+				wset.mousedown(event.button);
+				break;
 			}
 		}
 		double dt = now() - ti;

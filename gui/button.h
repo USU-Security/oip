@@ -24,6 +24,8 @@ namespace gui
 		virtual void draw(int x, int y, SDL_Surface* s);
 		virtual bool keyup(SDL_KeyboardEvent& k);
 		virtual bool keydown(SDL_KeyboardEvent&k);
+		virtual bool mouseup(SDL_MouseButtonEvent & m);
+		virtual bool mousedown(SDL_MouseButtonEvent & m);
 		virtual bool focus() {return true;}
 		virtual void unfocus() {clicked = false;}
 

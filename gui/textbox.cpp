@@ -28,16 +28,6 @@ namespace gui
 		int now = SDL_GetTicks();
 		if (hasfocus && (lastblink + BLINKRATE > now) && (x+nw > 0 && x+nw < s->w))
 		{
-			//all this code to draw a vertical line. maybe it should be its own routine.
-			/*
-			SDL_LockSurface(s);
-			int ymin = y < 0 ? 0 : y;
-			int ymax = y + h > s->h ? s->h : y+h;
-			Uint8* p = (Uint8*)s->pixels + ymin * s->pitch + ((x + nw) << 2);
-			for(;ymin < ymax;ymin++, p+=s->pitch)
-				*(Uint32*)p = f.getColor();
-			SDL_UnlockSurface(s);
-			*/
 			if (!offset)
 				vertLine(x+rx+nw, y + ry - f.getSize(), y + ry+2 , f.getColor(), s);
 			else
@@ -121,6 +111,31 @@ namespace gui
 		return false;
 	}
 	bool textbox::keyup(SDL_KeyboardEvent&k)
+	{
+		return false;
+	}
+	bool textbox::mousedown(SDL_MouseButtonEvent&m)
+	{
+		if (m.button == SDL_BUTTON_LEFT) //take the focus if its a left click
+		{
+			//figure out where the cursor should go
+			int x, y;
+			for (insertpos = 1; insertpos <= txt.size(); insertpos++)
+			{
+				f.getSize(txt.substr(0, insertpos), x, y);
+				if (x-offset > m.x)
+					break;
+			}
+			lastblink = SDL_GetTicks(); //turn the cursor on
+			if (insertpos == txt.size() && x-offset <= m.x);
+			else
+				insertpos--; //position it before the character
+			cachevalid = false; //redraw the textbox
+			return true;
+		}
+		return false;
+	}
+	bool textbox::mouseup(SDL_MouseButtonEvent&m)
 	{
 		return false;
 	}

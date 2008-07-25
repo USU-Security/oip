@@ -15,6 +15,8 @@ namespace gui
 
 		virtual bool keyup(SDL_KeyboardEvent& k);
 		virtual bool keydown(SDL_KeyboardEvent&k);
+		virtual bool mouseup(SDL_MouseButtonEvent & m);
+		virtual bool mousedown(SDL_MouseButtonEvent & m);
 		virtual void unfocus(){}
 
 		virtual void activate();

@@ -262,6 +262,68 @@ namespace gui
 		}
 		return false;
 	}
+	bool layout::mousedown(SDL_MouseButtonEvent &m)
+	{
+		if (!visible)
+			return false;
+		if (m.button == SDL_BUTTON_LEFT)
+		{
+			//search for something that takes the coordinates
+			vector<layoutchild>::iterator i;
+			int c=0;
+			for (i = children.begin(); i != children.end(); i++,c++)
+			{
+				//which child did they click on?
+				if (m.x > (*i).pos.x && 
+					m.y > (*i).pos.y &&
+					m.x < (*i).pos.x + (*i).pos.w &&
+					m.y < (*i).pos.y + (*i).pos.h)
+				{
+					bool ret = false;
+					Sint16 ox, oy;
+					ox = m.x;
+					oy = m.y;
+					m.x -= (*i).pos.x;
+					m.y -= (*i).pos.y;
+					if ((*i).c->mousedown(m)) 
+					{
+						if (which != c)
+							children[which].c->unfocus();
+						if((ret = (*i).c->focus()))
+							which = c;
+					}
+					m.x = ox;
+					m.y = oy;
+					mousestate[0] = true;
+					return ret;
+				}
+			}
+		}
+		return false;
+	}
+	bool layout::mouseup(SDL_MouseButtonEvent &m)
+	{
+		if (!visible)
+			return false;
+		//don't process it unless we saw it go down
+		if (m.button == SDL_BUTTON_LEFT && mousestate[0])
+		{
+			mousestate[0] = false;
+			//deliver it to which. 
+			bool ret = false;
+			Sint16 ox, oy;
+			ox = m.x;
+			oy = m.y;
+			m.x -= children[which].pos.x;
+			m.y -= children[which].pos.y;
+			children[which].c->mouseup(m);
+			m.x = ox;
+			m.y = oy;
+			return true;
+		}
+		return false;
+	}
+
 	bool layout::focus()
 	{
 		if (visible && children.size())

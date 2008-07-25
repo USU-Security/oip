@@ -20,6 +20,13 @@ namespace gui
 		 */
 		virtual bool keyup(SDL_KeyboardEvent & k) { return false; }
 		virtual bool keydown(SDL_KeyboardEvent & k) { return false; }
+		/*
+		 * called when a mouseevent happens, returns whether it was used
+		 */
+		virtual bool mouseup(SDL_MouseButtonEvent & m) {return false; }
+		virtual bool mousedown(SDL_MouseButtonEvent & m) {return false; }
+		virtual bool mousemove(SDL_MouseMotionEvent & m) {return false; }
+
 		/* calls when object is offered the keyboard events. returns true
 		 * to accept them 
 		 */

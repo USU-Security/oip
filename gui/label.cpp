@@ -2,6 +2,69 @@
 #include <iostream>
 using std::cout;
 
+//const float sigma1[] = {.006,.061,.242,.383,.242,.061,.006};
+//const float kernel[] ={.16,.16,.16,0,.16,.16,.16};
+const float kernel[] ={0,.16,.32,0,.32,.16,0};
+
+
+
+#define getpixel(s, x, y) *(Uint32*)((Uint8*)s->pixels + (y) * s->pitch + ((x) << 2))
+void gaussianblur(SDL_Surface* s)
+{
+	int i, j, k;
+	
+	SDL_LockSurface(s);
+	//make a copy of the data
+	Uint32* data = new Uint32[s->w * s->h];
+	memcpy(data, s->pixels, s->w * s->h * sizeof(Uint32));
+	//horizontal
+	for (j = 0; j < s->h; j++)
+	{
+		for (i = 0; i < s->w; i++)
+		{
+			int kmin = i < 4? 3 - i : 0;
+			int kmax = i > s->w - 4? s->w - i + 3 : 7;
+			Uint8 rt, gt, bt, at;
+			rt = gt = bt = at = 0;
+			for (k = kmin; k < kmax; k++)
+			{
+				Uint8 r,g,b,a;
+				SDL_GetRGBA(data[j * s->w + i + (k - 3)], s->format, &r, &g, &b, &a);
+				rt += r * kernel[k];
+				gt += g * kernel[k];
+				bt += b * kernel[k];
+				at += a * kernel[k];
+			}
+			getpixel(s, i, j) = SDL_MapRGBA(s->format, rt, gt, bt, at);
+		}
+	}
+	//another copy, smeared horizontally
+	memcpy(data, s->pixels, s->w * s->h * sizeof(Uint32));
+	//vertical
+	for (j = 0; j < s->h; j++)
+	{
+		for (i = 0; i < s->w; i++)
+		{
+			int kmin = j < 4? 3 - j : 0;
+			int kmax = j > s->h - 4? s->h - j + 3 : 7;
+			Uint8 rt, gt, bt, at;
+			rt = gt = bt = at = 0;
+			for (k = kmin; k < kmax; k++)
+			{
+				Uint8 r,g,b,a;
+				SDL_GetRGBA(data[(j + (k - 3)) * s->w + i], s->format, &r, &g, &b, &a);
+				rt += r * kernel[k];
+				gt += g * kernel[k];
+				bt += b * kernel[k];
+				at += a * kernel[k];
+			}
+			getpixel(s, i, j) = SDL_MapRGBA(s->format, rt, gt, bt, at);
+		}
+	}
+	delete [] data;
+	SDL_UnlockSurface(s);
+}
+
 namespace gui
 {
 	void label::draw(int x, int y, SDL_Surface* s)
@@ -30,6 +93,15 @@ namespace gui
 				ry = (h + f.getSize())/2;
 			else
 				ry = f.getSize();
+			Uint32 old = f.getColor();
+			Uint8 r,g,b,a;
+			SDL_GetRGBA(old, cached->format, &r,&g,&b, &a);
+			f.setColor(SDL_MapRGBA(cached->format, ~r, ~g, ~b, a));
+			f.render(txt, rx,ry, cached);
+			f.setColor(old);
+			//apply a gaussian blur to it
+			gaussianblur(cached);			
+			//render on top of the blur
 			f.render(txt, rx,ry, cached);
 			cachevalid = true;
 		}

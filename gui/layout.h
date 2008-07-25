@@ -36,12 +36,17 @@ namespace gui
 		virtual bool moveup();
 		virtual bool movedown();
 		void dofade(int x, int y, const SDL_Surface* s);
+		bool mousestate[3];
 	public:
-		layout():which(0),dx(0),dy(0),fading(NONE),focused(false),hasborder(0) {selhilite=false;}
+		layout():which(0),dx(0),dy(0),fading(NONE),focused(false),hasborder(0) {selhilite=false;mousestate[0]=mousestate[1]=mousestate[2]=false;}
 
 		virtual void draw(int x, int y, SDL_Surface* s);
 		virtual bool keyup(SDL_KeyboardEvent & k);
 		virtual bool keydown(SDL_KeyboardEvent & k);
+		virtual bool mouseup(SDL_MouseButtonEvent & m);
+		virtual bool mousedown(SDL_MouseButtonEvent & m);
+		virtual bool mousemove(SDL_MouseMotionEvent & m) { return false; }
+
 		virtual bool focus(); 
 		virtual void unfocus() {if (children.size()) children[which].c->unfocus(); focused = false;}
 

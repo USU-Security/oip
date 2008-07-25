@@ -1,5 +1,8 @@
 #include "button.h"
 
+#include <iostream>
+using namespace std;
+
 namespace gui
 {
 	void button::draw(int x, int y, SDL_Surface* s)
@@ -34,6 +37,29 @@ namespace gui
 		{
 			clicked = false;
 			activate();
+			return true;
+		}
+		return false;
+	}
+	bool button::mousedown(SDL_MouseButtonEvent & m)
+	{
+		cout << "mouse down\n";
+		if (m.button == SDL_BUTTON_LEFT)
+		{
+			clicked = true;
+			downkey = SDLK_0;
+			return true;
+		}
+		return false;
+	}
+	bool button::mouseup(SDL_MouseButtonEvent & m)
+	{
+		cout << "mouse up\n";
+		if (m.button == SDL_BUTTON_LEFT && clicked)
+		{
+			clicked = false;
+			if (m.x < w && m.y < h) //if within bounds, activate
+				activate();
 			return true;
 		}
 		return false;

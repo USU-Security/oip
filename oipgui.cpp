@@ -365,6 +365,8 @@ int main(int argc, char* argv[])
 			case SDL_KEYDOWN:
 				if (event.key.keysym.sym == SDLK_ESCAPE)
 					run = false;
+				if (event.key.keysym.sym == '`')
+					mnu.activate();
 				else
 					widgets.keydown(event.key);
 				break;
@@ -377,13 +379,17 @@ int main(int argc, char* argv[])
 				histo.resize(event.resize.w, chartheight);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				pm.mousedown(event.button.x, event.button.y);
+				//give the widgets the first crack at events
+				if (!widgets.mousedown(event.button))
+					pm.mousedown(event.button.x, event.button.y);
 				break;
 			case SDL_MOUSEMOTION:
-				pm.mousemove(event.button.x, event.button.y);
+				if (!widgets.mousemove(event.motion))
+					pm.mousemove(event.motion.x, event.motion.y);
 				break;
 			case SDL_MOUSEBUTTONUP:
-				pm.mouseup();
+				if (!widgets.mouseup(event.button))
+					pm.mouseup();
 				break;
 			}
 		}
