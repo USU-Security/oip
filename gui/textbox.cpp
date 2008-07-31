@@ -91,7 +91,7 @@ namespace gui
 		case SDLK_TAB:
 			return false; //this key changes the focus. not for us
 		default:
-			if (isprint(k.keysym.sym))
+			if (isprint(k.keysym.unicode))
 			{
 				/*
 				cout << (char)k.keysym.unicode << "\n";
@@ -106,6 +106,9 @@ namespace gui
 				insertpos++;
 				return true;
 			}
+			else
+				cout << k.keysym.sym << "\n";
+
 			break;
 		}
 		return false;
