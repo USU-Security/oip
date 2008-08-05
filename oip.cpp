@@ -205,7 +205,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR cmdline, int nShowCmd
 	WSAStartup(MAKEWORD(2,2), &wsaData);
 	int ret = main(argc, argv);
 	WSACleanup();
-	delete [] argv[1];
+//	delete [] argv[1];
 	return ret;
 }
 #endif

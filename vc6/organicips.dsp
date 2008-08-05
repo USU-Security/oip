@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 SDL.lib SDL_image.lib cryptlib.lib ws2_32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"Debug/oip.exe" /pdbtype:sept
+# ADD LINK32 freetype.lib SDL.lib SDL_image.lib cryptlib.lib ws2_32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"Debug/oip.exe" /pdbtype:sept
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "organicips - Win32 Release"
@@ -77,8 +77,8 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 SDL.lib SDL_image.lib cryptlib.lib ws2_32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"Debug/oip.exe" /pdbtype:sept
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 SDL.lib SDL_image.lib cryptlib.lib ws2_32.lib /nologo /subsystem:windows /machine:I386 /out:"Release/oip.exe"
-# SUBTRACT LINK32 /pdb:none /debug /nodefaultlib /pdbtype:<none>
+# ADD LINK32 SDL.lib SDL_image.lib cryptlib.lib ws2_32.lib freetype.lib /nologo /subsystem:windows /machine:I386 /out:"Release/oip.exe"
+# SUBTRACT LINK32 /pdb:none /debug /nodefaultlib
 
 !ENDIF 
 
@@ -89,6 +89,14 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=..\gui\button.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\chart.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=..\clientpm.cpp
@@ -115,11 +123,23 @@ SOURCE=..\entitytest.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\gui\font.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\image.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\kdtree.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\label.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\layout.cpp
 # End Source File
 # Begin Source File
 
@@ -131,7 +151,11 @@ SOURCE=..\namecache.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\oip.cpp
+SOURCE=..\oipgui.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\option.cpp
 # End Source File
 # Begin Source File
 
@@ -149,10 +173,30 @@ SOURCE=..\particlemanager.cpp
 
 SOURCE=..\text.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\gui\textbox.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\widget.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\gui\base.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\chart.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\clientpm.h
@@ -160,6 +204,10 @@ SOURCE=..\clientpm.h
 # Begin Source File
 
 SOURCE=..\config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\draw.h
 # End Source File
 # Begin Source File
 
@@ -172,6 +220,10 @@ SOURCE=..\entity.h
 # Begin Source File
 
 SOURCE=..\entityset.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\font.h
 # End Source File
 # Begin Source File
 
@@ -191,11 +243,23 @@ SOURCE=..\kdtree.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\gui\label.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\layout.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\messages.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\namecache.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\option.h
 # End Source File
 # Begin Source File
 
@@ -216,6 +280,14 @@ SOURCE=..\particlemanager.h
 # Begin Source File
 
 SOURCE=..\text.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\textbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gui\widget.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -24,7 +24,7 @@ public:
 	_text& render(SDL_Surface*surf, const string& s, int x, int y, int fade=0) {return render(surf, s.c_str(), x, y);}
 	int getW() {return width;}
 	int getH() {return height;}
-	int getSize(const char* s, int & w, int & h) {w = strlen(s) * width; h = height;}
+	void getSize(const char* s, int & w, int & h) {w = strlen(s) * width; h = height;}
 };
 
 extern _text text;

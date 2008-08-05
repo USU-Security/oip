@@ -193,7 +193,8 @@ namespace gui
 			SDL_Rect r = {x, y, w, h};
 			border(r, s);
 		}
-		vector<layoutchild>::iterator i;
+		typedef vector<layoutchild> vector_layoutchild; ///me growls at visual studios
+		vector_layoutchild::iterator i;
 		int c=0;
 		for (i = children.begin(); i != children.end(); ++i, c++)
 		{
@@ -269,7 +270,8 @@ namespace gui
 		if (m.button == SDL_BUTTON_LEFT)
 		{
 			//search for something that takes the coordinates
-			vector<layoutchild>::iterator i;
+			typedef vector<layoutchild> vector_layoutchild;
+			vector_layoutchild::iterator i;
 			int c=0;
 			for (i = children.begin(); i != children.end(); i++,c++)
 			{

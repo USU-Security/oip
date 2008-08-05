@@ -86,7 +86,7 @@ namespace gui
 		{
 			for (i = 0; i < maxx-minx; i++)
 			{
-				unsigned char r1,g1,b1,a1,r2,g2,b2;
+				Uint8 r1,g1,b1,a1,r2,g2,b2;
 				SDL_GetRGBA(*((Uint32*)p+i), s->format, &r1, &g1, &b1, &a1);
 				SDL_GetRGB(color, s->format, &r2, &g2, &b2);
 				if (*data)
