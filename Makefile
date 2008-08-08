@@ -1,7 +1,7 @@
-LDFLAGS= -lcryptopp -lSDL -lSDL_image -lpcap `freetype-config --libs`
-GUILDFLAGS = ${LDFLAGS} `freetype-config --libs`
+GUILDFLAGS= -lcryptopp -lSDL -lSDL_image `freetype-config --libs`
+SERVERLDFLAGS= -lcryptopp -lSDL -lpcap
 CPPFLAGS = -g `freetype-config --cflags` 
-all: capreader
+all: oipgui oipd
 
 text.o: text.h
 
@@ -29,10 +29,8 @@ guiobj = particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle
 widgets = gui/font.o gui/widget.o gui/label.o gui/textbox.o gui/layout.o gui/button.o gui/option.o
 
 oipd: ${coreobj} oipd.o
-	g++ ${coreobj} oipd.o ${LDFLAGS} -o oipd
+	g++ ${coreobj} oipd.o ${SERVERLDFLAGS} -o oipd
 
-oip: ${coreobj} ${guiobj} oip.o 
-	g++ ${coreobj} ${guiobj} oip.o ${LDFLAGS} -o oip
 
 oipgui: ${coreobj} ${guiobj} ${widgets} oipgui.o 
 	g++ ${coreobj} ${guiobj} ${widgets} oipgui.o ${GUILDFLAGS} -o oipgui
