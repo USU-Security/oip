@@ -6,7 +6,7 @@
 #include <SDL/SDL.h>
 using std::string;
 #include "text.h"
-
+#include "namecache.h"
 /*
  * Defined to be a source/sink for the visualization. 
  * knows its position, label and brightness
@@ -15,7 +15,7 @@ using std::string;
 class entity
 {
 public:
-	string label;
+	unsigned int label;
 private:
 	float brightness;
 	float x;
@@ -25,17 +25,16 @@ private:
 	bool fade;
 	int fadeval;
 	double lastupdate;
-	void init(const string& label);
+	void init(unsigned int label);
 public:
-	entity(const string& label);
-	entity(const char* label);
-	entity() {init(string(""));valid=false;}
+	entity(unsigned int l);
+	entity() {init(0);valid=false;}
 
 	void move(float dx, float dy, float damp, double dt);
 	//TODO getX and getY are in world coordinates, yet getW and getH are not
 	float getX() {return x;}
 	float getY() {return y;}
-	float getW() {return text.getW() * label.length();}
+	float getW() {return text.getW() * names[label].length();}
 	float getH() {return text.getH();}
 
 	void jump(float nx, float ny);
@@ -46,7 +45,9 @@ public:
 	bool deleteme() {return fade && fadeval>=15;}
 	int getfadeval() {return fadeval;}
 	void touch() {fade=false;}
+	//two toggles that can publicly modified
 	bool moving;
+	bool resolve;
 };
 
 #endif //ENTITY_H

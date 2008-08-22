@@ -1,9 +1,10 @@
 
 #include "entity.h"
 #include <stdlib.h>
-
+#include <arpa/inet.h>
 #include "text.h"
-
+#include "namecache.h"
+#include "ips.h"
 #define FADERATE .25
 #define UNFADERATE .031250
 
@@ -25,7 +26,7 @@ inline double now()
 #endif
 
 
-void entity::init(const string& l)
+void entity::init(unsigned int l)
 {
 	brightness = 1;
 	//generate a random position
@@ -39,16 +40,12 @@ void entity::init(const string& l)
 	ndx = 0;
 	ndy = 0;
 	moving = true;
+	resolve = true;
 }
 
-entity::entity(const string& l)
+entity::entity(unsigned int l)
 {
 	init(l);
-}
-
-entity::entity(const char* l)
-{
-	init(string(l));
 }
 
 void entity::move(float fx, float fy, float damp, double dt)
@@ -60,6 +57,11 @@ void entity::move(float fx, float fy, float damp, double dt)
 	{
 		ndx = (ndx + fx * dt) * damp;
 		ndy = (ndy + fy * dt) * damp;
+	}
+	else
+	{
+		ndx = 0;
+		ndy = 0;
 	}
 	if (fade && fadeval < 15 && lastupdate + FADERATE < now() && moving)
 	{
@@ -90,7 +92,17 @@ bool entity::draw(SDL_Surface* s)
 	else if(y > 1-getH()/s->h/2)
 		y = 1-getH()/s->h/2;
 	
-	text.render(s, 	label.c_str(), (int)(s->w * x) - text.getW()*label.length()/2, (int)(s->h*y) - text.getH()/2 , fadeval);
+	if (resolve)
+	{
+		const string& str = names[label];
+		text.render(s, 	str.c_str(), (int)(s->w * x) - text.getW()*str.length()/2, (int)(s->h*y) - text.getH()/2 , fadeval);
+	}
+	else
+	{
+		char b[16];
+		longtoip(b, 16, ntohl(label));
+		text.render(s, b, (int)(s->w * x) - text.getW()*strlen(b)/2, (int)(s->h*y) - text.getH()/2 , fadeval);
+	}
 	return true;
 }
 		

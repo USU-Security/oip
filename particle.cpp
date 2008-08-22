@@ -7,7 +7,7 @@
 #define PSIZE 80
 #define PCOUNT 20
 using std::cout;
-particle::particle(float nx, float ny, float nsize, unsigned int ncolor, const string& s): x(nx),y(ny),color(ncolor),dst(s),dx(0),dy(0),speed(.15),damp(.97),softdelete(false),invalid(false)
+particle::particle(float nx, float ny, float nsize, unsigned int ncolor, unsigned int s): x(nx),y(ny),color(ncolor),dst(s),dx(0),dy(0),speed(.15),damp(.97),softdelete(false),invalid(false)
 {
 	size = (int)(nsize * PCOUNT);
 	if (size >= PCOUNT)

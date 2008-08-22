@@ -9,7 +9,7 @@
 #include "ips.h"
 #include <iostream>
 using std::cerr;
-
+namecache names;
 const string & namecache::operator[](unsigned int a)
 {
 	namehash::iterator i;

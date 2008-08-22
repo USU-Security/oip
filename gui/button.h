@@ -13,7 +13,6 @@ namespace gui
 		SDL_Surface * imgdown;
 		bool clicked;
 		clickevent clickit;
-		void* arg;
 		SDLKey downkey;
 		int clickpush;
 	public:
@@ -30,6 +29,8 @@ namespace gui
 		virtual void unfocus() {clicked = false;}
 
 		virtual void activate() {clickit(clicked, arg);}
+		//so we can change the argument later
+		void* arg;
 	};
 };
 

@@ -56,7 +56,7 @@ namespace gui
 
 		void hide(fadetype f=PLAIN);
 		void show(fadetype f=PLAIN);
-		
+		bool shown() { return visible;}
 		Uint32 hasborder; //could stick the color in here
 	};
 };

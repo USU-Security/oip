@@ -9,8 +9,8 @@ using std::cout;
  */
 bool particlemanager::addpacket(unsigned int src, unsigned int dst, unsigned int color, unsigned int size)
 {
-	entity& e1 = entities[names[src]];
-	particles.push_back(new particle(e1.getX(), e1.getY(), size/42000.0, color, names[dst]));
+	entity& e1 = entities[src];
+	particles.push_back(new particle(e1.getX(), e1.getY(), size/42000.0, color, dst));
 	return true;
 }
 
@@ -26,7 +26,7 @@ void particlemanager::process(double dt)
 	vector<particle*>::iterator i;
 	//kreate a kd tree with all the particles in it
 	//*
-	kdtree pfind(particles);
+	//kdtree pfind(particles);
 	for (i = particles.begin(); i != particles.end(); i++)
 	{
 		entity& e1 = entities[(*i)->dst];
@@ -36,7 +36,7 @@ void particlemanager::process(double dt)
 			(e1.getY() - (*i)->getY())*(e1.getY() - (*i)->getY()) < .0005)
 			(*i)->erase();
 		vector<particle*> pnear;
-		pfind.collect(.2, (*i)->getX(), (*i)->getY(), pnear);
+		//pfind.collect(.2, (*i)->getX(), (*i)->getY(), pnear);
 
 		(*i)->move(e1.getX(), e1.getY(), pnear, dt);
 		//make a small attractive force for the destination toward the packet
@@ -76,6 +76,7 @@ void particlemanager::mousedown(int x, int y)
 	{
 		mx = (int)(mouseisdown->getX() * xscale - x);
 		my = (int)(mouseisdown->getY() * yscale - y);
+		oldmoving = mouseisdown->moving;
 		mouseisdown->moving = false;
 	}
 }
@@ -92,7 +93,7 @@ void particlemanager::mouseup()
 {
 	if (mouseisdown)
 	{
-		mouseisdown->moving = true;
+		mouseisdown->moving = oldmoving;
 		mouseisdown = NULL;
 	}
 }

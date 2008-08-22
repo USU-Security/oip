@@ -20,10 +20,10 @@ private:
 	bool softdelete;
 	bool invalid;
 public:
-	const string dst;
+	unsigned int dst;
 
 	particle() {invalid = true;}
-	particle(float nx, float ny, float nsize, unsigned int ncolor, const string& s);
+	particle(float nx, float ny, float nsize, unsigned int ncolor, unsigned int s);
 
 	//figures out how to move given particles and a destination
 	void move(float dstx, float dsty, vector<particle*> & pnear, double dt);

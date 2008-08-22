@@ -17,7 +17,7 @@ private:
 	float xscale, yscale;
 	int mx, my;
 	entity* mouseisdown;
-	namecache names;
+	bool oldmoving;
 public:
 	particlemanager():mouseisdown(NULL) {  }
 	bool addpacket(unsigned int src, unsigned int  dst, unsigned int size, unsigned int color);
@@ -28,6 +28,7 @@ public:
 
 	void mousedown(int x, int y);
 	void mousemove(int x, int y);
+	entity* bycoords(int x, int y) { return entities.find(x, y);}
 	void mouseup();
 };
 

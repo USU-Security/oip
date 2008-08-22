@@ -1,6 +1,6 @@
 #include "entityset.h"
 
-entity& entityset::add(const string& s)
+entity& entityset::add(int s)
 {
 	entity& r = elist[s];
 	if (!r.isvalid())
@@ -12,11 +12,11 @@ entity& entityset::add(const string& s)
 void entityset::process(double dt)
 {
 	//go through all of the entities, and apply hookes law to each of them
-	map<const string, entity>::iterator i = elist.begin();
+	map<int, entity>::iterator i = elist.begin();
 	for(;i != elist.end(); i++)
 	{
 		float fx=0, fy=0;
-		map<const string, entity>::iterator j = elist.begin();
+		map<int, entity>::iterator j = elist.begin();
 		//sum up the total force applied by all the others
 		float rsq;
 		for (;j != elist.end(); j++)
@@ -82,7 +82,7 @@ void entityset::draw(SDL_Surface*s)
 	xscale = s->w;
 	yscale = s->h;
 	
-	map<const string, entity>::iterator j = elist.begin();
+	map<int, entity>::iterator j = elist.begin();
 	//draw them, and do some housekeeping
 	while (j != elist.end())
 	{
@@ -99,7 +99,7 @@ void entityset::draw(SDL_Surface*s)
  */
 entity* entityset::find(int x, int y)
 {
-	map<const string, entity>::iterator j = elist.begin();
+	map<int, entity>::iterator j = elist.begin();
 	for (;j != elist.end();j++)
 	{
 		//TODO getX and getY are in world coordinates, yet getW and getH are not

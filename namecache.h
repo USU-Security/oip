@@ -44,5 +44,7 @@ public:
 	void remove(unsigned int a) {names.erase(a);}
 };
 
+extern namecache names;
+
 #endif //NAMECACHE_H
 

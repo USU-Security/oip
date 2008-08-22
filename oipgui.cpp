@@ -262,6 +262,16 @@ void killconnection(bool selected, void* arg)
 	}
 }
 
+void togglebool(bool selected, void* arg)
+{
+	bool* b = (bool*)arg;
+	if (b)
+	{
+		*b = !*b;
+		cout << "option set to " << *b << "\n";
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	bool run=true;
@@ -348,11 +358,28 @@ int main(int argc, char* argv[])
 	//our little scrolling chart
 	chart histo;
 
+	//construct the popup menu
+	gui::font popupfont;
+	popupfont.setSize(14);
+	gui::option resolve("cbunsel.png", "cbsel.png", togglebool, NULL, 0);
+	resolve.setFont(popupfont);
+	resolve.setString("    Show IP");
+	gui::option pin("cbunsel.png", "cbsel.png", togglebool, NULL, 0);
+	pin.setFont(popupfont);
+	pin.setString("    Pin in place");
+	gui::layout popupmenu;
+	popupmenu.addchild(resolve, 0, 0);
+	popupmenu.addchild(pin, 0, 18);
+	popupmenu.hide();
+	
+
+
 	//and lastly, try to connect to the server
 	if (server != "")
 		packetlist = new clientpm(server.c_str(), opts, port);
 	double ti = now();
 	int chartheight = 128;
+	int px, py;
 	while(run)
 	{
 	
@@ -383,15 +410,60 @@ int main(int argc, char* argv[])
 			case SDL_MOUSEBUTTONDOWN:
 				//give the widgets the first crack at events
 				if (!widgets.mousedown(event.button))
-					pm.mousedown(event.button.x, event.button.y);
+				{
+					if (event.button.button == SDL_BUTTON_RIGHT)
+					{
+						entity* e = pm.bycoords(event.button.x, event.button.y);
+						/*
+						if (e)
+							e->moving = !e->moving;
+						if (e)
+							e->resolve = !e->resolve;
+						*/
+						if (e)
+						{
+							px = event.button.x;
+							py = event.button.y;
+							resolve.setstate(!e->resolve);
+							pin.setstate(!e->moving);
+							resolve.arg = &e->resolve;
+							pin.arg = &e->moving;
+							popupmenu.show();
+						}
+						else
+							popupmenu.hide();
+					}
+					else
+					{
+						cout << "left click\n";
+						//let the popup menu have it, if its there
+						if (popupmenu.shown())
+						{
+							event.button.x -= px;
+							event.button.y -= py;
+							if (!popupmenu.mousedown(event.button))
+								popupmenu.hide(); //hide if not clicked on
+						}
+						else
+							pm.mousedown(event.button.x, event.button.y);
+					}
+				}
 				break;
 			case SDL_MOUSEMOTION:
 				if (!widgets.mousemove(event.motion))
 					pm.mousemove(event.motion.x, event.motion.y);
 				break;
 			case SDL_MOUSEBUTTONUP:
-				if (!widgets.mouseup(event.button))
-					pm.mouseup();
+				if (popupmenu.shown() && event.button.button == SDL_BUTTON_LEFT)
+				{
+					event.button.x -= px;
+					event.button.y -= py;
+					popupmenu.mouseup(event.button);
+					popupmenu.hide();
+				}
+				else
+					if (!widgets.mouseup(event.button))
+						pm.mouseup();
 				break;
 			}
 		}
@@ -413,6 +485,7 @@ int main(int argc, char* argv[])
 		text.render(screen, ss.str().c_str(), 0, 0, 8);
 		// */
 		widgets.draw(0, 0, screen);
+		popupmenu.draw(px, py, screen);
 		SDL_Flip(screen);
 		//don't bother going faster than twice the minimum framerate
 		if (dt * 1000 < MINRATE)
