@@ -249,6 +249,7 @@ void newconnection(bool selected, void* arg)
 		opts, 
 		atoi(self->port->getString().c_str())
 		);
+	SDL_WM_SetCaption((self->server->getString() + ":" + f).c_str(), "Oip");
 	self->mnu->activate();
 	
 }
@@ -376,7 +377,10 @@ int main(int argc, char* argv[])
 
 	//and lastly, try to connect to the server
 	if (server != "")
+	{
+		SDL_WM_SetCaption((server +":"+ opts["filter"]).c_str(), "Oip");
 		packetlist = new clientpm(server.c_str(), opts, port);
+	}
 	double ti = now();
 	int chartheight = 128;
 	int px, py;
