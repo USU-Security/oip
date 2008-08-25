@@ -88,8 +88,7 @@ int sniff(void* a)
 			{
 				struct sniff_ethernet_8021q*  vethernet = (struct sniff_ethernet_8021q*)packet;
 				//cout << "read a packet from vlan " << VLANID(ntohs(vethernet->vlan_id)) << "\n";
-				if (VLANID(ntohs(vethernet->vlan_id)) == 3003
-					&& ntohs(vethernet->ether_type) == T_IP)
+				if (ntohs(vethernet->ether_type) == T_IP)
 				{
 				//	cout << "\tand it was an ip packet\n";	
 					ip = (struct sniff_ip*)(packet + SIZE_8021Q);

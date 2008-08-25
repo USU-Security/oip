@@ -1,20 +1,29 @@
 
 #include "packetmanager.h"
 #include "ips.h"
+#include <iostream>
+using std::cerr;
 
 bool packetmanager::addpacket(unsigned int s, unsigned int d, unsigned int c, unsigned int size)
 {
-	SDL_mutexP(packetlock);
-	packettype p(s,d,c);
-	pmdict::iterator i = packets.find(p);
-	if (i == packets.end())
+	if (count < maxpacket)
 	{
-		packets[p] = size;
-		count++;
+		SDL_mutexP(packetlock);
+		packettype p(s,d,c);
+		pmdict::iterator i = packets.find(p);
+		if (i == packets.end())
+		{
+			packets[p] = size;
+			count++;
+		}
+		else
+			(*i).second += size;
+		SDL_mutexV(packetlock);
 	}
 	else
-		(*i).second += size;
-	SDL_mutexV(packetlock);
+	{
+		cerr << "Too many packets in the queue, dropping\n";
+	}
 	return true;
 }
 

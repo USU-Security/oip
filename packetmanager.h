@@ -9,6 +9,10 @@
 #include "packetsink.h"
 #include "packetpeek.h"
 
+#define DEFAULTMAX 2000
+
+
+
 class packettype
 {
 public:
@@ -46,8 +50,9 @@ protected:
 	pmdict packets;
 	SDL_mutex* packetlock;
 	int count;
+	int maxpacket;
 public:
-	packetmanager():count(0) {packetlock = SDL_CreateMutex();}
+	packetmanager():count(0),maxpacket(DEFAULTMAX) {packetlock = SDL_CreateMutex();}
 	~packetmanager() {SDL_DestroyMutex(packetlock);}
 
 	bool addpacket(unsigned int s, unsigned int d, unsigned int c, unsigned int size);
