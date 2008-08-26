@@ -136,6 +136,30 @@ namespace gui
 			cachevalid = false; //redraw the textbox
 			return true;
 		}
+#ifdef __linux__
+		else if (m.button == SDL_BUTTON_MIDDLE)
+		{
+			char data[1024];
+			FILE* f = popen("xclip -o", "r");
+			if (!f)
+				cout << "install xclip if you want copy/paste to be functional\n";
+			else
+			{
+				data[fread(data, 1, 1024, f)] = 0;
+				pclose(f);
+				txt = data;
+				cout << "Pasted '" << data << "'\n";
+				insertpos = 0;
+				cachevalid = false;
+				return true;
+			}
+		}
+		else
+			cout << "hello\n";
+#endif
+
+
+		
 		return false;
 	}
 	bool textbox::mouseup(SDL_MouseButtonEvent&m)

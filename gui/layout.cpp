@@ -267,7 +267,7 @@ namespace gui
 	{
 		if (!visible)
 			return false;
-		if (m.button == SDL_BUTTON_LEFT)
+		if (m.button == SDL_BUTTON_LEFT || m.button == SDL_BUTTON_MIDDLE)
 		{
 			//search for something that takes the coordinates
 			typedef vector<layoutchild> vector_layoutchild;

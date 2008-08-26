@@ -437,7 +437,7 @@ int main(int argc, char* argv[])
 						else
 							popupmenu.hide();
 					}
-					else
+					else if (event.button.button == SDL_BUTTON_LEFT)
 					{
 						cout << "left click\n";
 						//let the popup menu have it, if its there
