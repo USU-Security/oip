@@ -1,7 +1,11 @@
 
 #include "entity.h"
 #include <stdlib.h>
+#ifndef WIN32
 #include <arpa/inet.h>
+#else
+#include <winsock.h>
+#endif 
 #include "text.h"
 #include "namecache.h"
 #include "ips.h"

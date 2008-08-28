@@ -20,7 +20,7 @@ namespace gui
 		virtual void unfocus(){}
 
 		virtual void activate();
-		bool setstate(bool s) {clicked = s;}
+		void setstate(bool s) {clicked = s;}
 	};
 };
 
