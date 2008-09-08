@@ -16,7 +16,7 @@
 #include "gui/layout.h"
 #include "gui/textbox.h"
 #include "chart.h"
-
+#include "capreader.h"
 using namespace std;
 
 #define OPTSIZE 3
@@ -224,15 +224,32 @@ void mnutoggle(bool selected, void* arg)
 	else
 		self->hide(gui::TOP);
 }
+struct pcapopts
+{
+	packetmanager** plist;
+	gui::textbox* pcapfile;
+	gui::option* mnu;
+	pcapopts(packetmanager*&pl, gui::textbox*p, gui::option*m)
+	:plist(&pl), pcapfile(p), mnu(m) {}
+};
+void newpcapfile(bool selected, void* arg)
+{
+	pcapopts* self = (pcapopts*)arg;
+	if (*(self->plist))
+		delete *(self->plist);
+	*(self->plist) = new capreader(self->pcapfile->getString().c_str());
+	SDL_WM_SetCaption((string("PCAP: ") + self->pcapfile->getString()).c_str(), "Oip");
+	self->mnu->activate();
+}
 
 struct servopts
 {
-	clientpm** plist;
+	packetmanager** plist;
 	gui::textbox* server;
 	gui::textbox* port;
 	gui::textbox* filter;
 	gui::option* mnu;
-	servopts(clientpm*&pl, gui::textbox* s, gui::textbox*p, gui::textbox*f, gui::option* m)
+	servopts(packetmanager*&pl, gui::textbox* s, gui::textbox*p, gui::textbox*f, gui::option* m)
 	:plist(&pl),server(s),port(p),filter(f),mnu(m) {}
 };
 void newconnection(bool selected, void* arg)
@@ -255,7 +272,7 @@ void newconnection(bool selected, void* arg)
 }
 void killconnection(bool selected, void* arg)
 {
-	clientpm** pm = (clientpm**)arg;
+	packetmanager** pm = (packetmanager**)arg;
 	if (*pm)
 	{
 		delete *pm;
@@ -277,7 +294,7 @@ int main(int argc, char* argv[])
 {
 	bool run=true;
 	map<string, string> opts;
-	clientpm * packetlist = NULL; // packetlist(server.c_str(), opts, port);
+	packetmanager * packetlist = NULL; // packetlist(server.c_str(), opts, port);
 
 	//try to die gracefully
 	signal(SIGINT, sigintcatch);
@@ -350,6 +367,30 @@ int main(int argc, char* argv[])
 	connection.setString("Connection");
 	menu.addchild(connection, 0, 0);
 	menu.addchild(connectionmenu, 0, 30);
+	
+	//the capreader menu
+	gui::textbox pcapfile("mnubg.png");
+	pcapfile.setFont(mnufont);
+	gui::label pcaplabel(50, 24);
+	pcaplabel.setFont(mnufont);
+	pcaplabel.setString("File:");
+	pcapopts p(packetlist, &pcapfile, &mnu);
+	gui::button btnpcapfile("mnubg.png", "mnusel.png", newpcapfile, &p, 1);
+	btnpcapfile.setFont(mnufont);
+	btnpcapfile.setString("Load");
+	gui::layout capmenu;
+	capmenu.addchild(pcaplabel, 0, 1);
+	capmenu.addchild(pcapfile, 70, 1);
+	capmenu.addchild(btnpcapfile, 35, 26);
+	capmenu.hide();
+	capmenu.hasborder = 1;
+	gui::option mnupcapfile("mnubg.png", "mnusel.png", mnutoggle, &capmenu, 1);
+	mnupcapfile.setFont(mnufont);
+	mnupcapfile.setString("Pcap File");
+	menu.addchild(mnupcapfile, 200, 0);
+	menu.addchild(capmenu, 200, 30);
+
+
 	gui::layout widgets;
 	widgets.addchild(mnu, 4, 0);
 	widgets.addchild(menu, 28, 0);

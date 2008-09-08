@@ -56,7 +56,7 @@ public:
 	~packetmanager() {SDL_DestroyMutex(packetlock);}
 
 	bool addpacket(unsigned int s, unsigned int d, unsigned int c, unsigned int size);
-	bool dumpdata(packetsink& ); 
+	virtual bool dumpdata(packetsink& ); 
 	void copydata(packetpeek& );
 	int size() {return count;}
 	bool empty() {return packets.begin() == packets.end();}
