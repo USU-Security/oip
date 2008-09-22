@@ -49,9 +49,26 @@ void entity::init(unsigned int l)
 
 entity::entity(unsigned int l)
 {
+	net = false;
 	init(l);
 }
-
+// handle fading
+void entity::dofade(double dt)
+{
+	if (fade && fadeval < 15 && lastupdate + FADERATE < now() && moving)
+	{
+		fadeval++;
+		lastupdate = now();
+	}
+	else if (!fade && fadeval >= 0 && lastupdate + UNFADERATE < now() && moving)
+	{
+		if (fadeval)
+			fadeval--;
+		else //let them start fading if they are reached full brightness
+			fade = true;
+		lastupdate = now();
+	}
+}
 void entity::move(float fx, float fy, float damp, double dt)
 {
 //	if (dx < MINMOVE && dy < MINMOVE)
@@ -67,36 +84,37 @@ void entity::move(float fx, float fy, float damp, double dt)
 		ndx = 0;
 		ndy = 0;
 	}
-	if (fade && fadeval < 15 && lastupdate + FADERATE < now() && moving)
-	{
-		fadeval++;
-		lastupdate = now();
-	}
-	else if (!fade && fadeval >= 0 && lastupdate + UNFADERATE < now() && moving)
-	{
-		if (fadeval)
-			fadeval--;
-		else //let them start fading if they are reached full brightness
-			fade = true;
-		lastupdate = now();
-	}
-	
 }
 
 bool entity::draw(SDL_Surface* s)
 {
 	x += ndx;
 	y += ndy;
-	if (x < getW()/s->w/2) 
-		x = getW()/s->w/2;
-	else if (x > 1-getW()/s->w/2)
-		x = 1-getW()/s->w/2;
+	int width;
+	char tmp[32];
+	if (net)
+	{
+		longtoip(tmp, 16, ntohl(label));
+		snprintf(tmp + strlen(tmp), 32 - strlen(tmp), "/%d (%d)", (int)mask, count);
+		width = strlen(tmp) * text.getW();
+	}
+	else
+		width = getW();
+		
+		
+	if (x < width/s->w/2) 
+		x = width/s->w/2;
+	else if (x > 1-width/s->w/2)
+		x = 1-width/s->w/2;
 	if (y < getH()/s->h/2)
 		y = getH()/s->h/2;
 	else if(y > 1-getH()/s->h/2)
 		y = 1-getH()/s->h/2;
-	
-	if (resolve)
+	if (net)
+	{
+		text.render(s, tmp, (int)(s->w * x) - width/2, (int)(s->h*y) - text.getH()/2, fadeval);
+	}
+	else if (resolve)
 	{
 		const string& str = names[label];
 		text.render(s, 	str.c_str(), (int)(s->w * x) - text.getW()*str.length()/2, (int)(s->h*y) - text.getH()/2 , fadeval);

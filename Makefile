@@ -18,14 +18,10 @@ particlemanagertest: ${pmtobj}
 	g++ ${CPPFLAGS} ${pmtobj} ${LDFLAGS} -o particlemanagertest
 	
 
-capreader: capreader.o particle.o text.o image.o kdtree.o particlemanager.o entityset.o entity.o packetmanager.o
-
-
-
 testclientmanager: testclientmanager.o clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o clientmanager.o messages.o 
 
 coreobj = config.o packetmanager.o clientpm.o clientmanager.o messages.o namecache.o encrypt.o hexprint.o
-guiobj = particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o chart.o capreader.o 
+guiobj = particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o chart.o capreader.o iptree.o
 widgets = gui/font.o gui/widget.o gui/label.o gui/textbox.o gui/layout.o gui/button.o gui/option.o
 
 oipd: ${coreobj} oipd.o
@@ -45,6 +41,9 @@ clean:
 
 distclean: clean
 	rm -f display
+
+testiptree: iptree.o testiptree.o ${coreobj} ${guiobj} 
+	g++ ${CPPFLAGS} ${coreobj} ${guiobj} iptree.o testiptree.o ${GUILDFLAGS} -o testiptree
 
 .PHONY: clean distclean $(COMMON)/flowdata.o
 

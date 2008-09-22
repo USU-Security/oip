@@ -3,6 +3,7 @@
 #define ENTITYSET_H
 
 #include "entity.h"
+#include "iptree.h"
 #include <map>
 #include <string>
 using namespace std;
@@ -13,7 +14,7 @@ using namespace std;
 class entityset
 {
 private:
-	map<int, entity> elist; //a map of entities
+	iptree elist; //a map of entities
 	float k; //the k constant for hookes law
 	float dist; //the "right" distance
 	float damp; //dampening factor

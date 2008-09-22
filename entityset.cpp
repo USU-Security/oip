@@ -12,30 +12,30 @@ entity& entityset::add(int s)
 void entityset::process(double dt)
 {
 	//go through all of the entities, and apply hookes law to each of them
-	map<int, entity>::iterator i = elist.begin();
-	for(;i != elist.end(); i++)
+	iptree::iterator i = elist.begin();
+	for(;i != elist.end(); ++i)
 	{
 		float fx=0, fy=0;
-		map<int, entity>::iterator j = elist.begin();
+		iptree::iterator j = elist.begin();
 		//sum up the total force applied by all the others
 		float rsq;
-		for (;j != elist.end(); j++)
+		for (;j != elist.end(); ++j)
 		{
-			if ((*i).first != (*j).first)
+			if ((*i).label != (*j).label)
 			{
 				//hookes law; linear attraction
-				fx -= k*(((*i).second.getX() - (*j).second.getX()));
-				fy -= k*(((*i).second.getY() - (*j).second.getY()));
+				fx -= k*(((*i).getX() - (*j).getX()));
+				fy -= k*(((*i).getY() - (*j).getY()));
 				//coulomb repulsion
 				rsq = 
-					((*i).second.getX() - (*j).second.getX()) *
-					((*i).second.getX() - (*j).second.getX()) +
-					((*i).second.getY() - (*j).second.getY()) *
-					((*i).second.getY() - (*j).second.getY());
+					((*i).getX() - (*j).getX()) *
+					((*i).getX() - (*j).getX()) +
+					((*i).getY() - (*j).getY()) *
+					((*i).getY() - (*j).getY());
 				//some magic numbers. The "charge" of the particle goes away as it fades
 				rsq /= k/(4); // * (1+(*j).second.getfadeval()));
-				fx += ((*i).second.getX() - (*j).second.getX())/rsq;
-				fy += ((*i).second.getY() - (*j).second.getY())/rsq;
+				fx += ((*i).getX() - (*j).getX())/rsq;
+				fy += ((*i).getY() - (*j).getY())/rsq;
 			}
 			//add a slight jitter so that they don't get stuck in the middle
 			fx += (float)rand()/RAND_MAX * .001 - .0005;
@@ -73,7 +73,7 @@ void entityset::process(double dt)
 		
 
 
-		(*i).second.move(fx, fy, damp, dt);
+		(*i).move(fx, fy, damp, dt);
 	}
 }
 
@@ -82,15 +82,27 @@ void entityset::draw(SDL_Surface*s)
 	xscale = s->w;
 	yscale = s->h;
 	
-	map<int, entity>::iterator j = elist.begin();
+	//do some housekeeping
+	iptree::iterator i = elist.beginfull();
+	for (; i!= elist.end();)
+	{
+		i->dofade(0);
+		if (i->deleteme())
+		{
+			unsigned int todelete = i->label;
+			++i;
+			elist.del(todelete);
+		}
+		else
+			++i;
+	}	
+	
+	iptree::iterator j = elist.begin();
 	//draw them, and do some housekeeping
 	while (j != elist.end())
 	{
-		(*j).second.draw(s);
-		if ((*j).second.deleteme())
-			elist.erase(j++);
-		else
-			j++;
+		(*j).draw(s);
+		++j;
 	}
 }
 
@@ -99,17 +111,17 @@ void entityset::draw(SDL_Surface*s)
  */
 entity* entityset::find(int x, int y)
 {
-	map<int, entity>::iterator j = elist.begin();
-	for (;j != elist.end();j++)
+	iptree::iterator j = elist.begin();
+	for (;j != elist.end();++j)
 	{
 		//TODO getX and getY are in world coordinates, yet getW and getH are not
 		if (
-			(*j).second.getX() * xscale - (*j).second.getW()/2 < x &&
-			(*j).second.getY() * yscale - (*j).second.getH()/2 < y &&
-			(*j).second.getX() * xscale + (*j).second.getW()/2 > x &&
-			(*j).second.getY() * yscale + (*j).second.getH()/2 > y
+			(*j).getX() * xscale - (*j).getW()/2 < x &&
+			(*j).getY() * yscale - (*j).getH()/2 < y &&
+			(*j).getX() * xscale + (*j).getW()/2 > x &&
+			(*j).getY() * yscale + (*j).getH()/2 > y
 			)
-			return &((*j).second);
+			return &((*j));
 	}
 	return NULL;
 }
