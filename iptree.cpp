@@ -1,5 +1,5 @@
 #include "iptree.h"
-
+#include <arpa/inet.h>
 void iptree::inc(unsigned int s)
 {
 	unsigned int wbucket = s >> (RBITS);
@@ -20,6 +20,8 @@ void iptree::dec(unsigned int s)
 	ipnode* tmp = root[wbucket];
 	ipnode** t1, *t2;
 	t1 = & root[wbucket];
+	if (!tmp)
+		return;
 	if (tmp->count == 1)
 		root[wbucket] = NULL;
 		
@@ -61,6 +63,7 @@ void iptree::dec(unsigned int s)
 
 entity& iptree::add(unsigned int s)
 {
+	s = ntohl(s);
 	unsigned int wbucket = s >> (RBITS);
 
 	if (root[wbucket] == NULL)
@@ -69,6 +72,7 @@ entity& iptree::add(unsigned int s)
 		root[wbucket]->initc();
 	}
 	ipnode* tmp = root[wbucket];
+	entity* ret = NULL;
 	int i;
 	for (i = RBITS-1; i > 0; i--)
 	{
@@ -84,6 +88,7 @@ entity& iptree::add(unsigned int s)
 			}
 			else
 				tmp->e = new entity(s, tmp->count, i);
+			ret = tmp->e;
 		}
 		else if (tmp->e) //is there an entity here?
 		{	//then it should be removed. 
@@ -115,10 +120,9 @@ entity& iptree::add(unsigned int s)
 		{
 			tmp->right = new ipnode;
 			tmp->right->inite();
-			tmp->right->e = new entity(s);
+			ret = tmp->right->e = new entity(s);
 			inc(s);
 		}
-		return *tmp->right->e;
 	}
 	else
 	{
@@ -126,11 +130,13 @@ entity& iptree::add(unsigned int s)
 		{
 			tmp->left = new ipnode;
 			tmp->left->inite();
-			tmp->left->e = new entity(s);
+			ret = tmp->left->e = new entity(s);
 			inc(s);
 		}
-		return *tmp->left->e;
 	}
+	if (!ret)
+		return *ret;
+	return *ret;
 }
 
 
