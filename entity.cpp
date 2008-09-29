@@ -1,3 +1,39 @@
+/*
+	Copyright 2008 Utah State University    
+
+	This file is part of OIP.
+
+    OIP is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OIP is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OIP.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/*
+	Copyright 2008 Utah State University    
+
+	This file is part of OIP.
+
+    OIP is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OIP is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OIP.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "entity.h"
 #include <stdlib.h>
@@ -49,26 +85,9 @@ void entity::init(unsigned int l)
 
 entity::entity(unsigned int l)
 {
-	net = false;
 	init(l);
 }
-// handle fading
-void entity::dofade(double dt)
-{
-	if (fade && fadeval < 15 && lastupdate + FADERATE < now() && moving)
-	{
-		fadeval++;
-		lastupdate = now();
-	}
-	else if (!fade && fadeval >= 0 && lastupdate + UNFADERATE < now() && moving)
-	{
-		if (fadeval)
-			fadeval--;
-		else //let them start fading if they are reached full brightness
-			fade = true;
-		lastupdate = now();
-	}
-}
+
 void entity::move(float fx, float fy, float damp, double dt)
 {
 //	if (dx < MINMOVE && dy < MINMOVE)
@@ -84,37 +103,36 @@ void entity::move(float fx, float fy, float damp, double dt)
 		ndx = 0;
 		ndy = 0;
 	}
+	if (fade && fadeval < 15 && lastupdate + FADERATE < now() && moving)
+	{
+		fadeval++;
+		lastupdate = now();
+	}
+	else if (!fade && fadeval >= 0 && lastupdate + UNFADERATE < now() && moving)
+	{
+		if (fadeval)
+			fadeval--;
+		else //let them start fading if they are reached full brightness
+			fade = true;
+		lastupdate = now();
+	}
+	
 }
 
 bool entity::draw(SDL_Surface* s)
 {
 	x += ndx;
 	y += ndy;
-	int width;
-	char tmp[32];
-	if (net)
-	{
-		longtoip(tmp, 16, ntohl(label));
-		snprintf(tmp + strlen(tmp), 32 - strlen(tmp), "/%d (%d)", (int)mask, count);
-		width = strlen(tmp) * text.getW();
-	}
-	else
-		width = getW();
-		
-		
-	if (x < width/s->w/2) 
-		x = width/s->w/2;
-	else if (x > 1-width/s->w/2)
-		x = 1-width/s->w/2;
+	if (x < getW()/s->w/2) 
+		x = getW()/s->w/2;
+	else if (x > 1-getW()/s->w/2)
+		x = 1-getW()/s->w/2;
 	if (y < getH()/s->h/2)
 		y = getH()/s->h/2;
 	else if(y > 1-getH()/s->h/2)
 		y = 1-getH()/s->h/2;
-	if (net)
-	{
-		text.render(s, tmp, (int)(s->w * x) - width/2, (int)(s->h*y) - text.getH()/2, fadeval);
-	}
-	else if (resolve)
+	
+	if (resolve)
 	{
 		const string& str = names[label];
 		text.render(s, 	str.c_str(), (int)(s->w * x) - text.getW()*str.length()/2, (int)(s->h*y) - text.getH()/2 , fadeval);

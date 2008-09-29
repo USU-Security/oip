@@ -1,5 +1,41 @@
+/*
+	Copyright 2008 Utah State University    
+
+	This file is part of OIP.
+
+    OIP is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OIP is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OIP.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/*
+	Copyright 2008 Utah State University    
+
+	This file is part of OIP.
+
+    OIP is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OIP is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OIP.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include "iptree.h"
-#include <arpa/inet.h>
+
 void iptree::inc(unsigned int s)
 {
 	unsigned int wbucket = s >> (RBITS);
@@ -20,8 +56,6 @@ void iptree::dec(unsigned int s)
 	ipnode* tmp = root[wbucket];
 	ipnode** t1, *t2;
 	t1 = & root[wbucket];
-	if (!tmp)
-		return;
 	if (tmp->count == 1)
 		root[wbucket] = NULL;
 		
@@ -63,7 +97,6 @@ void iptree::dec(unsigned int s)
 
 entity& iptree::add(unsigned int s)
 {
-	s = ntohl(s);
 	unsigned int wbucket = s >> (RBITS);
 
 	if (root[wbucket] == NULL)
@@ -72,7 +105,6 @@ entity& iptree::add(unsigned int s)
 		root[wbucket]->initc();
 	}
 	ipnode* tmp = root[wbucket];
-	entity* ret = NULL;
 	int i;
 	for (i = RBITS-1; i > 0; i--)
 	{
@@ -82,13 +114,12 @@ entity& iptree::add(unsigned int s)
 			//save an entity here
 			if (tmp->e)
 			{
-				tmp->e->label = s;
+				tmp->e->label = ntohl(s);
 				tmp->e->count = tmp->count;
 				tmp->e->touch();
 			}
 			else
-				tmp->e = new entity(s, tmp->count, i);
-			ret = tmp->e;
+				tmp->e = new entity(ntohl(s), tmp->count, i);
 		}
 		else if (tmp->e) //is there an entity here?
 		{	//then it should be removed. 
@@ -120,11 +151,10 @@ entity& iptree::add(unsigned int s)
 		{
 			tmp->right = new ipnode;
 			tmp->right->inite();
-			tmp->right->e = new entity(s);
+			tmp->right->e = new entity(ntohl(s));
 			inc(s);
 		}
-		if (!ret)
-			ret = tmp->right->e;
+		return *tmp->right->e;
 	}
 	else
 	{
@@ -132,15 +162,11 @@ entity& iptree::add(unsigned int s)
 		{
 			tmp->left = new ipnode;
 			tmp->left->inite();
-			tmp->left->e = new entity(s);
+			tmp->left->e = new entity(ntohl(s));
 			inc(s);
 		}
-		if (!ret)
-			ret = tmp->left->e;
+		return *tmp->left->e;
 	}
-	if (!ret)
-		return *ret;
-	return *ret;
 }
 
 

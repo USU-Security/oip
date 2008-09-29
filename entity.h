@@ -1,3 +1,39 @@
+/*
+	Copyright 2008 Utah State University    
+
+	This file is part of OIP.
+
+    OIP is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OIP is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OIP.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/*
+	Copyright 2008 Utah State University    
+
+	This file is part of OIP.
+
+    OIP is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OIP is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OIP.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef ENTITY_H
 #define ENTITY_H
@@ -16,8 +52,6 @@ class entity
 {
 public:
 	unsigned int label;
-	unsigned int count;
-	unsigned char mask;
 private:
 	float brightness;
 	float x;
@@ -25,16 +59,13 @@ private:
 	float ndx, ndy;
 	bool valid;
 	bool fade;
-	bool net;
 	int fadeval;
 	double lastupdate;
 	void init(unsigned int label);
 public:
 	entity(unsigned int l);
-	entity() {init(0);valid=false;net=false;}
-	entity(unsigned int l, unsigned int c, unsigned char m):count(c),mask(m),net(true) {init(l);}
+	entity() {init(0);valid=false;}
 
-	void dofade(double dt);
 	void move(float dx, float dy, float damp, double dt);
 	//TODO getX and getY are in world coordinates, yet getW and getH are not
 	float getX() {return x;}
@@ -50,7 +81,6 @@ public:
 	bool deleteme() {return fade && fadeval>=15;}
 	int getfadeval() {return fadeval;}
 	void touch() {fade=false;}
-	bool isnet() {return net;}
 	//two toggles that can publicly modified
 	bool moving;
 	bool resolve;
