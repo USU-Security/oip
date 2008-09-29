@@ -120,9 +120,11 @@ entity& iptree::add(unsigned int s)
 		{
 			tmp->right = new ipnode;
 			tmp->right->inite();
-			ret = tmp->right->e = new entity(s);
+			tmp->right->e = new entity(s);
 			inc(s);
 		}
+		if (!ret)
+			ret = tmp->right->e;
 	}
 	else
 	{
@@ -130,9 +132,11 @@ entity& iptree::add(unsigned int s)
 		{
 			tmp->left = new ipnode;
 			tmp->left->inite();
-			ret = tmp->left->e = new entity(s);
+			tmp->left->e = new entity(s);
 			inc(s);
 		}
+		if (!ret)
+			ret = tmp->left->e;
 	}
 	if (!ret)
 		return *ret;
