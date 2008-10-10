@@ -16,24 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with OIP.  If not, see <http://www.gnu.org/licenses/>.
 */
-/*
-	Copyright 2008 Utah State University    
-
-	This file is part of OIP.
-
-    OIP is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    OIP is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with OIP.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 #ifndef ENTITY_H
 #define ENTITY_H
@@ -62,9 +44,10 @@ private:
 	int fadeval;
 	double lastupdate;
 	void init(unsigned int label);
+	bool local;
 public:
 	entity(unsigned int l);
-	entity() {init(0);valid=false;}
+	entity() {init(0);valid=false;local=false;}
 
 	void move(float dx, float dy, float damp, double dt);
 	//TODO getX and getY are in world coordinates, yet getW and getH are not
@@ -81,6 +64,7 @@ public:
 	bool deleteme() {return fade && fadeval>=15;}
 	int getfadeval() {return fadeval;}
 	void touch() {fade=false;}
+	bool setlocal(){local=true;}
 	//two toggles that can publicly modified
 	bool moving;
 	bool resolve;

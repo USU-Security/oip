@@ -21,7 +21,7 @@ particlemanagertest: ${pmtobj}
 testclientmanager: testclientmanager.o clientmanager.o packetmanager.o particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o clientpm.o clientmanager.o messages.o 
 
 coreobj = config.o packetmanager.o clientpm.o clientmanager.o messages.o namecache.o encrypt.o hexprint.o
-guiobj = particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o chart.o capreader.o iptree.o
+guiobj = particlemanager.o kdtree.o entity.o entityset.o image.o text.o particle.o chart.o capreader.o 
 widgets = gui/font.o gui/widget.o gui/label.o gui/textbox.o gui/layout.o gui/button.o gui/option.o
 
 oipd: ${coreobj} oipd.o

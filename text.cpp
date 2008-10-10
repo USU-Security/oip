@@ -16,24 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with OIP.  If not, see <http://www.gnu.org/licenses/>.
 */
-/*
-	Copyright 2008 Utah State University    
-
-	This file is part of OIP.
-
-    OIP is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    OIP is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with OIP.  If not, see <http://www.gnu.org/licenses/>.
-*/
 #include "text.h"
 #include <SDL/SDL_image.h>
 
@@ -48,11 +30,11 @@ _text::_text(const char* font, int w, int h)
 	SDL_SetAlpha(txt, SDL_SRCALPHA, 255);
 }
 
-_text& _text::render(SDL_Surface*surf, const char*s, int x, int y, int fade)
+_text& _text::render(SDL_Surface*surf, const char*s, int x, int y, int fade, bool alt)
 {
 	SDL_Rect src, dst;
 	int pos = 0;
-	src.y = fade*height;
+	src.y = fade*height + (alt ? 208 : 0);
 	src.w = width;
 	src.h = height;
 	if (x < 0)

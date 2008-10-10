@@ -56,8 +56,8 @@ private:
 public:
 	_text(const char* font, int w, int h);
 	~_text() {if (txt) SDL_FreeSurface(txt);}
-	_text& render(SDL_Surface*surf, const char* s, int x, int y, int fade=0);
-	_text& render(SDL_Surface*surf, const string& s, int x, int y, int fade=0) {return render(surf, s.c_str(), x, y);}
+	_text& render(SDL_Surface*surf, const char* s, int x, int y, int fade=0, bool alt=false);
+	_text& render(SDL_Surface*surf, const string& s, int x, int y, int fade=0, bool alt=false) {return render(surf, s.c_str(), x, y, fade, alt);}
 	int getW() {return width;}
 	int getH() {return height;}
 	void getSize(const char* s, int & w, int & h) {w = strlen(s) * width; h = height;}
