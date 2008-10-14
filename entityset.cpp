@@ -23,10 +23,10 @@ entity& entityset::add(int s)
 	entity& r = elist[s];
 	if (!r.isvalid())
 	{
-		r = elist[s] = entity(s);
+		entity& r2 = elist[s] = entity(s);
 		if ((s & mask) == net)
-			r.setlocal();
-		return r;
+			r2.setlocal();
+		return r2;
 	}
 	r.touch();
 	return r;

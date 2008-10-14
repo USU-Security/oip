@@ -16,24 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with OIP.  If not, see <http://www.gnu.org/licenses/>.
 */
-/*
-	Copyright 2008 Utah State University    
-
-	This file is part of OIP.
-
-    OIP is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    OIP is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with OIP.  If not, see <http://www.gnu.org/licenses/>.
-*/
 #include "clientpm.h"
 #include <iostream>
 using std::cerr;
@@ -77,6 +59,9 @@ int clientpm::clientthread(void* s)
 		timeout.tv_usec = MINRATE * 1000;
 		if (select(self->sock+1, &lset, NULL, NULL, &timeout))
 		{
+			//very possible that a context switch happened during the select. check the running flag.
+			if (!self->running)
+				break;
 			struct sockaddr_in inaddr;
 #ifndef WIN32
 			socklen_t inlen;
@@ -92,6 +77,7 @@ int clientpm::clientthread(void* s)
 			{
 				if (p.gettype() == DUMPPACKETS)
 				{
+					//i keep dying in here due to a race condition. 
 					datapacket dp(self->data, len);
 					dp.dumpdata(*self);
 				}
@@ -167,14 +153,18 @@ clientpm::~clientpm()
 {
 	//signal the thread to quit
 	running = false;
+	//wait for the thread to quit
+	cerr << "Waiting for child thread...\n";
+	SDL_WaitThread(thread, NULL);	
+	//cerr << "Killing the thread\n";
+	//SDL_KillThread(thread);
+	cerr << "Freeing Resources for thread\n";
 	//send an enddata message
 	enddata ed(data);
 	ed.setid(sid);
 	aes.encrypt(data, ed.paddedsize());
 	if (res)
 		sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen);
-	//wait for the thread to quit
-	SDL_WaitThread(thread, NULL);	
 #ifndef WIN32
 	close(sock);
 	if (res)
