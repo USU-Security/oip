@@ -40,7 +40,23 @@ clean:
 	rm -f *.o gui/*.o
 
 distclean: clean
-	rm -f display
+	rm -f oipd oipgui testiptree testclientmanager particlemanagertest gui/guitest
+dist: distclean
+	mkdir .tmp
+	mkdir .tmp/oip
+	cp -r * .tmp/oip/
+	rm -f .tmp/oip/oip.conf
+	echo "#the shared secret used for encryption" >> .tmp/oip/oip.conf
+	echo "secret pleasepleasechangeme" >> .tmp/oip/oip.conf
+	echo "" >> .tmp/oip/oip.conf
+	echo "#Which IP addresses should be highlighted" >> .tmp/oip/oip.conf
+	echo "localnet 10.1.0.0" >> .tmp/oip/oip.conf
+	echo "localmask 255.255.0.0" >> .tmp/oip/oip.conf
+	find .tmp/oip/ -iname ".*" | xargs rm -rf
+	tar -cvzf oip.tar.gz  -C .tmp oip
+	rm -rf .tmp
+
+
 
 testiptree: iptree.o testiptree.o ${coreobj} ${guiobj} 
 	g++ ${CPPFLAGS} ${coreobj} ${guiobj} iptree.o testiptree.o ${GUILDFLAGS} -o testiptree
