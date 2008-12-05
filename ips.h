@@ -19,6 +19,7 @@
 
 #ifndef IPS_H
 #define IPS_H
+#include <stdlib.h>
 #ifndef WIN32
 inline char* longtoip(char* b, int s, unsigned int sip)
 {
