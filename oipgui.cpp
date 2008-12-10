@@ -35,6 +35,10 @@
 #include "gui/textbox.h"
 #include "chart.h"
 #include "capreader.h"
+#include "ips.h"
+#ifndef WIN32
+#include <stdlib.h>
+#endif
 using namespace std;
 
 #define OPTSIZE 3
@@ -308,6 +312,31 @@ void togglebool(bool selected, void* arg)
 	}
 }
 
+struct cxargs
+{
+	const char* s;
+	unsigned int ip;
+};
+
+inline unsigned int swaplong(unsigned int i)
+{
+	return (i >> 24) | ((i >> 8)&0xff00) | ((i << 8)&0xff0000) | (i << 24);
+}
+
+void customexecute(bool selected, void* arg)
+{
+	cxargs* args = (cxargs*)arg;
+	char ip[32];
+	char buffer[512];
+	snprintf(buffer, 512, args->s, longtoip(ip, 32, swaplong(args->ip)));
+	cout << "im supposed to do a system(" << buffer << ")\n";
+	if (0 == fork())
+	{
+		system(buffer);
+		_exit(0);
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	bool run=true;
@@ -328,6 +357,28 @@ int main(int argc, char* argv[])
 	string server = opts["server"];
 	opts.erase("server");
 	particlemanager pm;
+	vector<string> customcommands, customlabels;
+	config.values("customcmd", customcommands);
+	int i;
+	for (i = 0; i < customcommands.size(); i++)
+	{
+		int j;
+		for (j = 0; j < customcommands[i].size(); j++)
+		{
+			if (customcommands[i][j] == ' ')
+				break;
+		}
+		if (j < customcommands[i].size())
+		{
+			customlabels.push_back(customcommands[i].substr(0, j));
+			customcommands[i] = customcommands[i].substr(j+1);
+		}
+		else
+			customlabels.push_back("");
+		cout << "custom command #" << i << " '" << customlabels[i] << "' => '" << customcommands[i] << "'\n";
+	}
+	
+
 
 	//initialize the graphics
 	SDL_Surface* screen = initsdl();
@@ -430,6 +481,20 @@ int main(int argc, char* argv[])
 	gui::layout popupmenu;
 	popupmenu.addchild(resolve, 0, 0);
 	popupmenu.addchild(pin, 0, 18);
+	vector<cxargs*> customargs;
+	for (i = 0; i < customcommands.size(); i++)
+	{
+		cxargs* a = new cxargs;
+		a->s = customcommands[i].c_str();
+		a->ip = 0;
+		customargs.push_back(a);
+		gui::button*b = new gui::button("plainpopupitem.png", "plainpopupitem.png", customexecute, (void*)a, 0);
+		b->setFont(popupfont);
+		b->setString(customlabels[i].c_str());
+		popupmenu.addchild(*b, 0, 36 + i*18);
+	}
+
+			
 	popupmenu.hide();
 	
 
@@ -491,6 +556,9 @@ int main(int argc, char* argv[])
 							pin.setstate(!e->moving);
 							resolve.arg = &e->resolve;
 							pin.arg = &e->moving;
+							int i;
+							for (i = 0; i < customargs.size(); i++)
+								customargs[i]->ip = e->label;
 							popupmenu.show();
 						}
 						else

@@ -52,6 +52,15 @@ dist: distclean
 	echo "#Which IP addresses should be highlighted" >> .tmp/oip/oip.conf
 	echo "localnet 10.1.0.0" >> .tmp/oip/oip.conf
 	echo "localmask 255.255.0.0" >> .tmp/oip/oip.conf
+	echo "" >> .tmp/oip/oip.conf
+	echo "#These specify custom command options You can have more than one" >> .tmp/oip/oip.conf
+	echo "#the format for the string is Title_of_command shell command" >> .tmp/oip/oip.conf
+	echo "#the underscores in the title will be replaced by spaces in the gui" >> .tmp/oip/oip.conf
+	echo "#a single %s will be replaced by the ip address of the selected host" >> .tmp/oip/oip.conf
+	echo "#customcmd = Echo_the_ip echo \"user selected %s\" " >> .tmp/oip/oip.conf
+	echo "#customcmd = Popup_the_ip xmessage \"user selected %s\"" >> .tmp/oip/oip.conf
+	echo "#customcmd = Ping_the_ip ping %s -n -c 1" >> .tmp/oip/oip.conf
+	echo "" >> .tmp/oip/oip.conf
 	find .tmp/oip/ -iname ".*" | xargs rm -rf
 	tar -cvzf oip.tar.gz  -C .tmp oip
 	rm -rf .tmp

@@ -25,16 +25,19 @@
 
 #include <map>
 #include <string>
+#include <vector>
 using std::string;
-using std::map;
+using std::multimap;
+using std::vector;
 
 class configfile
 {
 private:
-	map<string, string> opts;
+	multimap<string, string> opts;
 public:
 	configfile(const char* file="oip.conf");
 	const string& value(const char* key);
+	void values(const char* key, vector<string> & ret);
 	unsigned int ipvalue(const char* key);
 
 };

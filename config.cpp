@@ -48,10 +48,11 @@ configfile::configfile(const char* file)
 				*val = 0;
 				val++;
 				//loop while there is whitespace
-				while (*val && *val == ' ')
+				while (*val && (*val == ' ' || *val == '='))
 					val++;
 				//set the value. 
-				opts[buffer] = val;
+				opts.insert(pair<string, string>(buffer, val));
+				//opts[buffer] = val;
 				//cout << "line " << lineno << ": '" <<  buffer << " = " << val << "'\n";
 			}
 			else
@@ -81,4 +82,13 @@ unsigned int configfile::ipvalue(const char* k)
 {
 	return iptolong(value(k).c_str());
 }
-	
+
+void configfile::values(const char* key, vector<string> & ret)
+{
+	pair<multimap<string, string>::iterator, multimap<string, string>::iterator> range = 
+		opts.equal_range(key);
+	multimap<string, string>::iterator i;
+	for (i = range.first; i != range.second; i++)
+		ret.push_back((*i).second);
+}
+
