@@ -62,6 +62,7 @@ dist: distclean
 	echo "#customcmd = Ping_the_ip ping %s -n -c 1" >> .tmp/oip/oip.conf
 	echo "" >> .tmp/oip/oip.conf
 	find .tmp/oip/ -iname ".*" | xargs rm -rf
+	rm -f .tmp/oip/oip.tar.gz
 	tar -cvzf oip.tar.gz  -C .tmp oip
 	rm -rf .tmp
 
