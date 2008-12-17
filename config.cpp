@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with OIP.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "config.h"
+#include "myconfig.h"
 #include <iostream>
 #include <fstream>
 #include "ips.h"

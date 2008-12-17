@@ -25,7 +25,7 @@
 #include <time.h>
 #endif
 
-#include "config.h"
+#include "myconfig.h"
 
 using namespace CryptoPP;
 

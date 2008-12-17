@@ -21,7 +21,7 @@
 #define ENTITYSET_H
 
 #include "entity.h"
-#include "config.h"
+#include "myconfig.h"
 #include <map>
 #include <string>
 using namespace std;
