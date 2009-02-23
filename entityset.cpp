@@ -18,17 +18,28 @@
 */
 #include "entityset.h"
 
+#define MAXENTITIES 100
+
 entity& entityset::add(int s)
 {
+	static entity badentity; // default constructor sets the invalid flag
 	entity& r = elist[s];
-	if (!r.isvalid())
-	{
+	if (!r.isvalid() && elist.size() < MAXENTITIES)
+	{	
 		entity& r2 = elist[s] = entity(s);
+		//modify the fade rate based on the count of objects. 
+		entity::faderateset(elist.size());
 		if ((s & mask) == net)
 			r2.setlocal();
 		return r2;
 	}
-	r.touch();
+	else if (r.isvalid())
+		r.touch();
+	else
+	{
+		elist.erase(s);
+		return badentity;
+	}
 	return r;
 }
 
@@ -126,14 +137,20 @@ void entityset::draw(SDL_Surface*s)
 	
 	map<int, entity>::iterator j = elist.begin();
 	//draw them, and do some housekeeping
+	bool erasedsome = false;
 	while (j != elist.end())
 	{
 		(*j).second.draw(s);
 		if ((*j).second.deleteme())
+		{
 			elist.erase(j++);
+			erasedsome = true;
+		}
 		else
 			j++;
 	}
+	if (erasedsome)
+		entity::faderateset(elist.size());
 }
 
 /*

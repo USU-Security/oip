@@ -27,9 +27,11 @@
 #include "text.h"
 #include "namecache.h"
 #include "ips.h"
-#define FADERATE .25
+#define MAXFADERATE 1
+#define MINFADERATE .0002
+float FADERATE = .25;
 #define UNFADERATE .031250
-
+#define MAXENTITY 100
 const float MINMOVE = .0000001;
 
 #ifndef WIN32
@@ -46,7 +48,12 @@ inline double now()
 	return SDL_GetTicks()/1000.0;
 }
 #endif
-
+//set the fade rate based on the number of entities
+void entity::faderateset(int count)
+{
+	FADERATE = MINFADERATE + (count * (MAXFADERATE - MINFADERATE) / MAXENTITY);
+}
+	
 
 void entity::init(unsigned int l)
 {
@@ -64,6 +71,7 @@ void entity::init(unsigned int l)
 	moving = true;
 	resolve = true;
 	local = false;
+	faderate = 1;
 }
 
 entity::entity(unsigned int l)
@@ -86,7 +94,7 @@ void entity::move(float fx, float fy, float damp, double dt)
 		ndx = 0;
 		ndy = 0;
 	}
-	if (fade && fadeval < 15 && lastupdate + FADERATE < now() && moving)
+	if (fade && fadeval < 15 && lastupdate + (FADERATE * faderate) < now() && moving)
 	{
 		fadeval++;
 		lastupdate = now();

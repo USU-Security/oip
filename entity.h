@@ -43,6 +43,7 @@ private:
 	bool fade;
 	int fadeval;
 	double lastupdate;
+	float faderate;
 	void init(unsigned int label);
 	bool local;
 public:
@@ -63,11 +64,17 @@ public:
 
 	bool deleteme() {return fade && fadeval>=15;}
 	int getfadeval() {return fadeval;}
-	void touch() {fade=false;}
+	void touch() {fade=false; }
 	bool setlocal(){local=true;}
 	//two toggles that can publicly modified
 	bool moving;
 	bool resolve;
+	void erase() {fade = true; fadeval = 15;}
+	//these change the local fade. it is a multiplier between 1 and 4
+	void faderatedecrease() { if (faderate < 4) faderate *= 1.01; }
+	void faderateincrease() { if (faderate > 1) faderate *= .99;}
+	//this sets the global fade rate based on the number of objects
+	static void faderateset(int count);
 };
 
 #endif //ENTITY_H

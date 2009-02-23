@@ -43,7 +43,7 @@ public:
 	entity& add(int s);
 	void process(double dt);
 	void draw(SDL_Surface*s);
-	
+	int size() const {return elist.size();}	
 	entity* find(int x, int y);
 
 	entity& operator[](int s) {return add(s);}

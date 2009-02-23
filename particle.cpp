@@ -20,16 +20,33 @@
 #include "particle.h"
 #include "image.h"
 #include <iostream>
+using std::cout;
 
 
 #define PSIZE 80
 #define PCOUNT 20
-using std::cout;
+#define MAXPARTICLEAGE 2
+#ifndef WIN32
+#include <sys/time.h>
+inline double now()
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec + tv.tv_usec/1000000.0;
+}
+#else
+inline double now()
+{
+	return SDL_GetTicks()/1000.0;
+}
+#endif 
+
 particle::particle(float nx, float ny, float nsize, unsigned int ncolor, unsigned int s): x(nx),y(ny),color(ncolor),dst(s),dx(0),dy(0),speed(.15),damp(.97),softdelete(false),invalid(false)
 {
 	size = (int)(nsize * PCOUNT);
 	if (size >= PCOUNT)
 		size = PCOUNT-1;
+	created = now();
 }
 
 #define PIXEL(s, x, y) (*((Uint32*)(s)->pixels + (Uint32)(y)*(s)->w + (Uint32)(x)))
@@ -93,6 +110,10 @@ void particle::move(float dstx, float dsty, vector<particle*>& pnear, double dt)
 
 	dx = (dx + fx * dt) * damp;
 	dy = (dy + fy * dt) * damp;
+
+	//if the age is too big, mark for deletion
+	if (created + MAXPARTICLEAGE < now())
+		softdelete = true;
 }
 
 /*

@@ -33,6 +33,7 @@ private:
 	float x, y, dx, dy;
 	float speed; //what we need to cap our velocity at
 	float damp; //keep particles from flying off with reckless abandon
+	double created;
 	unsigned int color;
 	void move();
 	bool softdelete;

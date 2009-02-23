@@ -79,5 +79,6 @@ public:
 	int size() {return count;}
 	bool empty() {return packets.begin() == packets.end();}
 };
+
 #endif //PACKETMANAGER_H
 
