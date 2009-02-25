@@ -45,10 +45,9 @@ private:
 	float dist; //the "right" distance
 	float damp; //dampening factor
 	float xscale, yscale; //scale between world and screen coords
-	unsigned int net, mask;
 	void loadcolors();
 public:
-	entityset():k(.003),dist(.3),damp(.9) {net = config.ipvalue("localnet"); mask = config.ipvalue("localmask");loadcolors(); }
+	entityset():k(.003),dist(.3),damp(.9) {loadcolors(); }
 	entity& add(int s);
 	void process(double dt);
 	void draw(SDL_Surface*s);
