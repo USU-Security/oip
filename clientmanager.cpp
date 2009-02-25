@@ -137,7 +137,7 @@ int clientmanager::serverthread(void* d)
 			//should the stream time out? TODO: make this 10 second value a config option
 			else if ((*i)->lastsent + 20000  < now)
 			{
-				cout << "Stream timed out\n";
+				cout << "Stream timed out, producerdead: " << (*i)->dataset.producer << "\n";
 				(*i)->dataset.consumerdead();
 			}
 			else if ((*i)->lastsent + MINRATE < now) //has the minimum time passed?

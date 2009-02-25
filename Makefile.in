@@ -746,9 +746,9 @@ dist-hook:
 	echo "#the shared secret used for encryption" >> $(distdir)/oip.conf
 	echo "secret pleasepleasechangeme" >> $(distdir)/oip.conf
 	echo "" >> $(distdir)/oip.conf
-	echo "#Which IP addresses should be highlighted" >> $(distdir)/oip.conf
-	echo "localnet 10.1.0.0" >> $(distdir)/oip.conf
-	echo "localmask 255.255.0.0" >> $(distdir)/oip.conf
+	echo "#Specify cuostom colors for the hosts. If networks overlap the first" >> $(distdir)/oip.conf
+	echo "#match will be used" >> $(distdir)/oip.conf
+	echo "customcolor = 10.1.0.0/16 0x88ff00ff" >> $(distdir)/oip.conf
 	echo "" >> $(distdir)/oip.conf
 	echo "#These specify custom command options You can have more than one" >> $(distdir)/oip.conf
 	echo "#the format for the string is Title_of_command shell command" >> $(distdir)/oip.conf

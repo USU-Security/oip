@@ -27,8 +27,8 @@
 class networkpm: public packetmanager
 {
 private:
-	bool consumer,producer;
 public:
+	bool consumer,producer;
 	networkpm():packetmanager(),consumer(true),producer(true)  {}
 	bool addpacket(Uint32 s, Uint32 d, Uint32 c, Uint32 size) {if (consumer) packetmanager::addpacket(s,d,c,size); return consumer;}
 
