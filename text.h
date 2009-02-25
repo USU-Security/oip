@@ -23,7 +23,8 @@
 #include <SDL/SDL.h>
 
 #include <string.h>
-
+#include <map>
+using std::map;
 #include <string>
 using std::string;
 
@@ -32,14 +33,16 @@ using std::string;
 class _text 
 {
 private:
-	SDL_Surface*txt;
+	//the baseline text image
+	map<unsigned int, SDL_Surface*> txt;
 	int height;
 	int width;
+	void newcolor(unsigned int c);
 public:
 	_text(const char* font, int w, int h);
-	~_text() {if (txt) SDL_FreeSurface(txt);}
-	_text& render(SDL_Surface*surf, const char* s, int x, int y, int fade=0, bool alt=false);
-	_text& render(SDL_Surface*surf, const string& s, int x, int y, int fade=0, bool alt=false) {return render(surf, s.c_str(), x, y, fade, alt);}
+	~_text();
+	_text& render(SDL_Surface*surf, const char* s, int x, int y, int fade=0, unsigned int color = 0xffffffff);
+	_text& render(SDL_Surface*surf, const string& s, int x, int y, int fade=0, unsigned int color = 0xffffffff) {return render(surf, s.c_str(), x, y, fade, color);}
 	int getW() {return width;}
 	int getH() {return height;}
 	void getSize(const char* s, int & w, int & h) {w = strlen(s) * width; h = height;}

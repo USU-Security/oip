@@ -23,18 +23,59 @@ _text text("6x13.png", 6, 13);
 
 _text::_text(const char* font, int w, int h)
 {
+	SDL_Surface*t;
 	height = h;
 	width = w;
-	if (!(txt = IMG_Load(font)))
+	if (!(t = IMG_Load(font)))
 		throw SDL_GetError();
-	SDL_SetAlpha(txt, SDL_SRCALPHA, 255);
+	SDL_SetAlpha(t, SDL_SRCALPHA, 255);
+	txt[0xffffffff] = t;
 }
 
-_text& _text::render(SDL_Surface*surf, const char*s, int x, int y, int fade, bool alt)
+_text::~_text()
 {
+	map<unsigned int, SDL_Surface*>::iterator i;
+	for (i = txt.begin(); i != txt.end(); i++)
+		SDL_FreeSurface((*i).second);
+}
+
+void _text::newcolor(unsigned int c)
+{
+	SDL_Surface* t = txt[0xffffffff];
+	SDL_Surface* n = SDL_CreateRGBSurface(SDL_HWSURFACE, t->w, t->h, 32, 0xff000000,0x00ff0000, 0x0000ff00, 0x000000ff);
+	SDL_LockSurface(t);
+	SDL_LockSurface(n);
+	Uint32 * s = (Uint32*)t->pixels;
+	Uint32 * d = (Uint32*)n->pixels;
+	int i;
+	Uint8 c_r, c_g, c_b, c_a;
+	SDL_GetRGBA(c, t->format, &c_r, &c_g, &c_b, &c_a);
+	for (i = 0; i < t->w * t->h; i++)
+	{
+		Uint8 r, g, b, a;
+		SDL_GetRGBA(*s, t->format, &r, &g, &b, &a);
+		r = c_r * ((float)a/255);
+		g = c_g * ((float)a/255);
+		b = c_b * ((float)a/255);
+		*d = SDL_MapRGBA(n->format, r, g, b, a);
+		s++;
+		d++;
+	}
+	SDL_UnlockSurface(n);
+	SDL_UnlockSurface(t);
+	SDL_SetAlpha(n, SDL_SRCALPHA, 255);
+	txt[c] = n;
+}
+
+_text& _text::render(SDL_Surface*surf, const char*s, int x, int y, int fade, unsigned int color)
+{
+	if (txt.find(color) == txt.end())
+		newcolor(color);
+	SDL_Surface* t = txt[color];
+		
 	SDL_Rect src, dst;
 	int pos = 0;
-	src.y = fade*height + (alt ? 208 : 0);
+	src.y = fade*height;
 	src.w = width;
 	src.h = height;
 	if (x < 0)
@@ -51,7 +92,7 @@ _text& _text::render(SDL_Surface*surf, const char*s, int x, int y, int fade, boo
 	while(*s && *s >= 32 && *s <= 126)
 	{
 		src.x = (*s - 32) * width;
-		SDL_BlitSurface(txt, &src, surf, &dst);
+		SDL_BlitSurface(t, &src, surf, &dst);
 		dst.x += width;
 		s++;
 	}

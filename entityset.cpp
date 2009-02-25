@@ -17,8 +17,46 @@
     along with OIP.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "entityset.h"
+#include "ips.h"
+#include <stdio.h>
 
 #define MAXENTITIES 100
+
+void entityset::loadcolors()
+{
+	vector<string> clist;
+	config.values("customcolor", clist);
+	vector<string>::iterator i;
+	for (i = clist.begin(); i != clist.end(); i++)
+	{
+		int pos = (*i).find(" ");
+		string net = (*i).substr(0, pos);
+		string color = (*i).substr(pos+1);
+		pos = net.find("/");
+		string ip = net.substr(0, pos);
+		string mask;
+		if (pos == net.npos)
+			mask = "32";
+		else
+			mask = net.substr(pos+1);
+		pos = color.find("x");
+		if (pos != color.npos)
+			color = color.substr(pos+1);
+		unsigned int iip, imask, icolor;
+		iip = iptolong(ip.c_str());
+		int cidr = atoi(mask.c_str());
+		imask = 0;
+		unsigned int m = 1;
+		while (cidr)
+		{
+			imask |= m;
+			m <<= 1;
+			cidr--;
+		}
+		sscanf(color.c_str(), "%x", &icolor);
+		colors.push_back(colornet(iip, imask, icolor));
+	}
+}
 
 entity& entityset::add(int s)
 {
@@ -29,8 +67,16 @@ entity& entityset::add(int s)
 		entity& r2 = elist[s] = entity(s);
 		//modify the fade rate based on the count of objects. 
 		entity::faderateset(elist.size());
-		if ((s & mask) == net)
-			r2.setlocal();
+		//check to see if the new host has a color set
+		vector<colornet>::iterator i;
+		for (i = colors.begin(); i != colors.end(); i++)
+		{
+			if (((*i).mask & s) == (*i).ip)
+			{
+				r2.color = (*i).color;
+				break;
+			}
+		}
 		return r2;
 	}
 	else if (r.isvalid())

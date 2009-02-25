@@ -23,6 +23,8 @@
 #include "entity.h"
 #include "myconfig.h"
 #include <map>
+#include <vector>
+using std::vector;
 #include <string>
 using namespace std;
 
@@ -32,14 +34,21 @@ using namespace std;
 class entityset
 {
 private:
+	struct colornet {
+		unsigned int ip, mask, color;
+		colornet(unsigned int i, unsigned int m, unsigned int c)
+		:ip(i), mask(m), color(c) {}
+	};
+	vector<colornet> colors;
 	map<int, entity> elist; //a map of entities
 	float k; //the k constant for hookes law
 	float dist; //the "right" distance
 	float damp; //dampening factor
 	float xscale, yscale; //scale between world and screen coords
 	unsigned int net, mask;
+	void loadcolors();
 public:
-	entityset():k(.003),dist(.3),damp(.9) {net = config.ipvalue("localnet"); mask = config.ipvalue("localmask"); }
+	entityset():k(.003),dist(.3),damp(.9) {net = config.ipvalue("localnet"); mask = config.ipvalue("localmask");loadcolors(); }
 	entity& add(int s);
 	void process(double dt);
 	void draw(SDL_Surface*s);

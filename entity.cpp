@@ -70,8 +70,8 @@ void entity::init(unsigned int l)
 	ndy = 0;
 	moving = true;
 	resolve = true;
-	local = false;
 	faderate = 1;
+	color = 0xffffffff;
 }
 
 entity::entity(unsigned int l)
@@ -126,13 +126,13 @@ bool entity::draw(SDL_Surface* s)
 	if (resolve)
 	{
 		const string& str = names[label];
-		text.render(s, 	str.c_str(), (int)(s->w * x) - text.getW()*str.length()/2, (int)(s->h*y) - text.getH()/2 , fadeval, local);
+		text.render(s, 	str.c_str(), (int)(s->w * x) - text.getW()*str.length()/2, (int)(s->h*y) - text.getH()/2 , fadeval, color);
 	}
 	else
 	{
 		char b[16];
 		longtoip(b, 16, ntohl(label));
-		text.render(s, b, (int)(s->w * x) - text.getW()*strlen(b)/2, (int)(s->h*y) - text.getH()/2 , fadeval, local);
+		text.render(s, b, (int)(s->w * x) - text.getW()*strlen(b)/2, (int)(s->h*y) - text.getH()/2 , fadeval, color);
 	}
 	return true;
 }

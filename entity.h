@@ -45,10 +45,9 @@ private:
 	double lastupdate;
 	float faderate;
 	void init(unsigned int label);
-	bool local;
 public:
 	entity(unsigned int l);
-	entity() {init(0);valid=false;local=false;}
+	entity() {init(0);valid=false;}
 
 	void move(float dx, float dy, float damp, double dt);
 	//TODO getX and getY are in world coordinates, yet getW and getH are not
@@ -65,7 +64,6 @@ public:
 	bool deleteme() {return fade && fadeval>=15;}
 	int getfadeval() {return fadeval;}
 	void touch() {fade=false; }
-	bool setlocal(){local=true;}
 	//two toggles that can publicly modified
 	bool moving;
 	bool resolve;
@@ -75,6 +73,8 @@ public:
 	void faderateincrease() { if (faderate > 1) faderate *= .99;}
 	//this sets the global fade rate based on the number of objects
 	static void faderateset(int count);
+	//the color that it draws as
+	unsigned int color;
 };
 
 #endif //ENTITY_H
