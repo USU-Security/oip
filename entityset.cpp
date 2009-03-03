@@ -46,15 +46,19 @@ void entityset::loadcolors()
 		iip = iptolong(ip.c_str());
 		int cidr = atoi(mask.c_str());
 		imask = 0;
-		unsigned int m = 1;
+		unsigned int m = 0x80000000;
 		while (cidr)
 		{
 			imask |= m;
-			m <<= 1;
+			m >>= 1;
 			cidr--;
 		}
+		imask = ((imask | 0xff000000) >> 24) | 
+				((imask | 0x00ff0000) >> 8) | 
+				((imask | 0x0000ff00) << 8) | 
+				((imask | 0x000000ff) << 24);
 		sscanf(color.c_str(), "%x", &icolor);
-		colors.push_back(colornet(iip, imask, icolor));
+		colors.push_back(colornet(iip|imask, imask, icolor));
 	}
 }
 
