@@ -53,12 +53,12 @@ void entityset::loadcolors()
 			m >>= 1;
 			cidr--;
 		}
-		imask = ((imask | 0xff000000) >> 24) | 
-				((imask | 0x00ff0000) >> 8) | 
-				((imask | 0x0000ff00) << 8) | 
-				((imask | 0x000000ff) << 24);
+		imask = ((imask & 0xff000000) >> 24) | 
+				((imask & 0x00ff0000) >> 8) | 
+				((imask & 0x0000ff00) << 8) | 
+				((imask & 0x000000ff) << 24);
 		sscanf(color.c_str(), "%x", &icolor);
-		colors.push_back(colornet(iip|imask, imask, icolor));
+		colors.push_back(colornet(iip&imask, imask, icolor));
 	}
 }
 
