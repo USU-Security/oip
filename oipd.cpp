@@ -16,9 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with OIP.  If not, see <http://www.gnu.org/licenses/>.
 */
-/*
- * This file tests the entity manager
- */
 
 #include <iostream>
 #include <set>
@@ -47,6 +44,37 @@ struct sniffargs
 	sniffargs(networkpm&p, map<string, string> o):pm(p),opts(o) {}
 };
 
+void handle_packet(u_char * a, const struct pcap_pkthdr* header, const u_char* packet)
+{
+	sniffargs* self = (sniffargs*)a;
+	const struct sniff_ethernet *ethernet;
+	const struct sniff_ip *ip;
+	ethernet = (struct sniff_ethernet*)packet;
+	if (ntohs(ethernet->ether_type) == T_IP)
+		ip = (struct sniff_ip*)(packet + SIZE_ETHERNET);
+	if (ntohs(ethernet->ether_type) == T_VLAN)
+	{
+		struct sniff_ethernet_8021q*  vethernet = (struct sniff_ethernet_8021q*)packet;
+		//cout << "read a packet from vlan " << VLANID(ntohs(vethernet->vlan_id)) << "\n";
+		if (ntohs(vethernet->ether_type) == T_IP)
+		{
+		//	cout << "\tand it was an ip packet\n";	
+			ip = (struct sniff_ip*)(packet + SIZE_8021Q);
+		}
+	}
+	bool clientrun = 1;
+	if (ip)
+	{
+		if (ip->ip_p == T_TCP) //could use header.len/1400.0 or something
+			clientrun = self->pm.addpacket(ip->ip_src, ip->ip_dst, 0xff00ff00, header->len);
+		else if (ip->ip_p == T_UDP)
+			clientrun = self->pm.addpacket(ip->ip_src, ip->ip_dst, 0xffff0000, header->len);
+		else
+			clientrun = self->pm.addpacket(ip->ip_src, ip->ip_dst, 0xff0000ff, header->len);
+		ip = 0;
+	}
+}
+
 int sniff(void* a)
 {
 	sniffargs* self = (sniffargs*)a;
@@ -68,6 +96,11 @@ int sniff(void* a)
 		if (!handle)
 		{
 			cerr << "Unable to open " << dev << ": " << errbuf << endl;
+			clientrun = false;
+		}
+		if (pcap_setnonblock(handle, 1, errbuf))
+		{
+			cerr << "Unable to set non-blocking mode: " << errbuf << endl;
 			clientrun = false;
 		}
 	}
@@ -95,43 +128,35 @@ int sniff(void* a)
 	int retry = 5;
 	while(globalrun && clientrun)
 	{
-		result = pcap_next_ex(handle, &header, &packet);
-		if (1 == result)
-		{
+		if (!self->pm.consumer) 
+			clientrun = false; //lets not keep going if the consumer is gone
+		
+		//handle up to 10 packets at a shot
+		result = pcap_dispatch(handle, 10, handle_packet, (u_char*)self);
+		if (result > 0) //it succeeded
 			retry = 5;
-			ethernet = (struct sniff_ethernet*)packet;
-			if (ntohs(ethernet->ether_type) == T_IP)
-				ip = (struct sniff_ip*)(packet + SIZE_ETHERNET);
-			if (ntohs(ethernet->ether_type) == T_VLAN)
-			{
-				struct sniff_ethernet_8021q*  vethernet = (struct sniff_ethernet_8021q*)packet;
-				//cout << "read a packet from vlan " << VLANID(ntohs(vethernet->vlan_id)) << "\n";
-				if (ntohs(vethernet->ether_type) == T_IP)
-				{
-				//	cout << "\tand it was an ip packet\n";	
-					ip = (struct sniff_ip*)(packet + SIZE_8021Q);
-				}
-			}
-			if (ip)
-			{
-				if (ip->ip_p == T_TCP) //could use header.len/1400.0 or something
-					clientrun = self->pm.addpacket(ip->ip_src, ip->ip_dst, 0xff00ff00, header->len);
-				else if (ip->ip_p == T_UDP)
-					clientrun = self->pm.addpacket(ip->ip_src, ip->ip_dst, 0xffff0000, header->len);
-				else
-					clientrun = self->pm.addpacket(ip->ip_src, ip->ip_dst, 0xff0000ff, header->len);
-				ip = 0;
-			}
+		else if (result == 0)
+		{
+			SDL_Delay(10); //attempt to yield processor control, as we don't have data to process
 		}
 		else if (result == -1)
 		{
 			cerr << "Unable to read packet: " << pcap_geterr(handle) << "\n";
 			retry--;
-			if (!retry)
+			if (retry <= 0)
 				clientrun = false;
 		}
+		else  //other negative numbers are unknown, but indicate a reason to quit
+		{
+			retry--;
+			if (retry <= 0)
+				clientrun = false;
+		}
+		
 	}
 	self->pm.producerdead(); //notify the world that we are quitting
+	//can't touch the packetmanager now, because the other thread could kill it at any time
+
 	if (handle)
 		pcap_close(handle);
 	delete self;

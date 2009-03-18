@@ -138,7 +138,7 @@ int clientmanager::serverthread(void* d)
 			else if ((*i)->lastsent + 20000  < now)
 			{
 				(*i)->dataset.consumerdead();
-				cout << "Stream timed out, producerdead: " << (*i)->dataset.producer << ", killme: " << (*i)->dataset.killme() << "\n";
+				cout << "Stream timed out, producer: " << (*i)->dataset.producer << ", killme: " << (*i)->dataset.killme() << "\n";
 			}
 			else if ((*i)->lastsent + MINRATE < now) //has the minimum time passed?
 			{

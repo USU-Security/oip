@@ -35,7 +35,7 @@ class configfile
 private:
 	multimap<string, string> opts;
 public:
-	configfile(const char* file="oip.conf");
+	configfile(const char* file="/etc/oip.conf");
 	const string& value(const char* key);
 	void values(const char* key, vector<string> & ret);
 	unsigned int ipvalue(const char* key);
