@@ -41,7 +41,6 @@ private:
 	float ndx, ndy;
 	bool valid;
 	bool fade;
-	int fadeval;
 	double lastupdate;
 	float faderate;
 	void init(unsigned int label);
@@ -65,6 +64,7 @@ public:
 	int getfadeval() {return fadeval;}
 	void touch() {fade=false; }
 	//two toggles that can publicly modified
+	int fadeval;
 	bool moving;
 	bool resolve;
 	void erase() {fade = true; fadeval = 15;}

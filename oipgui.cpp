@@ -550,8 +550,11 @@ int main(int argc, char* argv[])
 						*/
 						if (e)
 						{
+
 							px = event.button.x;
 							py = event.button.y;
+
+							pm.mousedown(event.button.x, event.button.y);
 							resolve.setstate(!e->resolve);
 							pin.setstate(!e->moving);
 							resolve.arg = &e->resolve;

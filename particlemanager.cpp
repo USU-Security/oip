@@ -111,6 +111,7 @@ void particlemanager::mousedown(int x, int y)
 		my = (int)(mouseisdown->getY() * yscale - y);
 		oldmoving = mouseisdown->moving;
 		mouseisdown->moving = false;
+		mouseisdown->fadeval = 1;
 	}
 }
 

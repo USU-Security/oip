@@ -20,6 +20,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <stdio.h>
 using namespace std;
 void hexprint(const unsigned char * b, int size)
 {
