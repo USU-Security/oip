@@ -25,6 +25,8 @@ using std::cerr;
 #include <arpa/inet.h>
 #include "encrypt.h"
 
+#include <unistd.h>
+
 
 //saves the args, and starts up the listening thread. 
 clientmanager::clientmanager(connectioncallback cc, unsigned short port)

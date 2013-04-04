@@ -38,6 +38,7 @@
 #include "ips.h"
 #ifndef WIN32
 #include <stdlib.h>
+#include <unistd.h>
 #endif
 using namespace std;
 

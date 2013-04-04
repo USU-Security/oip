@@ -22,6 +22,7 @@ using std::cerr;
 
 #ifndef WIN32
 #include <sys/socket.h>
+#include <unistd.h>
 #include <netdb.h>
 #else
 #include <winsock2.h>

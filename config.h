@@ -32,7 +32,7 @@
 #define HAVE_LIBSDL 1
 
 /* Define to 1 if you have the `SDL_image' library (-lSDL_image). */
-/* #undef HAVE_LIBSDL_IMAGE */
+#define HAVE_LIBSDL_IMAGE 1
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
@@ -111,6 +111,9 @@
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "oip"
+
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
 
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "0.03"

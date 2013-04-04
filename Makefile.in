@@ -759,8 +759,9 @@ dist-hook:
 	echo "#customcmd = Ping_the_ip ping %s -n -c 1" >> $(distdir)/oip.conf
 	echo "" >> $(distdir)/oip.conf
 
-install-exec-hook:
-	if test -e /etc/oip.conf; then echo "Existing Configuration already found"; else cp $(srcdir)/oip.conf /etc/; fi
+## Let's just let the user do this...
+#install-exec-hook:
+#	if test -e /etc/oip.conf; then echo "Existing Configuration already found"; else cp $(distdir)/oip.conf /etc/; fi
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
