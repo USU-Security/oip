@@ -1,0 +1,15 @@
+#the shared secret used for encryption
+secret pleasepleasechangeme
+
+#Specify cuostom colors for the hosts. If networks overlap the first
+#match will be used
+customcolor = 10.1.0.0/16 0x88ff00ff
+
+#These specify custom command options You can have more than one
+#the format for the string is Title_of_command shell command
+#the underscores in the title will be replaced by spaces in the gui
+#a single %s will be replaced by the ip address of the selected host
+#customcmd = Echo_the_ip echo "user selected %s" 
+#customcmd = Popup_the_ip xmessage "user selected %s"
+#customcmd = Ping_the_ip ping %s -n -c 1
+
