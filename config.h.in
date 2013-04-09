@@ -24,6 +24,9 @@
 /* Define to 1 if you have the `cryptopp' library (-lcryptopp). */
 #undef HAVE_LIBCRYPTOPP
 
+/* Define to 1 if you have the `fontconfig' library (-lfontconfig). */
+#undef HAVE_LIBFONTCONFIG
+
 /* Define to 1 if you have the `pcap' library (-lpcap). */
 #undef HAVE_LIBPCAP
 

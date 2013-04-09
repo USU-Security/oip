@@ -1,13 +1,13 @@
-Source: organicips
+Source: oip
 Maintainer: Eldon Koyle <ekoyle@gmail.com>
 Section: misc
 Priority: optional
 Standards-Version: 3.9.4
-Build-Depends: debhelper (>=9), libsdl1.2-dev, libsdl-image1.2-dev, libcrypto++-dev, libpcap0.8-dev, libfreetype6-dev
+Build-Depends: debhelper (>=8), libsdl1.2-dev, libsdl-image1.2-dev, libcrypto++-dev, libpcap0.8-dev, libfreetype6-dev, automake, autoconf
 
-Package: organicips-server
+Package: oipd
 Architecture: i386 amd64
-Depends: ${shlibs:Depends} ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Network traffic visualization (server)
  This is a network traffic visualizer written by Rian Shelley at Utah State
  University.
@@ -17,10 +17,10 @@ Description: Network traffic visualization (server)
  .
  This is the server portion.
 
-Package: organicips-client
+Package: oip
 Architecture: i386 amd64
-Depends: ${shlibs:Depends} ${misc:Depends}
-Recommends: organicips-server
+Depends: ${shlibs:Depends}, ${misc:Depends}, ttf-bitstream-vera
+Recommends: oipd
 Description: Network traffic visualization (client)
  This is a network traffic visualizer written by Rian Shelley at Utah State
  University.

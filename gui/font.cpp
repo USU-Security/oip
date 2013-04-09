@@ -16,14 +16,22 @@
     You should have received a copy of the GNU General Public License
     along with OIP.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#include <fontconfig/fontconfig.h>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include "font.h"
+
 #include <iostream>
 using std::cout;
 
 
 namespace gui
 {
-	FT_Library library;
+	FcConfig *config;
+	FT_Library freetype;
 
 	void font::ref(bool addref)
 	{
@@ -32,29 +40,98 @@ namespace gui
 		{
 			if (!refcount)
 			{
-				if (error = FT_Init_FreeType(&library))
-					cout << "Unable to initialize the freetype library\n";
-				else
-					refcount++;
+				if(!FcInit()) {
+					fprintf(stderr, "Error initializing fontconfig.\n");
+					exit(1);
+				}
+
+
+
+				if((error = FT_Init_FreeType(&freetype))) {
+					fprintf(stderr, "Error initializing Freetype2: %d\n", error);
+					exit(1);
+				}
+			}
+			else
+			{
+				refcount++;
 			}
 		}
 		else
 		{
 			refcount--;
 			if (!refcount)
-				FT_Done_FreeType(library);
+				FT_Done_FreeType(freetype);
 		}
 	}
 			
-	font::font(const char* path, int size)
+	font::font(unsigned char* font_name, double font_size)
 	{
+		FcPattern *pattern, *fpat;
+		FcResult result = FcResultMatch;
+		FcChar8 *filename;
+		int font_index;
+		FcMatrix *font_matrix = NULL;
+
+		if(font_name == NULL)
+		{
+			font_name = (unsigned char *)strdup(DEFAULT_FONT_NAME);
+		}
+
 		//make sure the library is initialized
 		error = 0;
 		ref(true);
-		if (error = FT_New_Face(library, path, 0, &face))
-			cout << "Unable to load font " << path << "\n";
+
+		if((pattern = FcNameParse((FcChar8*)font_name)) == NULL) {
+			fprintf(stderr, "Error parsing font name.\n");
+			exit(1);
+		}
+		if(!FcConfigSubstitute(NULL, pattern, FcMatchPattern)) {
+			fprintf(stderr, "Error substituting configuration.\n");
+			exit(1);
+		}
+		FcDefaultSubstitute(pattern);
+		if((fpat = FcFontMatch(NULL, pattern, &result)) == NULL ||
+				result != FcResultMatch) {
+			fprintf(stderr, "Error matching the font.\n");
+			exit(1);
+		}
+		if(FcPatternGetString(fpat, FC_FILE, 0, &filename) != FcResultMatch) {
+			fprintf(stderr, "Error finding the font name.\n");
+			exit(1);
+		}
+		if(FcPatternGetInteger(fpat, FC_INDEX, 0, &font_index) != FcResultMatch) {
+			fprintf(stderr, "Error finding the font index.\n");
+			exit(1);
+		}
+		if(FcPatternGetDouble(fpat, FC_SIZE, 0, &font_size) != FcResultMatch) {
+			fprintf(stderr, "Error finding the font size.\n");
+			exit(1);
+		}
+		if(FcPatternGetMatrix(fpat, FC_MATRIX, 0, &font_matrix) != FcResultMatch) {
+			font_matrix = NULL; /* make sure */
+		}
+
+		if (error = FT_New_Face(freetype, (char *)filename, font_index, &face))
+		{
+			cout << "Unable to load font " << filename << "\n";
+		}
 		else
-			setSize(size);
+		{
+			setSize(font_size);
+		}
+
+		if(font_matrix != NULL) {
+			FT_Matrix m;
+			FT_Vector v;
+			m.xx = font_matrix->xx * 65536;
+			m.xy = font_matrix->xy * 65536;
+			m.yx = font_matrix->yx * 65536;
+			m.yy = font_matrix->yy * 65536;
+			v.x = v.y = 0;
+			FT_Set_Transform(face, &m, &v);
+		}
+
 		color = 0xffffffff; //set to white
 	}
 	font::~font()
@@ -62,11 +139,14 @@ namespace gui
 		ref(false);
 	}
 
-	void font::setSize(int size)
+	void font::setSize(double size)
 	{
+
 		fontsize = size;
 		if (error = FT_Set_Char_Size(face, 0, fontsize*64, 0, 0))
+		{
 			cout << "Unable to set the size of the font\n";
+		}
 	}
 
 	void font::render(const string& s, int x, int y, SDL_Surface* surf)
@@ -129,7 +209,7 @@ namespace gui
 	{
 		string::const_iterator i;
 		w = 0;
-		h = fontsize << 6;
+		h = fontsize * 64;
 		int maxdrop = 0;
 		for (i = s.begin(); i != s.end(); i++)
 		{

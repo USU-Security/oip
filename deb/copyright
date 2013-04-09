@@ -1,0 +1,15 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: oip
+Upstream-Contact: Eldon Koyle <ekoyle@gmail.com>
+Source: http://svn.usu.edu/repos/organicips
+
+Files: *
+Copyright: 2005-2008 Rian Shelley
+License: GPL-2+
+
+Files: deb/*
+Copyright: 2013 Eldon Koyle
+License: GPL-2+
+
+See /usr/share/common-licenses/GPL-2 .
+

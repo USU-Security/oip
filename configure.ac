@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(OIP, 0.03, rian dot shelley at usu dot edu)
+AC_INIT(OIP, 0.04, rian dot shelley at usu dot edu)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([kdtree.h])
 AM_CONFIG_HEADER([config.h])
@@ -21,24 +21,24 @@ AC_CHECK_LIB([cryptopp], [main])
 # FIXME: Replace `main' with a function in `-lpcap':
 AC_CHECK_LIB([pcap], [main])
 
+AC_CHECK_LIB([fontconfig], [FcInit])
 
 #check for freetype
-AC_MSG_CHECKING([for freetype])
-if freetype-config --libs > /dev/null
-then
-	AC_MSG_RESULT([yes])
-else
-	AC_MSG_RESULT([no])
-	AC_MSG_WARN([if you want to compile oipgui, you need to install the freetype development libraries ])
-fi
+AC_CHECK_FT2()
+
+ac_oip_LIBS="$LIBS"
+LIBS="-lcryptopp -lpcap"
+
 if test "$ac_cv_lib_SDL_main" == no
 then
 	AC_MSG_ERROR([the SDL development libraries must be installed])
 fi
+
 if test "$ac_cv_lib_SDL_image_main" == no
 then
 	AC_MSG_WARN([if you want to compile oipgui, you need to install the SDL_image development libraries])
 fi
+
 if test "$ac_cv_lib_cryptopp_main" == no
 then
 	AC_MSG_ERROR([the cryptopp development libraries must be installed])
