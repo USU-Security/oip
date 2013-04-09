@@ -26,8 +26,8 @@ AC_CHECK_LIB([fontconfig], [FcInit])
 #check for freetype
 AC_CHECK_FT2()
 
-ac_oip_LIBS="$LIBS"
-LIBS="-lcryptopp -lpcap"
+#ac_oip_LIBS="$LIBS"
+#LIBS="-lcryptopp -lpcap"
 
 if test "$ac_cv_lib_SDL_main" == no
 then
