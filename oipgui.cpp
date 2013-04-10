@@ -400,24 +400,24 @@ int main(int argc, char* argv[])
 	filterLabel.setFont(mnufont);
 	filterLabel.setString("Filter:");
 	//the textboxes
-	gui::textbox serverTxt("mnubg.png");
+	gui::textbox serverTxt(DATADIR "mnubg.png");
 	serverTxt.setFont(mnufont);
 	serverTxt.setString(server);
-	gui::textbox portTxt("mnubg.png");
+	gui::textbox portTxt(DATADIR "mnubg.png");
 	portTxt.setFont(mnufont);
 	portTxt.setString("12751");
-	gui::textbox filterTxt("mnubg.png");
+	gui::textbox filterTxt(DATADIR "mnubg.png");
 	filterTxt.setFont(mnufont);
 	if (opts.find("filter") != opts.end())
 		filterTxt.setString(opts["filter"]);
 	//the buttons
 	gui::layout menu;
-	gui::option mnu("mnuup.png", "mnudn.png", mnutoggle, &menu);
+	gui::option mnu(DATADIR "mnuup.png", DATADIR "mnudn.png", mnutoggle, &menu);
 	servopts s(packetlist, &serverTxt, &portTxt, &filterTxt, &mnu);
-	gui::button btnnewconn("mnubg.png","mnusel.png", newconnection, &s, 1);
+	gui::button btnnewconn(DATADIR "mnubg.png",DATADIR "mnusel.png", newconnection, &s, 1);
 	btnnewconn.setFont(mnufont);
 	btnnewconn.setString("Connect");
-	gui::button btndisconnect("mnubg.png","mnusel.png", killconnection, &packetlist, 1);
+	gui::button btndisconnect(DATADIR "mnubg.png",DATADIR "mnusel.png", killconnection, &packetlist, 1);
 	btndisconnect.setFont(mnufont);
 	btndisconnect.setString("Disconnect");
 	//the layout
@@ -432,20 +432,20 @@ int main(int argc, char* argv[])
 	connectionmenu.addchild(btndisconnect, 35, 110);
 	connectionmenu.hide();
 	connectionmenu.hasborder = 1;
-	gui::option connection("mnubg.png","mnusel.png",mnutoggle,&connectionmenu,1);
+	gui::option connection(DATADIR "mnubg.png",DATADIR "mnusel.png",mnutoggle,&connectionmenu,1);
 	connection.setFont(mnufont);
 	connection.setString("Connection");
 	menu.addchild(connection, 0, 0);
 	menu.addchild(connectionmenu, 0, 30);
 	
 	//the capreader menu
-	gui::textbox pcapfile("mnubg.png");
+	gui::textbox pcapfile(DATADIR "mnubg.png");
 	pcapfile.setFont(mnufont);
 	gui::label pcaplabel(50, 24);
 	pcaplabel.setFont(mnufont);
 	pcaplabel.setString("File:");
 	pcapopts p(packetlist, &pcapfile, &mnu);
-	gui::button btnpcapfile("mnubg.png", "mnusel.png", newpcapfile, &p, 1);
+	gui::button btnpcapfile(DATADIR "mnubg.png", DATADIR "mnusel.png", newpcapfile, &p, 1);
 	btnpcapfile.setFont(mnufont);
 	btnpcapfile.setString("Load");
 	gui::layout capmenu;
@@ -454,7 +454,7 @@ int main(int argc, char* argv[])
 	capmenu.addchild(btnpcapfile, 35, 26);
 	capmenu.hide();
 	capmenu.hasborder = 1;
-	gui::option mnupcapfile("mnubg.png", "mnusel.png", mnutoggle, &capmenu, 1);
+	gui::option mnupcapfile(DATADIR "mnubg.png", DATADIR "mnusel.png", mnutoggle, &capmenu, 1);
 	mnupcapfile.setFont(mnufont);
 	mnupcapfile.setString("Pcap File");
 	menu.addchild(mnupcapfile, 200, 0);
@@ -473,10 +473,10 @@ int main(int argc, char* argv[])
 	//construct the popup menu
 	gui::font popupfont;
 	popupfont.setSize(14);
-	gui::option resolve("cbunsel.png", "cbsel.png", togglebool, NULL, 0);
+	gui::option resolve(DATADIR "cbunsel.png", DATADIR "cbsel.png", togglebool, NULL, 0);
 	resolve.setFont(popupfont);
 	resolve.setString("    Show IP");
-	gui::option pin("cbunsel.png", "cbsel.png", togglebool, NULL, 0);
+	gui::option pin(DATADIR "cbunsel.png", DATADIR "cbsel.png", togglebool, NULL, 0);
 	pin.setFont(popupfont);
 	pin.setString("    Pin in place");
 	gui::layout popupmenu;
@@ -489,7 +489,7 @@ int main(int argc, char* argv[])
 		a->s = customcommands[i].c_str();
 		a->ip = 0;
 		customargs.push_back(a);
-		gui::button*b = new gui::button("plainpopupitem.png", "plainpopupitem.png", customexecute, (void*)a, 0);
+		gui::button*b = new gui::button(DATADIR "plainpopupitem.png", DATADIR "plainpopupitem.png", customexecute, (void*)a, 0);
 		b->setFont(popupfont);
 		b->setString(customlabels[i].c_str());
 		popupmenu.addchild(*b, 0, 36 + i*18);

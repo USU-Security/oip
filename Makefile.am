@@ -4,13 +4,16 @@ guiobj=particlemanager.cpp kdtree.cpp entity.cpp entityset.cpp image.cpp text.cp
 
 widgets=gui/font.cpp gui/widget.cpp gui/label.cpp gui/textbox.cpp gui/layout.cpp gui/button.cpp gui/option.cpp gui/base.h gui/font.h gui/widget.h gui/label.h gui/textbox.h gui/layout.h gui/button.h gui/option.h gui/draw.h
 
+oip_datadir = $(datadir)/@PACKAGE@/
+oip_docdir = $(datadir)/doc/@PACKAGE@/
+
 oipprgdir=$(prefix)/bin/
 oipprg_PROGRAMS=oip
 oip_SOURCES = $(coreobj) $(guiobj) $(widgets) oipgui.cpp
 
 #oip_LDADD = $(am_oip_LIBS) $(FT2_LIBS) -lfontconfig
 oip_LDADD = $(FT2_LIBS)
-oip_CXXFLAGS = $(FT2_CFLAGS)
+oip_CXXFLAGS = $(FT2_CFLAGS) -DDATADIR=\"$(oip_datadir)\"
 #oip_LDFLAGS = `pkg-config --libs-only-L free`
 #AM_CXXFLAGS = `freetype-config --cflags`
 oipdprgdir=$(prefix)/bin/
@@ -19,7 +22,4 @@ oipd_SOURCES = $(coreobj) oipd.cpp structs.h
 
 oip_data_DATA = oip.conf-example *.png *.ttf
 oip_doc_DATA = oip.conf-example
-
-oip_datadir = $(datadir)/@PACKAGE@
-oip_docdir = $(datadir)/doc/@PACKAGE@
 

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(OIP, 0.04, rian dot shelley at usu dot edu)
+AC_INIT(OIP, 0.05, rian dot shelley at usu dot edu)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([kdtree.h])
 AM_CONFIG_HEADER([config.h])
@@ -64,3 +64,4 @@ AC_CHECK_FUNCS([atexit gethostbyaddr gethostbyname gettimeofday memset select so
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
+

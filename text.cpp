@@ -19,7 +19,7 @@
 #include "text.h"
 #include <SDL/SDL_image.h>
 
-_text text("6x13.png", 6, 13);
+_text text(DATADIR "6x13.png", 6, 13);
 
 _text::_text(const char* font, int w, int h)
 {
