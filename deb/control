@@ -3,7 +3,7 @@ Maintainer: Eldon Koyle <ekoyle@gmail.com>
 Section: misc
 Priority: optional
 Standards-Version: 3.9.4
-Build-Depends: debhelper (>=8), libsdl1.2-dev, libsdl-image1.2-dev, libcrypto++-dev, libpcap0.8-dev, libfreetype6-dev, libfontconfig1-dev, automake, autoconf
+Build-Depends: debhelper (>=8), libsdl1.2-dev, libsdl-image1.2-dev, libcrypto++-dev, libpcap0.8-dev, libfreetype6-dev, libfontconfig1-dev, automake, autoconf, hardening-includes
 
 Package: oipd
 Architecture: i386 amd64

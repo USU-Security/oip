@@ -20,6 +20,8 @@ oipdprgdir=$(prefix)/bin/
 oipdprg_PROGRAMS = oipd
 oipd_SOURCES = $(coreobj) oipd.cpp structs.h
 
+EXTRA_DIST = oip.conf-example *.png *.ttf
+
 oip_data_DATA = oip.conf-example *.png *.ttf
 oip_doc_DATA = oip.conf-example
 
