@@ -1,0 +1,20 @@
+#!/usr/bin/make -f
+
+include /usr/share/hardening-includes/hardening.make
+
+# FTBFS on amd64
+DEB_BUILD_HARDENING_PIE=0
+
+CFLAGS=$(shell dpkg-buildflags --get CFLAGS)
+CXXFLAGS=$(shell dpkg-buildflags --get CXXFLAGS)
+LDFLAGS=$(shell dpkg-buildflags --get LDFLAGS)
+
+CFLAGS+=$(HARDENING_CFLAGS)
+CXXFLAGS+=$(HARDENING_CXXFLAGS)
+LDFLAGS+=$(HARDENING_LDFLAGS)
+
+
+%:
+	dh $@
+
+

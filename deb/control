@@ -1,0 +1,33 @@
+Source: oip
+Maintainer: Eldon Koyle <ekoyle@gmail.com>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.4
+Build-Depends: debhelper (>=8), libsdl1.2-dev, libsdl-image1.2-dev, libcrypto++-dev, libpcap0.8-dev, libfreetype6-dev, libfontconfig1-dev, automake, autoconf, hardening-includes
+
+Package: oipd
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Network traffic visualization (server)
+ This is a network traffic visualizer written by Rian Shelley at Utah State
+ University.
+ .
+ The server sends summary data to the client based on the pcap filter specified,
+ and the client displays this data traveling between source/dest hosts.
+ .
+ This is the server portion.
+
+Package: oip
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, ttf-bitstream-vera
+Recommends: oipd
+Description: Network traffic visualization (client)
+ This is a network traffic visualizer written by Rian Shelley at Utah State
+ University.
+ .
+ The server sends summary data to the client based on the pcap filter specified,
+ and the client displays this data traveling between source/dest hosts.
+ .
+ This is the client portion.
+
+
