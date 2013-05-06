@@ -5,6 +5,7 @@ I changed some c++ calls and now it compiles and works fine.
 
 You need to install these on debian-based distros:
 
+apt-get install libcrypto++-dev
 apt-get install libsdl2-dev
 apt-get install libsdl-image1.2-dev
 
