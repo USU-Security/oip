@@ -10,6 +10,11 @@ apt-get install libsdl-image1.2-dev
 
 It was and still is a GPLv3 project, so enjoy and have fun.
 
+To compile type:
+make
+
+You should modifiy the oip.conf file to suite your needs. It is working fine.
+
 Thanks to the usu.edu for the project.
 
 sebas garcia (eldraco@gmail.com) made the small modifications and the github code.
