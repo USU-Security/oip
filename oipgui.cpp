@@ -42,13 +42,14 @@
 #endif
 using namespace std;
 
-#define OPTSIZE 4
+#define OPTSIZE 5
 const char* validopts[OPTSIZE][4] = {
 	/*short, long, description, required*/
 	{"s", "server", "The hostname or ip address of the server.",NULL},
 	{"p", "port", "The port to connect to. Defaults to 12751.",NULL},
 	{"f", "filter", "The libpcap filter to apply to the stream.",NULL},
-	{"e", "speed", "How fast to read the pcap file. 1000 is normal, 100 is 10x, 10 is 100x, 1 is 1000x",NULL}
+	{"e", "speed", "How fast to read the pcap file. 1000 is normal, 100 is 10x, 10 is 100x, 1 is 1000x",NULL},
+	{"c", "pcap", "Pcap file to read",NULL}
 };
 
 const char* optlookup(const char * o)
@@ -261,7 +262,9 @@ void newpcapfile(bool selected, void* arg)
 	pcapopts* self = (pcapopts*)arg;
 	if (*(self->plist))
 		delete *(self->plist);
+
 	*(self->plist) = new capreader(self->pcapfile->getString().c_str());
+
 	SDL_WM_SetCaption((string("PCAP: ") + self->pcapfile->getString()).c_str(), "Oip");
 	self->mnu->activate();
 }
@@ -382,6 +385,15 @@ int main(int argc, char* argv[])
 	
 
 
+    // Pcap file passed by argument    
+	string pcap_file_to_read = opts["pcap"];
+	opts.erase("pcap");
+
+	string speed = opts["speed"];
+
+
+
+
 	//initialize the graphics
 	SDL_Surface* screen = initsdl();
 	if (!screen)
@@ -442,6 +454,7 @@ int main(int argc, char* argv[])
 	//the capreader menu
 	gui::textbox pcapfile(DATADIR "mnubg.png");
 	pcapfile.setFont(mnufont);
+    pcapfile.setString(pcap_file_to_read.c_str());
 	gui::label pcaplabel(50, 24);
 	pcaplabel.setFont(mnufont);
 	pcaplabel.setString("File:");
@@ -499,6 +512,13 @@ int main(int argc, char* argv[])
 			
 	popupmenu.hide();
 	
+
+
+	if (speed == "")
+	{
+        speed = "1000";
+    }
+   
 
 
 	//and lastly, try to connect to the server
@@ -603,6 +623,9 @@ int main(int argc, char* argv[])
 				break;
 			}
 		}
+
+
+
 		double dt = now() - ti;
 		ti = now();
 		if (packetlist)
@@ -610,7 +633,7 @@ int main(int argc, char* argv[])
 			packetlist->copydata(histo);
 			//packetlist->dumpdata(pm);
             int numb;
-            istringstream ( opts["speed"] ) >> numb;
+            istringstream ( speed ) >> numb;
 			packetlist->dumpdata(pm, numb);
 		}
 		pm.process(dt);
