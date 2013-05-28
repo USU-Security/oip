@@ -277,6 +277,8 @@ struct servopts
 	gui::textbox* server;
 	gui::textbox* port;
 	gui::textbox* filter;
+	gui::textbox* speed;
+	gui::textbox* pcap_file_to_read;
 	gui::option* mnu;
 	servopts(packetmanager*&pl, gui::textbox* s, gui::textbox*p, gui::textbox*f, gui::option* m)
 	:plist(&pl),server(s),port(p),filter(f),mnu(m) {}
@@ -549,7 +551,8 @@ int main(int argc, char* argv[])
     bool pause = false;
 
 
-	while(run)	{
+	while(run)
+	{
 	
 		SDL_Event event;
 		while(SDL_PollEvent(&event))
@@ -572,8 +575,10 @@ int main(int argc, char* argv[])
 
 				if (event.key.keysym.sym == SDLK_ESCAPE)
 					run = false;
-				if (event.key.keysym.sym == '`')
+                if (event.key.keysym.sym == '!') 
 					mnu.activate();
+                else if (event.key.keysym.sym == ',')
+                    btnpcapfile.activate();
 				else
 					widgets.keydown(event.key);
 				break;
