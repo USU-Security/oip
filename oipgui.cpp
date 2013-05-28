@@ -454,7 +454,9 @@ int main(int argc, char* argv[])
 	//the capreader menu
 	gui::textbox pcapfile(DATADIR "mnubg.png");
 	pcapfile.setFont(mnufont);
-    pcapfile.setString(pcap_file_to_read.c_str());
+    if (pcap_file_to_read != "") {
+        pcapfile.setString(pcap_file_to_read.c_str());
+    }
 	gui::label pcaplabel(50, 24);
 	pcaplabel.setFont(mnufont);
 	pcaplabel.setString("File:");
