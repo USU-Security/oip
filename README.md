@@ -17,3 +17,6 @@ You should modifiy the oip.conf file to suite your needs. It is working fine.
 Thanks to the usu.edu for the project.
 
 sebas garcia (eldraco@gmail.com) made the small modifications and the github code.
+
+TODO
+- Put the color references on the screen.
