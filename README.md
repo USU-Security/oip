@@ -9,6 +9,9 @@ apt-get install libcrypto++-dev libsdl2-dev libsdl-image1.2-dev libpcap-dev
 
 It was and still is a GPLv3 project, so enjoy and have fun.
 
+Needed libraries on Debian:
+- apt-get install libcrypto++-dev libsdl-image1.2-dev libpcap-dev libsdl1.2-dev libfreetype6-dev g++ make
+
 To compile type:
 make
 
