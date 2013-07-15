@@ -1,3 +1,5 @@
+README
+------
 This is an update and modification of th OIP project to run on a Debian 7.0.
 
 I took the original code from https://it.wiki.usu.edu/OIP and try to run it, but unfortunately it didn't work.
@@ -53,6 +55,7 @@ Original code was made by Rian Shelley (Utah State Univeristy).
 New version in this git code is made by Sebastian Garcia (eldraco@gmail.com) and Vojtech Uhlir (wojtyla@agents.felk.cvut.cz) (Czech Technical University)
 
 TODO
+----
 - Put the color references on the screen.
 - Advance and rewind the packets.
 
