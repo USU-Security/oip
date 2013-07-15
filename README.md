@@ -3,7 +3,7 @@ This is an update and modification of th OIP project to run on a Debian 7.0.
 I took the original code from https://it.wiki.usu.edu/OIP and try to run it, but unfortunately it didn't work.
 I changed some c++ calls and now it compiles and works fine.
 
-Changes I made:
+Changes made:
 - Minimal fixes to run under Debian
 - Enlarge the size of the packets-balls so you can see them better.
 - Change the blue balls to white balls, to see it better with dark backgrounds.
@@ -13,6 +13,8 @@ Changes I made:
     -e 10 is 100x faster
 - Add the -c argument to give the pcap file name in the command line.
     - If you give a pcap file name, the analysis starts right away.
+- Pause the capture by pressing the letter p.
+- Play again the capture by pressing the letter p.
 
 
 Color code:
@@ -23,30 +25,36 @@ On packet-balls:
 On hosts:
     - I still don't know.
 
+
 On the gui, you can also use the mouse and the keyboard.
 
 Keyboard keys:
     - ! to open the menu
     - , to start displaying the capture (Load button).
+    - p to pause and play the capture
 
  
-You need to install these on debian-based distros:
-
-apt-get install libcrypto++-dev libsdl2-dev libsdl-image1.2-dev libpcap-dev
-
 It was and still is a GPLv3 project, so enjoy and have fun.
 
-Needed libraries on Debian:
+You need to install these on debian-based distros
+-------------------------------------------------
 - apt-get install libcrypto++-dev libsdl-image1.2-dev libpcap-dev libsdl1.2-dev libfreetype6-dev g++ make
 
-To compile type:
-make
+Installation
+------------
+Type make
+If you have any dependency error, just install them.
 
-You should modifiy the oip.conf file to suite your needs. It is working fine.
+You can modifiy the oip.conf file to suite your needs but it is optional.
 
-Thanks to the usu.edu for the project.
-
-sebas garcia (eldraco@gmail.com) made the small modifications and the github code.
+Authors
+-------
+Original code was made by Rian Shelley (Utah State Univeristy).
+New version in this git code is made by Sebastian Garcia (eldraco@gmail.com) and Vojtech Uhlir (wojtyla@agents.felk.cvut.cz) (Czech Technical University)
 
 TODO
 - Put the color references on the screen.
+- Advance and rewind the packets.
+
+
+Thanks to the usu.edu for the project.
