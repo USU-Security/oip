@@ -1,4 +1,6 @@
 ***********************************************************************************
+Wojtyla 2013 - forked from el_draco OIP repository - July 2013
+***********************************************************************************
 OIPGUI.CPP:
 #include <iostream>
 contents input-output streaming
