@@ -48,7 +48,8 @@ bool packetmanager::addpacket(unsigned int s, unsigned int d, unsigned int c, un
 /*
  * dumps all the accumulated packets into a packetsink object
  */
-bool packetmanager::dumpdata(packetsink& ps)
+//bool packetmanager::dumpdata(packetsink& ps)
+bool packetmanager::dumpdata(packetsink& ps, int speed)
 {
     bool hasroom=true;
     SDL_mutexP(packetlock);

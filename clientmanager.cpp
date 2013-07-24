@@ -158,9 +158,11 @@ int clientmanager::serverthread(void* d)
 				datapacket dp(data);
 				dp.setid((*i)->sid);
 				bool moredata;
+                int speed;
 				do
 				{
-					moredata = (*i)->dataset.dumpdata(dp);
+					//moredata = (*i)->dataset.dumpdata(dp);
+					moredata = (*i)->dataset.dumpdata(dp, speed);
 					//encrypt the data 
 					aes.encrypt(data, dp.paddedsize());
 					sendto(listen, data, dp.paddedsize(), 0, (struct sockaddr*)&addr, sizeof(addr));

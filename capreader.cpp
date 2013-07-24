@@ -43,18 +43,26 @@ capreader::~capreader()
 		pcap_close(handle);
 }
 
-bool capreader::dumpdata(packetsink& ps)
+//bool capreader::dumpdata(packetsink& ps)
+bool capreader::dumpdata(packetsink& ps, int speed)
 {
 	//we do these in reverse order so that peek will work
 	
 	// step 2. actually dump it
-	bool ret = packetmanager::dumpdata(ps);	
+	//bool ret = packetmanager::dumpdata(ps);	
+	bool ret = packetmanager::dumpdata(ps, speed);	
 	
 	//step 1. load the data
 	const struct sniff_ethernet *ethernet;
 	const struct sniff_ip*ip = NULL;
-	current += (SDL_GetTicks()/1000.0 - ti) * rate;
-	ti = SDL_GetTicks()/1000.0;
+    // Normal
+	//current += (SDL_GetTicks()/1000.0 - ti) * rate;
+	//ti = SDL_GetTicks()/1000.0;
+    
+    // 100x?
+	current += (SDL_GetTicks()/speed - ti) * rate;
+	ti = SDL_GetTicks()/speed;
+
 	double stamp = TVT(header->ts);
 	while (result == 1 && current > (stamp - start))
 	{	

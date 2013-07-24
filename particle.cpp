@@ -57,7 +57,7 @@ void particle::draw(SDL_Surface*s)
 	move();
 
 	//grab the available images
-	SDL_Surface* circles = image(DATADIR "particles.png");
+	SDL_Surface* circles = image(DATADIR "particles-dark-background.png");
 	SDL_Rect src, dst;
 	src.x = size * PSIZE;//thus valid values for size lie between 0 and 1
 	Uint8 r,g,b;

@@ -62,7 +62,8 @@ private:
 	void scroll();
 
 public:
-	chart(const char* u = "bit", Uint32 c = 0x00005fff);
+	//chart(const char* u = "bit", Uint32 c = 0x00005fff);
+	chart(const char* u = "bit", Uint32 c = 0x0000ffff);
 	~chart();
 
 	void draw(int x, int y, SDL_Surface* s);

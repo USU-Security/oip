@@ -35,7 +35,8 @@ public:
 	capreader(const char* file);
 	~capreader();
 
-	bool dumpdata(packetsink&);
+	//bool dumpdata(packetsink&);
+	bool dumpdata(packetsink&, int speed );
 	const char* error() { return errbuf;}
 
 	bool eof() { return result == -2;}
