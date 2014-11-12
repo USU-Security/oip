@@ -11,3 +11,11 @@
 *.lai
 *.la
 *.a
+
+*.swp
+*.cache
+.deps
+
+oip
+oipd
+
