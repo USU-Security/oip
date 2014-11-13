@@ -1,6 +1,13 @@
-oip (0.05~0) UNRELEASED; urgency=low
+oip (0.05-1~security1210+2) quantal-security-unstable; urgency=low
+
+  [ Eldon Koyle ]
+  * Fix FTBFS for squeeze/amd64 by disabling -fPIE
+
+ -- Eldon Koyle <esk-mini-buildd@esk.cs.usu.edu>  Tue, 09 Apr 2013 19:52:45 -0600
+
+oip (0.05-1~test1210+1) quantal-test-unstable; urgency=low
 
   [ Eldon Koyle ]
   * Initial release.
 
- -- Eldon Koyle <esk@kibbles.ncs.usu.edu>  Thu, 04 Apr 2013 12:28:16 -0600
+ -- Eldon Koyle <esk-mini-buildd@esk.cs.usu.edu>  Thu, 04 Apr 2013 12:28:16 -0600
