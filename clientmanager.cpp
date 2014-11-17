@@ -1,5 +1,5 @@
 /*
-	Copyright 2008 Utah State University    
+	Copyright 2008 Utah State University
 
 	This file is part of OIP.
 
@@ -158,7 +158,7 @@ int clientmanager::serverthread(void* d)
 				datapacket dp(data);
 				dp.setid((*i)->sid);
 				bool moredata;
-                int speed;
+				int speed;
 				do
 				{
 					//moredata = (*i)->dataset.dumpdata(dp);
