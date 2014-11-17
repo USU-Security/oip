@@ -1,29 +1,13 @@
 README
 ------
-This is an update and modification of th OIP project to run on a Debian 7.0.
 
-I took the original code from https://it.wiki.usu.edu/OIP and try to run it, but unfortunately it didn't work.
-I changed some c++ calls and now it compiles and works fine.
-
-Changes made:
-- Minimal fixes to run under Debian
-- Enlarge the size of the packets-balls so you can see them better.
-- Change the blue balls to white balls, to see it better with dark backgrounds.
-- Add the -e argument to speed up the analysis of pcap files. 
-    -e 1000 is normal
-    -e 100 is 10x faster
-    -e 10 is 100x faster
-- Add the -c argument to give the pcap file name in the command line.
-    - If you give a pcap file name, the analysis starts right away.
-- Pause the capture by pressing the letter p.
-- Play again the capture by pressing the letter p.
-
+Use libpcap and SDL to visualize IP traffic between multiple endpoints
 
 Color code:
 On packet-balls:
     - Red for UDP
     - Green for TCP
-    - White for ICMP
+    - White/blue for any other IP protocol
 On hosts:
     - I still don't know.
 
@@ -34,9 +18,7 @@ Keyboard keys:
     - ! to open the menu
     - , to start displaying the capture (Load button).
     - p to pause and play the capture
-
- 
-It was and still is a GPLv3 project, so enjoy and have fun.
+    - <ESC> to disconnnect?
 
 You need to install these on debian-based distros
 -------------------------------------------------
@@ -44,20 +26,13 @@ You need to install these on debian-based distros
 
 Installation
 ------------
-Type make
+Type make install
 If you have any dependency error, just install them.
 
-You can modifiy the oip.conf file to suite your needs but it is optional.
+You can modifiy the oip.conf file to suit your needs but it is optional.
 
 Authors
 -------
-Original code was made by Rian Shelley (Utah State Univeristy).
-New version in this git code is made by Sebastian Garcia (eldraco@gmail.com) and Vojtech Uhlir (wojtyla@agents.felk.cvut.cz) (Czech Technical University)
+Rian Shelley (Utah State Univeristy)
+Additional features added by Sebastian Garcia (eldraco@gmail.com) and Vojtech Uhlir (wojtyla@agents.felk.cvut.cz) (Czech Technical University)
 
-TODO
-----
-- Put the color references on the screen.
-- Advance and rewind the packets.
-
-
-Thanks to the usu.edu for the project.
