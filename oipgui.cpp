@@ -1,5 +1,5 @@
 /*
-	Copyright 2008 Utah State University    
+	Copyright 2008 Utah State University
 
 	This file is part of OIP.
 
@@ -389,14 +389,11 @@ int main(int argc, char* argv[])
 	
 
 
-    // Pcap file passed by argument    
+	// Pcap file passed by argument
 	string pcap_file_to_read = opts["pcap"];
 	opts.erase("pcap");
 
 	string speed = opts["speed"];
-
-
-
 
 	//initialize the graphics
 	SDL_Surface* screen = initsdl();
@@ -459,11 +456,11 @@ int main(int argc, char* argv[])
 	gui::textbox pcapfile(DATADIR "mnubg.png");
 	pcapfile.setFont(mnufont);
 	pcapfile.setString("/home/wojtyla/VirtualEnviroment/Captures/test.pcap");
-    if (pcap_file_to_read != "") {
-        pcapfile.setString(pcap_file_to_read.c_str());
-    }
+	if (pcap_file_to_read != "") {
+		pcapfile.setString(pcap_file_to_read.c_str());
+	}
 
-    //-------------------------------------------------------------------
+	//-------------------------------------------------------------------
 	gui::label pcaplabel(50, 24);
 	pcaplabel.setFont(mnufont);
 	pcaplabel.setString("File:");
@@ -529,9 +526,9 @@ int main(int argc, char* argv[])
 
 	if (speed == "")
 	{
-        speed = "1000";
-    }
-   
+		speed = "1000";
+	}
+
 
 
 	//and lastly, try to connect to the server
@@ -544,11 +541,11 @@ int main(int argc, char* argv[])
 	int chartheight = 128;
 	int px, py;
 
-    if (pcap_file_to_read != "") {
-       btnpcapfile.activate();
-    }
+	if (pcap_file_to_read != "") {
+		btnpcapfile.activate();
+	}
 
-    bool pause = false;
+	bool pause = false;
 
 
 	while(run)
@@ -557,28 +554,30 @@ int main(int argc, char* argv[])
 		SDL_Event event;
 		while(SDL_PollEvent(&event))
 		{
-        	//cout << "something has happened\n";
+			//cout << "something has happened\n";
 			switch (event.type)
 			{
 			case SDL_QUIT: 
 				run = false;
 				break;
 			case SDL_KEYDOWN:
-            	if(event.key.keysym.sym == 'p'){
-            		cout << "OIPGUI.CPP: A keyboard -p- was pressed.\n";
-            		if(pause == false){
-            			pause = true;
-            		}else{
-            			pause = false;
-            		}
-            	}
+				if(event.key.keysym.sym == 'p'){
+					cout << "OIPGUI.CPP: A keyboard -p- was pressed.\n";
+					if(pause == false){
+						pause = true;
+					}else{
+						pause = false;
+					}
+				}
 
 				if (event.key.keysym.sym == SDLK_ESCAPE)
 					run = false;
-                if (event.key.keysym.sym == '!') 
+
+				if (event.key.keysym.sym == '!') 
 					mnu.activate();
-                else if (event.key.keysym.sym == ',')
-                    btnpcapfile.activate();
+
+				else if (event.key.keysym.sym == ',')
+					btnpcapfile.activate();
 				else
 					widgets.keydown(event.key);
 				break;
@@ -602,7 +601,7 @@ int main(int argc, char* argv[])
 							e->moving = !e->moving;
 						if (e)
 							e->resolve = !e->resolve;
-						*/
+						 */
 						if (e)
 						{
 
@@ -624,7 +623,7 @@ int main(int argc, char* argv[])
 					}
 					else if (event.button.button == SDL_BUTTON_LEFT)
 					{
-                    	cout << "OIPGUI.CPP: i caught a click!\n";
+						cout << "OIPGUI.CPP: i caught a click!\n";
 						cout << "left click\n";
 						//let the popup menu have it, if its there
 						if (popupmenu.shown())
@@ -659,43 +658,43 @@ int main(int argc, char* argv[])
 		}
 
 
-        if(pause!=true){
-		double dt = now() - ti;
-		ti = now();
-		//cout << packetlist;
-		//cout << "\n";
-		if (packetlist)
-		{
-			packetlist->copydata(histo);
-			//packetlist->dumpdata(pm);
-            int numb;
-            istringstream ( speed ) >> numb;
-			packetlist->dumpdata(pm, numb);
+		if(pause!=true){
+			double dt = now() - ti;
+			ti = now();
+			//cout << packetlist;
+			//cout << "\n";
+			if (packetlist)
+			{
+				packetlist->copydata(histo);
+				//packetlist->dumpdata(pm);
+				int numb;
+				istringstream ( speed ) >> numb;
+				packetlist->dumpdata(pm, numb);
+			}
+			pm.process(dt);
+
+			// Black background
+			SDL_FillRect(screen, NULL, 0);
+
+			// White background
+			//SDL_FillRect(screen, NULL, 4294967295);
+
+
+			if (packetlist)
+				histo.draw(0, screen->h - chartheight, screen);
+			pm.draw(screen);
+			/*
+			stringstream ss;
+			ss << 1.0/dt << " fps";
+			text.render(screen, ss.str().c_str(), 0, 0, 8);
+			// */
+			widgets.draw(0, 0, screen);
+			popupmenu.draw(px, py, screen);
+			SDL_Flip(screen);
+			//don't bother going faster than twice the minimum framerate
+			if (dt * 1000 < MINRATE)
+				SDL_Delay(MINRATE - (int)(dt * 1000));
 		}
-		pm.process(dt);
-
-        // Black background
-		SDL_FillRect(screen, NULL, 0);
-
-        // White background
-		//SDL_FillRect(screen, NULL, 4294967295);
-        
-       
-		if (packetlist)
-			histo.draw(0, screen->h - chartheight, screen);
-		pm.draw(screen);
-		/*
-		stringstream ss;
-		ss << 1.0/dt << " fps";
-		text.render(screen, ss.str().c_str(), 0, 0, 8);
-		// */
-		widgets.draw(0, 0, screen);
-		popupmenu.draw(px, py, screen);
-		SDL_Flip(screen);
-		//don't bother going faster than twice the minimum framerate
-		if (dt * 1000 < MINRATE)
-			SDL_Delay(MINRATE - (int)(dt * 1000));
-	}
 	}
 
 	if (packetlist)
