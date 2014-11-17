@@ -3,30 +3,46 @@ README
 
 Use libpcap and SDL to visualize IP traffic between multiple endpoints
 
-Color code:
+Packages
+--------
+ * `deb http://mirror.usu.edu/usu-security [codename]-security-unstable`
+ * sid, jessie, wheezy
+ * someone remind me to build for ubuntu again
+ * install `usu-archive-keyring` package and apt-get update
+
+Colors
+------
 On packet-balls:
-    - Red for UDP
-    - Green for TCP
-    - White/blue for any other IP protocol
+ - Red for UDP
+ - Green for TCP
+ - White/blue for any other IP protocol
 On hosts:
-    - I still don't know.
+ - defined by oip.conf
 
 
-On the gui, you can also use the mouse and the keyboard.
+Controls
+--------
+On the gui, you can use the mouse and the keyboard.
+
+Mouse controls:
+ - left click on host to reposition
+ - right click on host to bring up context menu
+ - add actions to context menu in oip.conf on client
 
 Keyboard keys:
-    - ! to open the menu
-    - , to start displaying the capture (Load button).
-    - p to pause and play the capture
-    - <ESC> to disconnnect?
+ - ! to open the menu
+ - , to start displaying the capture (Load button).
+ - p to pause and play the capture
+ - <ESC> to disconnnect?
 
-You need to install these on debian-based distros
--------------------------------------------------
-- apt-get install libcrypto++-dev libsdl-image1.2-dev libpcap-dev libsdl1.2-dev libfreetype6-dev g++ make
+Dependencies
+------------
+ - `apt-get install libcrypto++-dev libsdl-image1.2-dev libpcap-dev libsdl1.2-dev libfreetype6-dev g++ make`
 
 Installation
 ------------
-Type make install
+Type `make install`
+
 If you have any dependency error, just install them.
 
 You can modifiy the oip.conf file to suit your needs but it is optional.
@@ -34,5 +50,6 @@ You can modifiy the oip.conf file to suit your needs but it is optional.
 Authors
 -------
 Rian Shelley (Utah State Univeristy)
+Maintained by Eldon Koyle (Utah State University)
 Additional features added by Sebastian Garcia (eldraco@gmail.com) and Vojtech Uhlir (wojtyla@agents.felk.cvut.cz) (Czech Technical University)
 
