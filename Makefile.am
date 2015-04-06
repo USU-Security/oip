@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS=subdir-objects
+
 coreobj=config.cpp packetmanager.cpp clientpm.cpp clientmanager.cpp messages.cpp namecache.cpp encrypt.cpp hexprint.cpp myconfig.h packetmanager.h clientpm.h clientmanager.h messages.h namecache.h encrypt.h hexprint.h ips.h packetsink.h packetpeek.h networkpm.h
 
 guiobj=particlemanager.cpp kdtree.cpp entity.cpp entityset.cpp image.cpp text.cpp particle.cpp chart.cpp capreader.cpp particlemanager.h kdtree.h entity.h entityset.h image.h text.h particle.h chart.h capreader.h intervalreader.h
