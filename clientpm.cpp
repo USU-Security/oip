@@ -46,7 +46,10 @@ int clientpm::clientthread(void* s)
 		{
 			senddata sd(self->data);
 			aes.encrypt(self->data, sd.paddedsize());
-			sendto(self->sock, (char*)self->data, sd.paddedsize(), 0, (struct sockaddr*)self->res->ai_addr, self->res->ai_addrlen);
+			if (sendto(self->sock, (char*)self->data, sd.paddedsize(), 0, (struct sockaddr*)self->res->ai_addr, self->res->ai_addrlen) < 0)
+			{
+				perror("failed to send update message");
+			}
 			lastsent = SDL_GetTicks();
 		}
 		if (lastrecieved + 30000 < SDL_GetTicks()) //TODO: not sure how to handle overflow case
@@ -151,10 +154,10 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 	sp.setid(sid);
 	sp.setopts(opts);
 	aes.encrypt(data, sp.paddedsize());
-	if (!sendto(sock, (char*)data, sp.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen))
+	if (sendto(sock, (char*)data, sp.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen) < 0)
 	{
 		running = false;
-		cerr << "Unable to send the stream setup message\n";
+		perror("Unable to send the stream setup message");
 	}
 	if (running)	
 		thread = SDL_CreateThread(clientthread, this);
@@ -174,20 +177,21 @@ clientpm::~clientpm()
 	enddata ed(data);
 	ed.setid(sid);
 	aes.encrypt(data, ed.paddedsize());
-	if (res)
+	if (sock && res)
 	{
-		int sent = sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen);
-		if (sent < 0) {
+		if (sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen) < 0)
+		{
 			perror("failed to send enddata message");
 		}
 	}
-#ifndef WIN32
-	close(sock);
+	if (sock)
+	{
+		close(sock);
+	}
 	if (res)
 	{
 		freeaddrinfo(res);
 	}
-#endif
 }
 
 

@@ -45,13 +45,24 @@ clientmanager::~clientmanager()
 int clientmanager::serverthread(void* d)
 {
 	clientmanager* self = (clientmanager*)d;
-	int listen = socket(PF_INET, SOCK_DGRAM, 0); 
 	unsigned char data[MAXPACKET];
 	struct sockaddr_in addr = {0};
+	int listen = socket(PF_INET, SOCK_DGRAM, 0); 
+
+	if (listen < 0)
+	{
+		perror("failed to open socket in serverthread");
+		exit(1);
+	}
+
 	addr.sin_family = PF_INET;
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr.sin_port = htons(self->listenport);
-	bind(listen, (struct sockaddr*)&addr, sizeof(addr));
+	if (bind(listen, (struct sockaddr*)&addr, sizeof(addr)))
+	{
+		perror("bind failed");
+		exit(1);
+	}
 	//set up the descriptor set and timeout for a ready check
 	fd_set lset;
 	FD_ZERO(&lset);

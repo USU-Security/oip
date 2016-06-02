@@ -157,13 +157,19 @@ namespace gui
 #ifdef __linux__
 		else if (m.button == SDL_BUTTON_MIDDLE)
 		{
-			char data[1024];
+			char data[1025];
 			FILE* f = popen("xclip -o", "r");
 			if (!f)
 				cout << "install xclip if you want copy/paste to be functional\n";
 			else
 			{
-				data[fread(data, 1, 1024, f)] = 0;
+				int count = fread(data, 1, 1024, f);
+				if (count < 0)
+				{
+					perror("fread failed");
+					return false;
+				}
+				data[count] = 0;
 				pclose(f);
 				txt = data;
 				cout << "Pasted '" << data << "'\n";

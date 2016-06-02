@@ -100,7 +100,11 @@ namespace gui
 					cached = SDL_CreateRGBSurface(SDL_SWSURFACE|SDL_SRCALPHA, w, h, 32, 0xff000000,0x00ff0000,0x0000ff00,0x000000ff);
 			}
 			if (!cached)
-				cout << "Unable to create cached image: " << SDL_GetError() << "\n";
+			{
+				std::cerr << "Unable to create cached image: " << SDL_GetError() << "\n";
+				cachevalid = false;
+				exit(1);
+			}
 			SDL_FillRect(cached, NULL, 0); //clear it
 			//compute where to render it
 			if (!offset && centerx) //if a manual offset has been set, centering doesnt matter
