@@ -47,7 +47,7 @@ int clientmanager::serverthread(void* d)
 	clientmanager* self = (clientmanager*)d;
 	int listen = socket(PF_INET, SOCK_DGRAM, 0); 
 	unsigned char data[MAXPACKET];
-	struct sockaddr_in addr;
+	struct sockaddr_in addr = {0};
 	addr.sin_family = PF_INET;
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr.sin_port = htons(self->listenport);

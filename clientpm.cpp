@@ -95,6 +95,9 @@ int clientpm::clientthread(void* s)
 
 clientpm::clientpm(const string& server, const map<string, string> & opts, Uint16 port)
 {
+	thread = 0;
+	ip = 0;
+	port = 0;
 	running = true;
 	struct addrinfo hints;
 	res = NULL;
@@ -134,7 +137,14 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 	sid = rand();
 
 	//open the socket
-	sock = socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol);
+	int _sock = socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol);
+	if (_sock < 0)
+	{
+		perror("Failed to open socket");
+		exit(1);
+	}
+
+	sock = _sock;
 
 	//send the initial request.
 	setuppacket sp(data);
@@ -165,11 +175,18 @@ clientpm::~clientpm()
 	ed.setid(sid);
 	aes.encrypt(data, ed.paddedsize());
 	if (res)
-		sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen);
+	{
+		int sent = sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen);
+		if (sent < 0) {
+			perror("failed to send enddata message");
+		}
+	}
 #ifndef WIN32
 	close(sock);
 	if (res)
+	{
 		freeaddrinfo(res);
+	}
 #endif
 }
 

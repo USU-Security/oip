@@ -281,7 +281,7 @@ struct servopts
 	gui::textbox* pcap_file_to_read;
 	gui::option* mnu;
 	servopts(packetmanager*&pl, gui::textbox* s, gui::textbox*p, gui::textbox*f, gui::option* m)
-	:plist(&pl),server(s),port(p),filter(f),mnu(m) {}
+	:plist(&pl),server(s),port(p),filter(f),mnu(m) {speed=pcap_file_to_read=NULL;}
 };
 void newconnection(bool selected, void* arg)
 {
