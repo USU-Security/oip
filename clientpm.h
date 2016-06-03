@@ -36,7 +36,7 @@ private:
 	Uint16 port;
 	Uint8  data[MAXPACKET];	
 	Uint16 sid;
-	Uint32 sock;
+	int sock;
 #ifndef WIN32
 	struct addrinfo *res;
 #else

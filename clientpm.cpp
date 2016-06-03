@@ -100,7 +100,7 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 {
 	thread = 0;
 	ip = 0;
-	port = 0;
+	this->port = port;
 	running = true;
 	struct addrinfo hints;
 	res = NULL;
@@ -134,20 +134,16 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 		return;
 	}
 
-	
-	
-	
+
 	sid = rand();
 
 	//open the socket
-	int _sock = socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol);
-	if (_sock < 0)
+	sock = socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol);
+	if (sock < 0)
 	{
 		perror("Failed to open socket");
 		exit(1);
 	}
-
-	sock = _sock;
 
 	//send the initial request.
 	setuppacket sp(data);
@@ -184,10 +180,9 @@ clientpm::~clientpm()
 			perror("failed to send enddata message");
 		}
 	}
-	if (sock)
-	{
-		close(sock);
-	}
+
+	close(sock);
+
 	if (res)
 	{
 		freeaddrinfo(res);
