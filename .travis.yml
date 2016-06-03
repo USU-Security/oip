@@ -1,5 +1,20 @@
-
 language: c
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "O+UvWpPLtAZlwnvXZVAy1ywvnCNNwqiXVfYmu+/BOeIkr16E5RBFpRLfruLpEzELgDQ8PTL5rQ/Glua3NOKmcDt5pBVMAbb+1t5NhBq9quH6313mJBAuIbIWP6ckZm/y6LRPOJromGF4tO5yHcQWxtXUsPGjDJZk042SRaUgbrZ6mbpPIAtidWJl1kgrSWHSEYoLLPMhTbQfq3LDXRFMfNVGfyNBi6SIX6tnqgWi7Sv17Ol9bkMZkNq04emNAIWDTnsnX69UlC7HRbU8cV2avorjsLqo3t/Uu6503x8vPDnMje1h9SiBXOoGeOfHmZEn+yYUfN5p1g7ShzhLQNWeOofbd3dbOLzhUywrTMmaVXZ49rHSawhnf9COY9knLQI4elvOJEIgziXLRJ1kjNgc+iaZJJJIxZul5uuE7I+OBLx9sW3OiZ0NmVJnz+gTQ+KUTCTGge/CPF9VABAQxTCzRvu09L9ew8KvsqBDWJ4dpa3eHUfQHzwXiwj6gItq7qm+ZjWDRqEkBGU02u1kcNt2148ONuASh3/acCbgtp1k+8S/Q2g5RF0VgMbuUdt70fgHpW9yxO1e8isnGHWYraR7XIA7fwyN15inWOwPsgSh7tiwxs1+Mzsaq+me6WGLUAWRgDW4X2JRlfKUf473na9sKj9YftUsuhHkWkZWQ+zjCR0="
+
+addons:
+  coverity_scan:
+    project:
+      name: "USU-Security/oip"
+      description: "<Your project description here>"
+    notification_email: ekoyle@gmail.com
+    build_command_prepend: "./autogen.sh && ./configure && make clean"
+    build_command:   "make"
+    branch_pattern: coverity_scan
 
 before_install:
         - sudo apt-get update -qq
