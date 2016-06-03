@@ -131,7 +131,7 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 		cout << "Unable to look up " << server << ": " << WSAGetLastError() << "\n";
 #endif
 		running = false;
-		return;
+		exit(EXIT_FAILURE);
 	}
 
 
@@ -142,7 +142,7 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 	if (sock < 0)
 	{
 		perror("Failed to open socket");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	//send the initial request.
