@@ -41,7 +41,13 @@ Dependencies
 
 Installation
 ------------
-Type `make install`
+Type 
+```
+./autogen.sh
+./configure
+make
+make install
+```
 
 If you have any dependency error, just install them.
 
