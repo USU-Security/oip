@@ -37,7 +37,7 @@ Keyboard keys:
 
 Dependencies
 ------------
- - `apt-get install libcrypto++-dev libsdl-image1.2-dev libpcap-dev libsdl1.2-dev libfreetype6-dev g++ make`
+ - `apt-get install libcrypto++-dev libsdl-image1.2-dev libpcap-dev libsdl1.2-dev libfreetype6-dev g++ make libfontconfig1-dev`
 
 Installation
 ------------
