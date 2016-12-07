@@ -5,9 +5,8 @@ Use libpcap and SDL to visualize IP traffic between multiple endpoints
 
 Packages
 --------
- * `deb http://mirror.usu.edu/usu-security [codename]-security-unstable`
- * sid, jessie, wheezy
- * someone remind me to build for ubuntu again
+ * `deb http://mirror.usu.edu/usu-security/ [codename]-security-unstable main`
+ * sid, stretch, jessie, wheezy, vivid, wily, xenial
  * install `usu-archive-keyring` package and apt-get update
 
 Colors
