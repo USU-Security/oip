@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(OIP, 0.05, rian dot shelley at usu dot edu)
+AC_INIT(OIP, 0.06, rian dot shelley at usu dot edu)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([kdtree.h])
 AM_CONFIG_HEADER([config.h])
