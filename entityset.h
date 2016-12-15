@@ -47,7 +47,7 @@ private:
 	float xscale, yscale; //scale between world and screen coords
 	void loadcolors();
 public:
-	entityset():k(.003),dist(.3),damp(.9) {loadcolors(); }
+	entityset():k(.003),dist(.3),damp(.9) { xscale=yscale=0; loadcolors(); }
 	entity& add(int s);
 	void process(double dt);
 	void draw(SDL_Surface*s);

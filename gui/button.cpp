@@ -55,6 +55,7 @@ namespace gui
 		if (clicked && k.keysym.sym == downkey)
 		{
 			clicked = false;
+			downkey = SDLK_UNKNOWN;
 			activate();
 			return true;
 		}

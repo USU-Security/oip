@@ -46,7 +46,10 @@ int clientpm::clientthread(void* s)
 		{
 			senddata sd(self->data);
 			aes.encrypt(self->data, sd.paddedsize());
-			sendto(self->sock, (char*)self->data, sd.paddedsize(), 0, (struct sockaddr*)self->res->ai_addr, self->res->ai_addrlen);
+			if (sendto(self->sock, (char*)self->data, sd.paddedsize(), 0, (struct sockaddr*)self->res->ai_addr, self->res->ai_addrlen) < 0)
+			{
+				perror("failed to send update message");
+			}
 			lastsent = SDL_GetTicks();
 		}
 		if (lastrecieved + 30000 < SDL_GetTicks()) //TODO: not sure how to handle overflow case
@@ -95,6 +98,9 @@ int clientpm::clientthread(void* s)
 
 clientpm::clientpm(const string& server, const map<string, string> & opts, Uint16 port)
 {
+	thread = 0;
+	ip = 0;
+	this->port = port;
 	running = true;
 	struct addrinfo hints;
 	res = NULL;
@@ -125,26 +131,29 @@ clientpm::clientpm(const string& server, const map<string, string> & opts, Uint1
 		cout << "Unable to look up " << server << ": " << WSAGetLastError() << "\n";
 #endif
 		running = false;
-		return;
+		exit(EXIT_FAILURE);
 	}
 
-	
-	
-	
+
 	sid = rand();
 
 	//open the socket
 	sock = socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol);
+	if (sock < 0)
+	{
+		perror("Failed to open socket");
+		exit(EXIT_FAILURE);
+	}
 
 	//send the initial request.
 	setuppacket sp(data);
 	sp.setid(sid);
 	sp.setopts(opts);
 	aes.encrypt(data, sp.paddedsize());
-	if (!sendto(sock, (char*)data, sp.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen))
+	if (sendto(sock, (char*)data, sp.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen) < 0)
 	{
 		running = false;
-		cerr << "Unable to send the stream setup message\n";
+		perror("Unable to send the stream setup message");
 	}
 	if (running)	
 		thread = SDL_CreateThread(clientthread, this);
@@ -164,13 +173,20 @@ clientpm::~clientpm()
 	enddata ed(data);
 	ed.setid(sid);
 	aes.encrypt(data, ed.paddedsize());
-	if (res)
-		sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen);
-#ifndef WIN32
+	if (sock && res)
+	{
+		if (sendto(sock, (char*)data, ed.paddedsize(), 0, (struct sockaddr*)res->ai_addr, res->ai_addrlen) < 0)
+		{
+			perror("failed to send enddata message");
+		}
+	}
+
 	close(sock);
+
 	if (res)
+	{
 		freeaddrinfo(res);
-#endif
+	}
 }
 
 

@@ -34,7 +34,7 @@ namespace gui
 		SDLKey downkey;
 		int clickpush;
 	public:
-		button(const char* upimg, const char* downimg, clickevent c, void* a=NULL, int o=5):label(upimg),imgdown(image(downimg)),clicked(false),clickit(c),clickpush(o),arg(a) {centerH(true);centerV(true);}
+		button(const char* upimg, const char* downimg, clickevent c, void* a=NULL, int o=5):label(upimg),imgdown(image(downimg)),clicked(false),clickit(c),clickpush(o),arg(a) {downkey=SDLK_UNKNOWN;centerH(true);centerV(true);}
 		~button() {}
 
 

@@ -64,7 +64,7 @@ public:
 	packet(Uint8* buffer, int s=0);
 	Uint32 getsequence() { return get32(0); }
 	void setsequence(Uint32 s) { put32(0, s);}
-	void setreserved() {memset(data + 4, '0', 12);} //don't want to send logical garbage
+	void setreserved() {memset(data + 4, 0, 12);} //don't want to send logical garbage
 	Uint8 getversion() { return get8(16);}
 	void setversion() {put8(16, 0);}
 	packet_type gettype() { return (packet_type)get8(17); }

@@ -56,7 +56,7 @@ namespace gui
 		void dofade(int x, int y, const SDL_Surface* s);
 		bool mousestate[3];
 	public:
-		layout():which(0),dx(0),dy(0),fading(NONE),focused(false),hasborder(0) {selhilite=false;mousestate[0]=mousestate[1]=mousestate[2]=false;}
+		layout():which(0),dx(0),dy(0),fading(NONE),focused(false),hasborder(0) {selhilite=false;mousestate[0]=mousestate[1]=mousestate[2]=showing=false;ti=0;}
 
 		virtual void draw(int x, int y, SDL_Surface* s);
 		virtual bool keyup(SDL_KeyboardEvent & k);

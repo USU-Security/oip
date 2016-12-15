@@ -37,7 +37,7 @@ private:
 	entity* mouseisdown;
 	bool oldmoving;
 public:
-	particlemanager():mouseisdown(NULL) {  }
+	particlemanager():mouseisdown(NULL) { xscale=yscale=0; mx=my=0; oldmoving=false; }
 	bool addpacket(unsigned int src, unsigned int  dst, unsigned int size, unsigned int color);
 	~particlemanager();
 

@@ -73,6 +73,9 @@ namespace gui
 		int font_index;
 		FcMatrix *font_matrix = NULL;
 
+		valid = 0;
+		fontsize = 0;
+
 		if(font_name == NULL)
 		{
 			font_name = (unsigned char *)strdup(DEFAULT_FONT_NAME);

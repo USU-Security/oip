@@ -49,7 +49,7 @@ void handle_packet(u_char * a, const struct pcap_pkthdr* header, const u_char* p
 {
 	sniffargs* self = (sniffargs*)a;
 	const struct sniff_ethernet *ethernet;
-	const struct sniff_ip *ip;
+	const struct sniff_ip *ip = {0};
 	ethernet = (struct sniff_ethernet*)packet;
 	if (ntohs(ethernet->ether_type) == T_IP)
 		ip = (struct sniff_ip*)(packet + SIZE_ETHERNET);
@@ -87,15 +87,23 @@ int sniff(void* a)
 	int result;
 	bool clientrun = true;
 	const char* dev = sniff_dev;
-	char errbuf[PCAP_ERRBUF_SIZE];
+	char errbuf[PCAP_ERRBUF_SIZE] = {0};
 	if (!dev)
+	{
+		cout << "No capture device set, setting up for pcap replay";
+
 		dev = pcap_lookupdev(errbuf);
+		if (!dev) {
+			cerr << "pcap_lookupdev() failed: " << errbuf << endl;
+			exit(1);
+		}
+	}
         cout << "Looked up device: " << dev << "\n";
 	if (clientrun)
 	{
 		//open up the device
 		handle = pcap_open_live(dev, SNAPLEN, 1, 100, errbuf);
-        cout << "Starting sniffing on dev " << dev << "\n";
+		cout << "Starting sniffing on dev " << dev << "\n";
 		if (!handle)
 		{
 			cerr << "Unable to open " << dev << ": " << errbuf << endl;
@@ -106,13 +114,6 @@ int sniff(void* a)
 			cerr << "Unable to set non-blocking mode: " << errbuf << endl;
 			clientrun = false;
 		}
-	}
-	if (!dev)
-	{
-		cerr << "Unable to open default device: " << errbuf << endl;
-		cerr << "Attempting to use eth0\n";
-		dev = "eth0";
-		//dev = "wlan0";
 	}
 	if (self->opts["filter"] != "")
 	{

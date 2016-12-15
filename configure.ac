@@ -18,10 +18,6 @@ AM_PATH_SDL($SDL_VERSION,
 	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 	    )
 
-CFLAGS="$CFLAGS $SDL_CFLAGS"
-CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
-LIBS="$LIBS $SDL_LIBS"
-
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lSDL':
 AC_CHECK_LIB([SDL], [main])

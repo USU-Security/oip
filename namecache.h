@@ -26,13 +26,9 @@
 #include <string>
 using std::string;
 
-#ifndef	WIN32
-#include <ext/hash_map>
-typedef __gnu_cxx::hash_map<unsigned int, string> namehash;
-#else
-#include <map> //vc++ 6 doesnt have hash_map
-typedef std::map<unsigned int, string> namehash;
-#endif
+#include <unordered_map>
+typedef std::unordered_map<unsigned int, string> namehash;
+
 #include <string>
 #include <deque>
 using std::string;
