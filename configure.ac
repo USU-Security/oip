@@ -35,7 +35,7 @@ AC_CHECK_LIB([pcap], [main])
 AC_CHECK_LIB([fontconfig], [FcInit])
 
 #check for freetype
-AC_CHECK_FT2()
+PKG_CHECK_MODULES([FT2], [freetype2])
 
 #ac_oip_LIBS="$LIBS"
 #LIBS="-lcryptopp -lpcap"
