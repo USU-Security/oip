@@ -49,7 +49,7 @@ void handle_packet(u_char * a, const struct pcap_pkthdr* header, const u_char* p
 {
 	sniffargs* self = (sniffargs*)a;
 	const struct sniff_ethernet *ethernet;
-	const struct sniff_ip *ip;
+	const struct sniff_ip *ip = 0;
 	ethernet = (struct sniff_ethernet*)packet;
 	if (ntohs(ethernet->ether_type) == T_IP)
 		ip = (struct sniff_ip*)(packet + SIZE_ETHERNET);
