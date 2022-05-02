@@ -39,8 +39,8 @@ public:
 	~aesencrypt();
 
 	//pad it out to the key length, and process it
-	void encrypt(void* txt, int len) {cfbEncryption->ProcessData((byte*)txt,(byte*)txt,len);}
-	void decrypt(void* txt, int len) {cfbDecryption->ProcessData((byte*)txt,(byte*)txt,len);}
+	void encrypt(void* txt, int len) {cfbEncryption->ProcessData((CryptoPP::byte*)txt,(CryptoPP::byte*)txt,len);}
+	void decrypt(void* txt, int len) {cfbDecryption->ProcessData((CryptoPP::byte*)txt,(CryptoPP::byte*)txt,len);}
 #ifndef WIN32
 	static const int keylength = AES::DEFAULT_KEYLENGTH;
 #else
