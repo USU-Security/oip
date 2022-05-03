@@ -6,7 +6,8 @@ Use libpcap and SDL to visualize IP traffic between multiple endpoints
 Packages
 --------
  * `deb http://mirror.usu.edu/usu-security/ [codename]-security-unstable main`
- * sid, stretch, jessie, wheezy, vivid, wily, xenial
+     * Debian: sid, bullseye
+     * Ubuntu: jammy, impish, focal, bionic
  * install `usu-archive-keyring` package and apt-get update
 
 Colors
