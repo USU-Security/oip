@@ -7,8 +7,9 @@ Packages
 --------
  * `deb http://mirror.usu.edu/usu-security/ [codename]-security-unstable main`
      * Debian: sid, bullseye
-     * Ubuntu: jammy, impish, focal, bionic
+     * Ubuntu: impish, focal, bionic
  * install `usu-archive-keyring` package and apt-get update
+     * keyring file available at `https://raw.githubusercontent.com/USU-Security/oip/master/usu_archive_keyring.gpg`
 
 Colors
 ------
@@ -17,8 +18,18 @@ On packet-balls:
  - Green for TCP
  - White/blue for any other IP protocol
 On hosts:
- - defined by oip.conf
+ - defined by oip.conf (ABGR, with A ignored)
 
+
+Running
+-------
+Steps to run the server/client for a live capture
+ - create /etc/oip.conf and at a minimum set a secret
+ - start the server: `oipd <interface>`
+ - start the client: `oip -f <pcap_filter> -s <server>`
+
+The client also supports reading from a pcap file
+ - `oip -c <pcap_file>`, can use `-e <number>` to change speed (1000 is default, number of ms per 1 second in the pcap)
 
 Controls
 --------
