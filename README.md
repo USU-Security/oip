@@ -110,6 +110,6 @@ If you have any dependency error, just install them.
 Authors
 -------
 
-- Rian Shelley (Utah State Univeristy)
+- Rian Shelley (Utah State University)
 - Maintained by Eldon Koyle (Utah State University)
 - Additional features added by Sebastian Garcia (eldraco@gmail.com) and Vojtech Uhlir (wojtyla@agents.felk.cvut.cz) (Czech Technical University)
