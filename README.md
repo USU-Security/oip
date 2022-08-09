@@ -78,7 +78,7 @@ To install OIP from existing repositories execute the following commands for Ubu
 curl -L https://raw.githubusercontent.com/USU-Security/oip/master/usu_archive_keyring.gpg | sudo apt-key add -
 sudo add-apt-repository 'deb [arch=amd64] http://mirror.usu.edu/usu-security/ focal-security-unstable main'
 sudo apt-get install oip
-curl -L https://raw.githubusercontent.com/USU-Security/oip/master/oip.conf-example --output /etc/oip.conf
+cp /usr/share/doc/oip/oip.conf-example /etc/oip.conf
 ```
 
 Configuring the firewall and placing the relevant interface into promiscuous mode is encouraged.
