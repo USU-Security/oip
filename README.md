@@ -6,7 +6,7 @@ OrganicIP (OIP) visualizer uses libpcap and Simple DirectMedia Layer (SDL) to vi
 Supported Distributions
 -----------------------
 
-The following operating systems are supported: 
+Any linux distribution with the necessary [dependencies](#dependencies) is supported with [installation instructions](#installation-from-source). Pre-built packages are available for the following operating systems are supported: 
 
 - Debian
    - sid
