@@ -89,7 +89,7 @@ Dependencies
 The following are the dependent packages needed for OIP to compile: 
 
  ```
- apt-get install libcrypto++-dev libsdl-image1.2-dev libpcap-dev libsdl1.2-dev libfreetype6-dev g++ make libfontconfig1-dev
+ apt-get install libcrypto++-dev libsdl-image1.2-dev libpcap-dev libsdl1.2-dev libfreetype6-dev g++ make libfontconfig1-dev autoconf
  ```
 
 Installation from Source
