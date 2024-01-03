@@ -15,6 +15,7 @@ Any linux distribution with the necessary [dependencies](#dependencies) is suppo
    - impish
    - focal
    - bionic
+- Arch
 
 Distribution
 ------------
