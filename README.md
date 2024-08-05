@@ -19,13 +19,15 @@ Any linux distribution with the necessary [dependencies](#dependencies) is suppo
 Distribution
 ------------
 
-Mirrors are available at following location:
+While mirrors are available at following location for older distributions they longer actively maintained:
 
 http://mirror.usu.edu/usu-security/dists/
 
-The repository keyring is located at the following location: 
+The repository keyring is located at the following location but has expired:
 
 https://raw.githubusercontent.com/USU-Security/oip/master/usu_archive_keyring.gpg
+
+We encourage you to compile oip for the latest operating system distributions e.g., Ubuntu Noble. 
 
 Colors
 ------
@@ -72,7 +74,7 @@ Keyboard keys:
 Installation from Repository
 ----------------------------
 
-To install OIP from existing repositories execute the following commands for Ubuntu-based : 
+For older Ubuntu distributions, to install OIP from existing repositories execute the following commands:
 
 ```
 curl -L https://raw.githubusercontent.com/USU-Security/oip/master/usu_archive_keyring.gpg | sudo apt-key add -
